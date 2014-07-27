@@ -67,6 +67,6 @@ public class MovingMap {
 
 	public static void main(String[] args) {
 		MapGUI hello = new MapGUI();
-
+		System.out.println("hallooo");
 	}
 }
