@@ -24,7 +24,7 @@ public class MapGUI extends JFrame{
 	
 	public JPanel createGraph() {
 		JPanel graph = new JPanel;
-		graph.setLayout(new GridLayout());
+		setLayout
 	}
 	
 	public JLabel createHeader(String text) {
