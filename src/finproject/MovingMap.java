@@ -64,9 +64,31 @@
 package finproject;
 
 public class MovingMap {
+	static Node[] testVillage = new Node[3];
+	
 
 	public static void main(String[] args) {
-		MapGUI hello = new MapGUI();
-
+		//MapGUI hello = new MapGUI();
+		
+		testMap();
+		
+		
+	}
+	
+	public void testMap() {
+		Node one = new Node();
+		Node two = new Node();
+		Node three = new Node();
+		
+		one.next = new Node[] {two};
+		one.previous = new Node[] {two};
+		two.next = new Node[] {one, three};
+		two.previous = new Node[] {one};
+		three.previous = new Node[] {two};
+		
+		testVillage[0] = one;
+		testVillage[1] = two;
+		testVillage[2] = three;
+		
 	}
 }
