@@ -68,6 +68,7 @@ public class MovingMap {
 	
 
 	public static void main(String[] args) {
+
 		//MapGUI hello = new MapGUI();
 		
 		testMap();
@@ -90,5 +91,9 @@ public class MovingMap {
 		testVillage[1] = two;
 		testVillage[2] = three;
 		
+
+		MapGUI hello = new MapGUI();
+		System.out.println("hallooo");
+
 	}
 }
