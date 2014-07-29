@@ -21,11 +21,7 @@ public class MapGUI extends JFrame{
 	}//end constructor
 	
 	//methods	
-	
-	public JPanel createGraph() {
-		JPanel graph = new JPanel;
-		setLayout
-	}
+
 	
 	public JLabel createHeader(String text) {
 		//create header JLabel

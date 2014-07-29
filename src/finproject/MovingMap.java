@@ -63,37 +63,50 @@
 
 package finproject;
 
+import java.io.*;
+
 public class MovingMap {
-	static Node[] testVillage = new Node[3];
+	
+	static PrintWriter pw = new PrintWriter (System.out, true);
+	static Village[] testVillage = new Village[10];
 	
 
 	public static void main(String[] args) {
 
 		//MapGUI hello = new MapGUI();
 		
-		testMap();
+		testVillage[1] = new Village();
+		testVillage[2] = new Village();
+		testVillage[3] = new Village();
+		testVillage[4] = new Village();
+		testVillage[1].connect(3,  testVillage[2]);
+		testVillage[1].connect(1,  testVillage[3]);
+		testVillage[1].connect(1,  testVillage[4]);
+		testVillage[2].connect(5,  testVillage[3]);
+		testVillage[4].connect(5,  testVillage[1]);
+		
+		printMap( testVillage );
+
 		
 		
 	}
 	
-	public void testMap() {
-		Node one = new Node();
-		Node two = new Node();
-		Node three = new Node();
+	public static void printMap( Village[] map ) {
 		
-		one.next = new Node[] {two};
-		one.previous = new Node[] {two};
-		two.next = new Node[] {one, three};
-		two.previous = new Node[] {one};
-		three.previous = new Node[] {two};
-		
-		testVillage[0] = one;
-		testVillage[1] = two;
-		testVillage[2] = three;
-		
+		for (int i = 1; i <= 4; i++) {
+			
+			String roadList = "";
+			RoadIterator current = map[i].adjacent.firstRoad;
+			while (current != null ) {
 
-		MapGUI hello = new MapGUI();
-		System.out.println("hallooo");
+				roadList += "Road to " + current.getVillageName() + " cost " + current.getCost() + ", ";
+				current = current.next;
+				
+			} //AdjList loop
+			pw.println("Village " + map[i].name + ":" + roadList);
+		}//Village list loop
+		
+	
 
 	}
 }
