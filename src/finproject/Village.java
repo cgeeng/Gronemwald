@@ -4,6 +4,7 @@ public class Village {
 	static int totalVillage = 0;
 	int name;
 	AdjList adjacent;
+	Gnome[] population = new Gnome[11]; //Limit of 10 gnomes can be here
 	//int currentPopulation = 1;
 	//int maxPopulation = 3;
 	//static int defaultPopulation;
@@ -58,6 +59,22 @@ public class Village {
 		return true;
 	}//connect
 	
+	public String getAdjList() {
+
+		String roadList = "";
+		RoadIterator current = this.adjacent.firstRoad;
+		if (current == null)  roadList += "nowhere."; 
+		else {
+			while (current != null ) {
+	
+				roadList += "Village " + current.getVillageName() + ", cost " + current.getCost() + ", ";
+				current = current.next;
+				
+			} //AdjList loop
+		}
+		return roadList;
+	}
+	
 	
 	public class AdjList {
 		RoadIterator firstRoad;
@@ -74,5 +91,7 @@ public class Village {
 		//methods
 		public boolean isEmpty() { return length == 0;}
 	}
+	
+
 	
 }//end Village class
