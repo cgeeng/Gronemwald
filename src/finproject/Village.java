@@ -5,6 +5,7 @@ public class Village {
 	int name;
 	AdjList adjacent;
 	Gnome[] population = new Gnome[11]; //Limit of 10 gnomes can be here
+	int outdegree;
 	//int currentPopulation = 1;
 	//int maxPopulation = 3;
 	//static int defaultPopulation;
@@ -20,6 +21,10 @@ public class Village {
 		this(currentPopulation, defaultPopulation);
 	}//end Village constructor
 	*/
+	
+	public int getOutdegree(){
+		return outdegree=adjacent.length;
+	}
 	
 	public Village() {
 		this.name = ++totalVillage; //Create name starting from 1

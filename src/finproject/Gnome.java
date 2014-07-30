@@ -9,7 +9,16 @@ public class Gnome {
 	String name = "no name";
 	int ID;
 	Village current;
-	
+	static{ 
+		String[][] villAndCost = new String[MovingMap.testVillage.length];
+		for(int i = 1; i <= MovingMap.testVillage.length){
+			villAndCost[i] = new String[3];
+			villAndCost[i][0] = ""; // prior village name
+			villAndCost[i][1] = ""; // cost get to this village
+			villAndCost[i][2] = String.valueOf(MovingMap.testVillage[i].getOutdegree()); // outdegree that decreases to 0, which is then "dealt with"
+		}
+		int counter = 0;
+	}
 	//Constructors
 	public Gnome (String name) {
 		this.name = name;
@@ -80,5 +89,29 @@ public class Gnome {
 		}
 	}
 	
+	public void travelMinExpPath(Village endDestination){ // will a village be a dead end?
+		if(counter != MovingMap.testVillage.length){ // actually want if(not all villages have been visited)
+			RoadIterator currentRoad = map[i].adjacent.firstRoad;
+			RoadIterator cheapest = current;
+			while (currentRoad = currentRoad.next != null ) { //get adjacent roads and look for cheapest one
+				if(currentRoad.getCost() < cheapest.getCost()){
+					cheapest = currentRoad;
+				}
+			}
+			
+			Village prior = current; // will be put into the next village's prior village
+		
+			if(villAndCost[cheapest.getVillage().name][1] != "" | Integer.parseInt(villAndCost[cheapest.getVillage().name][1]) > cheapest.getCost()) {
+				this.removeGnome();
+				this.place(cheapest.getVillage());
+				villAndCost[cheapest.getVillage().name][0] = String.valueOf(prior.name);
+				villAndCost[cheapest.getVillage().name][1] = String.valueOf(cheapest.getCost());
+				villAndCost[cheapest.getVillage().name][2] = String.valueOf(Integer.parseInt(villAndCost[cheapest.getVillage().name][2]--));
+				if(villAndCost[cheapest.getVillage().name][2].equals("0"))
+					counter++; // village has been "dealt with" so counter increases
+			}
+		}
+		
+	} // end of travelMinExpPath method
 
 }
