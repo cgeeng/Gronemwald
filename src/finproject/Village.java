@@ -2,11 +2,30 @@ package finproject;
 
 public class Village {
 	static int totalVillage = 0;
-	int name;
+	public int name;
 	AdjList adjacent;
 	Gnome[] population = new Gnome[11]; //Limit of 10 gnomes can be here
 	int outdegree;
 	int indegree;
+	// TODO find and store indegree
+	//int currentPopulation = 1;
+	//int maxPopulation = 3;
+	//static int defaultPopulation;
+	
+	//Constructors
+	/*public Village ( int currentPopulation, int maxPopulation) {
+		this.currentPopulation = currentPopulation;
+		this.maxPopulation = maxPopulation;
+		this.name = ++totalVillage;
+	}//end Village constructor
+	
+	public Village (int currentPopulation) {
+		this(currentPopulation, defaultPopulation);
+	}//end Village constructor
+	*/
+	
+	public int getName() {return this.name;}
+
 	
 	public Village() {
 		this.name = ++totalVillage; //Create name starting from 1
@@ -58,7 +77,7 @@ public class Village {
 		else {
 			while (current != null ) {
 	
-				roadList += "Village " + current.getVillageName() + ", cost " + current.getCost() + ", ";
+				roadList += "Village " + current.getVillage().getName() + ", cost " + current.getCost() + ", ";
 				current = current.next;
 				
 			} //AdjList loop
@@ -70,7 +89,7 @@ public class Village {
 	public int getOutdegree(){	return outdegree=adjacent.length;	}
 	
 	//Class AdjList
-	public class AdjList {
+	public class AdjList { // TODO should make this a linked list (insert and delete methods)
 		RoadIterator firstRoad;
 		RoadIterator lastRoad;
 		int length = 0;
@@ -90,8 +109,7 @@ public class Village {
 	public class RoadAlreadyExistsException extends Exception {
 		public RoadAlreadyExistsException(int cost, int start, int end) {
 			super("A road cost " + cost + " already connects Village " + start + " and " + end + "!");
-			
 		}//end default constructor
-	}//end ROadAlreadyExistsException
+	}//end RoadAlreadyExistsException
 	
 }//end Village class

@@ -67,6 +67,7 @@ public class Gnome {
 		}//Gnome's current village still has not been changed; will be changed in place()
 		return current;
 	}//end removeGnome method
+
 	
 	public void travelRandom () {
 		
@@ -138,7 +139,7 @@ public class Gnome {
 					if( b.getVillage().indegree  == 0 ){
 						System.out.println("about to insert...");
 						q.insert(new Node(b.getVillage()));
-						System.out.println("added to the q is village "+b.getVillageName()+" with indegree "+b.getVillage().indegree);
+						System.out.println("added to the q is village "+b.getVillage().name+" with indegree "+b.getVillage().indegree);
 					}
 					b = b.next;
 				} // end of while

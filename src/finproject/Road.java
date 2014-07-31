@@ -2,11 +2,17 @@ package finproject;
 
 public class Road {
 	int cost;
-	Village nextVillage;
+	Village startVillage, endVillage; // start and end points
 	
 	//Constructor
-	public Road (int cost, Village nextVillage) {
+	public Road (int cost, Village endVillage) {
 		this.cost = cost;
-		this.nextVillage = nextVillage;
+		this.endVillage = endVillage;
 	} //end Constructor
+	
+	public Road(int cost, Village startVillage, Village endVillage) {
+		this.cost = cost;
+		this.endVillage = endVillage;
+		this.startVillage = startVillage;
+	}
 }//end Road class

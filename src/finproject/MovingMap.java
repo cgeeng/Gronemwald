@@ -71,11 +71,11 @@ public class MovingMap {
 			RoadIterator current = map[i].adjacent.firstRoad;
 			while (current != null ) { //get adjacent roads
 
-				roadList += "Road to " + current.getVillageName() + " cost " + current.getCost() + ", ";
+				roadList += "Road to " + current.getVillage().getName() + " cost " + current.getCost() + ", ";
 				current = current.next;
 				
 			} //AdjList loop
-			pw.println("Village " + map[i].name + ":" + roadList);
+			pw.println("Village " + map[i].getName() + ":" + roadList);
 			
 			String population = "Population is Gnome ";
 			int j = 0;
