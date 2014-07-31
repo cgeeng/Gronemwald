@@ -4,6 +4,8 @@ package finproject;
 
 import java.io.*;
 
+import finproject.Village.RoadAlreadyExistsException;
+
 public class MovingMap {
 	
 	static PrintWriter pw = new PrintWriter (System.out, true);
@@ -11,7 +13,7 @@ public class MovingMap {
 	static Gnome[] testGnomes = new Gnome[10];
 	
 
-	public static void main(String[] args) throws NumberFormatException, IOException {
+	public static void main(String[] args) throws NumberFormatException, IOException, RoadAlreadyExistsException{
 
 		//MapGUI hello = new MapGUI();
 		
@@ -20,14 +22,14 @@ public class MovingMap {
 		testVillage[3] = new Village();
 		testVillage[4] = new Village();
 		testVillage[1].connect(3,  testVillage[2]);
-		testVillage[1].connect(1,  testVillage[3]);
+		testVillage[1].connect(1,  testVillage[2]);
 		testVillage[1].connect(1,  testVillage[4]);
 		testVillage[2].connect(5,  testVillage[3]);
 		testVillage[4].connect(5,  testVillage[1]);
 		
 		printMap( testVillage );
 		
-		testGnomes[0] = new Gnome();
+		testGnomes[0] = new Gnome(testVillage[3]);
 
 		//testGnomes[0].travelRandom();
 		testGnomes[0].travelPick();
