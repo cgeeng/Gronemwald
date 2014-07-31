@@ -66,5 +66,6 @@ public class MovingMap {
 		
 	
 
-	}
+	} // end printMap method
+	
 }
