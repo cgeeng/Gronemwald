@@ -1,5 +1,3 @@
-// TEST
-
 package finproject;
 
 import java.util.*;
