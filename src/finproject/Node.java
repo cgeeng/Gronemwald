@@ -1,7 +1,7 @@
 package finproject;
 
 public class Node {
-	Village data;
+/*	Village data;
 	Node[] previous; //Contains previous village as well as road cost
 	Node[] next;
 	int[] previousCost = {1, 1};
@@ -25,5 +25,13 @@ public class Node {
 	public Node () {
 		this.data = new Village();
 	}
-
+*/
+	Village village;
+	Node next;
+	Node previous;
+	public Node(Village someVill){ // constructor
+		 this.village = someVill;
+	}
+	
+	
 }//end Node class

@@ -6,29 +6,13 @@ public class Village {
 	AdjList adjacent;
 	Gnome[] population = new Gnome[11]; //Limit of 10 gnomes can be here
 	int outdegree;
-	//int currentPopulation = 1;
-	//int maxPopulation = 3;
-	//static int defaultPopulation;
-	
-	//Constructors
-	/*public Village ( int currentPopulation, int maxPopulation) {
-		this.currentPopulation = currentPopulation;
-		this.maxPopulation = maxPopulation;
-		this.name = ++totalVillage;
-	}//end Village constructor
-	
-	public Village (int currentPopulation) {
-		this(currentPopulation, defaultPopulation);
-	}//end Village constructor
-	*/
-	
-	public int getOutdegree(){
-		return outdegree=adjacent.length;
-	}
+	int indegree;
 	
 	public Village() {
 		this.name = ++totalVillage; //Create name starting from 1
 		adjacent = new AdjList();
+		outdegree = 0;
+		indegree = 0;
 		
 	}//end Constructor
 	
@@ -60,7 +44,7 @@ public class Village {
 				adjacent.firstRoad = newRoadIt;
 				adjacent.lastRoad = newRoadIt;
 			}//end else
-			
+			newNeighbor.indegree++;
 			adjacent.length++;
 			
 		} catch (RoadAlreadyExistsException e) { System.out.println(e.getMessage()); } 
@@ -81,6 +65,9 @@ public class Village {
 		}
 		return roadList;
 	}//end getAdjList()
+	
+	public int getIndegree(){	return indegree;	}
+	public int getOutdegree(){	return outdegree=adjacent.length;	}
 	
 	//Class AdjList
 	public class AdjList {

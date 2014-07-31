@@ -9,7 +9,21 @@ public class Gnome {
 	public String name = "no name";
 	public int ID;
 	public Village current;
-	
+	static int counter;
+	static String[][] villAndCost = new String[MovingMap.testVillage.length][];
+	static{
+		for (int i = 1; i < MovingMap.testVillage.length; i++){
+			villAndCost[i] = new String[3];
+			System.out.println("length is "+villAndCost[i].length);
+			//System.out.println("HI");
+			//System.out.println("length is "+villAndCost.length);
+			villAndCost[i][0] = ""; // prior village name
+			villAndCost[i][1] = ""; // total cost get to this village		
+			// outdegree that decreases to 0, which indicates that village is has been "dealt with"
+			villAndCost[i][2] = String.valueOf(MovingMap.testVillage[i].getOutdegree()); 
+		}
+	}
+
 	//Constructors
 	public Gnome (String name) {
 		this.name = name;
@@ -100,6 +114,50 @@ public class Gnome {
 			System.out.println(e.getMessage()); 
 		} catch (NoAdjacentVillagesException e) { System.out.println(e.getMessage()); }
 	}//end travelPick()
+	
+	public String travelTopSort(){ // need to check for cycles?
+		Queue q = new Queue();
+		Village a;
+		RoadIterator b;
+		queueZero(q);
+		String pathToTake = "";
+		System.out.println("is it emtpy? "+q.isEmpty());
+		while(!q.isEmpty()){
+			a = q.remove().village;
+			System.out.println("a has been removed from q. q length is now "+q.length);
+			//System.out.println("hello?");
+			pathToTake += a.name + " ";
+			System.out.println("a.name is "+pathToTake+" and adjacent length is "+a.adjacent.length);
+			// for each adjacent village to village a, decrease each indegree and if it equals 0, add to queue
+			if(a.adjacent.length!=0){
+				b = a.adjacent.firstRoad;
+				while(b != null){
+					System.out.println("b's indegree is "+b.getVillage().getIndegree());
+					b.getVillage().indegree--;
+					System.out.println("b's indegree is nowww "+b.getVillage().getIndegree());
+					if( b.getVillage().indegree  == 0 ){
+						System.out.println("about to insert...");
+						q.insert(new Node(b.getVillage()));
+						System.out.println("added to the q is village "+b.getVillageName()+" with indegree "+b.getVillage().indegree);
+					}
+					b = b.next;
+				} // end of while
+			} // end of if
+		} // end of while
+		System.out.println(pathToTake+"hi ");
+		return pathToTake;
+		
+	} // end of travelTopSort method
+	
+	public Queue queueZero(Queue someQ){
+		for(int i = 1; i < MovingMap.testVillage.length; i++){
+			if(MovingMap.testVillage[i].getIndegree() == 0){
+				someQ.insert(new Node(MovingMap.testVillage[i]));
+			}
+		}
+		System.out.println("someQ length is"+ someQ.length);
+		return someQ;
+	}	
 	
 	//exceptions
 	public class NotInVillageException extends Exception{
