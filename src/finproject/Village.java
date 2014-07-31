@@ -2,10 +2,10 @@ package finproject;
 
 public class Village {
 	static int totalVillage = 0;
-	int name;
+	private int name;
 	AdjList adjacent;
 	Gnome[] population = new Gnome[11]; //Limit of 10 gnomes can be here
-	int outdegree;
+	int outdegree, indegree; // TODO find and store indegree
 	//int currentPopulation = 1;
 	//int maxPopulation = 3;
 	//static int defaultPopulation;
@@ -22,6 +22,7 @@ public class Village {
 	}//end Village constructor
 	*/
 	
+	public int getName() {return this.name;}
 	public int getOutdegree(){
 		return outdegree=adjacent.length;
 	}
@@ -74,7 +75,7 @@ public class Village {
 		else {
 			while (current != null ) {
 	
-				roadList += "Village " + current.getVillageName() + ", cost " + current.getCost() + ", ";
+				roadList += "Village " + current.getVillage().getName() + ", cost " + current.getCost() + ", ";
 				current = current.next;
 				
 			} //AdjList loop
@@ -83,7 +84,7 @@ public class Village {
 	}//end getAdjList()
 	
 	//Class AdjList
-	public class AdjList {
+	public class AdjList { // TODO should make this a linked list (insert and delete methods)
 		RoadIterator firstRoad;
 		RoadIterator lastRoad;
 		int length = 0;
@@ -103,8 +104,7 @@ public class Village {
 	public class RoadAlreadyExistsException extends Exception {
 		public RoadAlreadyExistsException(int cost, int start, int end) {
 			super("A road cost " + cost + " already connects Village " + start + " and " + end + "!");
-			
 		}//end default constructor
-	}//end ROadAlreadyExistsException
+	}//end RoadAlreadyExistsException
 	
 }//end Village class

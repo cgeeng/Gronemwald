@@ -1,6 +1,7 @@
 package finproject;
-<<<<<<< HEAD
+// <<<<<<< HEAD
 
+/*
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -85,6 +86,7 @@ public class MapGUI implements ActionListener {
 
 } // end of class MapGUI
 =======
+*/
 
 import java.awt.*;
 import java.awt.event.*;
@@ -170,4 +172,4 @@ public class MapGUI implements ActionListener {
 	
 } // end of class MapGUI
 
->>>>>>> origin/master
+// >>>>>>> origin/master

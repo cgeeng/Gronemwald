@@ -59,7 +59,7 @@ public class Gnome {
 		try {
 			//Limited to gnomes that are in a village already
 			if (current == null) throw new NotInVillageException();
-			if (current.adjacent.length == 0) throw new NoAdjacentVillagesException(current.name);
+			if (current.adjacent.length == 0) throw new NoAdjacentVillagesException(current.getName());
 			
 			Random generate = new Random();
 			int randomTraverse = 1 + generate.nextInt(current.adjacent.length);
@@ -74,7 +74,7 @@ public class Gnome {
 			//Assign destination village
 			Village destination = temp.getVillage();			
 			Village oldVillage = this.place(destination);			
-			System.out.println("Gnome " + ID + " has moved from Village " + oldVillage.name + " to Village " + current.name);
+			System.out.println("Gnome " + ID + " has moved from Village " + oldVillage.getName() + " to Village " + current.getName());
 			
 		} catch (NotInVillageException e) { 
 			System.out.println(e.getMessage()); 
@@ -86,15 +86,15 @@ public class Gnome {
 		try {
 			//Limited to gnomes that are in a village already
 			if (current == null) throw new NotInVillageException();
-			if (current.adjacent.length == 0) throw new NoAdjacentVillagesException(current.name);
+			if (current.adjacent.length == 0) throw new NoAdjacentVillagesException(current.getName());
 			
-			String message = "Gnome " + ID + " can move from Village " + current.name + " to: ";
+			String message = "Gnome " + ID + " can move from Village " + current.getName() + " to: ";
 			String destinations = current.getAdjList();
 			System.out.println(message + destinations);
 			
 			System.out.println("From the above neighboring villages listed, which village would you like to move to? Enter the village number.");
 			Village oldVillage = this.place(MovingMap.testVillage[Integer.parseInt(br.readLine())]);
-			System.out.println("Gnome " + ID + " has moved from Village " + oldVillage.name + " to Village " + current.name);
+			System.out.println("Gnome " + ID + " has moved from Village " + oldVillage.getName() + " to Village " + current.getName());
 			
 		} catch (NotInVillageException e) { 
 			System.out.println(e.getMessage()); 
