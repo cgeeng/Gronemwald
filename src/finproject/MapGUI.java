@@ -6,9 +6,7 @@ package finproject;
 
 import java.awt.*;
 import java.awt.event.*;
-
 import javax.swing.*;
-
 import finproject.Village.RoadAlreadyExistsException;
 
 public class MapGUI implements ActionListener {
@@ -127,8 +125,10 @@ public class MapGUI implements ActionListener {
 		optionsPanel.add(button);
 	} // end of addOptionsButton()
 	
-	public void actionPerformed(ActionEvent e) {  
-        if (e.getSource() == addVillage) {
+	public void actionPerformed(ActionEvent e) { 
+		if (e.getSource() == welcomeButton) {
+			welcomeButton();
+		} else if (e.getSource() == addVillage) {
         	addVillage();
         } else if (e.getSource() == delVillage) {
         	delVillage();
@@ -138,9 +138,7 @@ public class MapGUI implements ActionListener {
         	moveGnome();
         } else if (e.getSource() == addRoad) {
         	addRoad();
-        } else if (e.getSource() == welcomeButton) {
-        	welcomeButton();
-        } 
+        }
     } // end of actionPerformed() 
 	
 	public void addVillage() {
@@ -161,7 +159,40 @@ public class MapGUI implements ActionListener {
 	
 	public void addRoad() {
 		System.out.println("Add road button"); // TODO
-	} 
+		
+		Object[] options = {"1","2","3","4","5"};
+		String start = (String) JOptionPane.showInputDialog(mapFrame,
+		            "Please choose the village you would like the road to start at:",
+		            "Building a road",
+		            JOptionPane.PLAIN_MESSAGE,
+		            options,
+		            options[0]);
+		
+		System.out.println("Starting village is: " + start);
+
+		/*
+		String end = (String) JOptionPane.showInputDialog(
+                	frame,
+                	"Village " + start + " was chosen as the starting village."
+                		+ "\nNow please choose the end village.",
+                	JOptionPane.PLAIN_MESSAGE,
+                	options,
+                	options[0]);
+		
+		int cost = (int) JOptionPane.showInputDialog(
+            		frame,
+            		"This road will lead from village " + start + " to village " + end
+            		+ "\nPlease enter an integer for the toll of the new road.",
+            		JOptionPane.PLAIN_MESSAGE,
+            		null);
+		
+		int startVill = Integer.parseInt(start);
+		int endVill = Integer.parseInt(end);
+		
+		
+		graph.find(startVill).connect(cost, graph.find(endVill));
+		graph.printGraph(); */
+	}
 	
 	public void welcomeButton() {
 		welcomePanel.setVisible(false);
