@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import finproject.Village.RoadAlreadyExistsException;
+import finproject.Village.SameVillageException;
 
 public class MapGUI implements ActionListener {
 		int state = 0; // holds state of application
@@ -158,40 +159,49 @@ public class MapGUI implements ActionListener {
 	} 
 	
 	public void addRoad() {
-		System.out.println("Add road button"); // TODO
+		System.out.println("Add road button");
 		
 		Object[] options = {"1","2","3","4","5"};
 		String start = (String) JOptionPane.showInputDialog(mapFrame,
-		            "Please choose the village you would like the road to start at:",
+		            (Object) "Please choose the village you would like the road to start at:",
 		            "Building a road",
 		            JOptionPane.PLAIN_MESSAGE,
+		            null,
 		            options,
 		            options[0]);
 		
 		System.out.println("Starting village is: " + start);
 
-		/*
-		String end = (String) JOptionPane.showInputDialog(
-                	frame,
+		
+		String end = (String) JOptionPane.showInputDialog(mapFrame,
                 	"Village " + start + " was chosen as the starting village."
                 		+ "\nNow please choose the end village.",
+                	"Building a road",
                 	JOptionPane.PLAIN_MESSAGE,
+                	null,
                 	options,
                 	options[0]);
 		
-		int cost = (int) JOptionPane.showInputDialog(
-            		frame,
+		String cost = (String) JOptionPane.showInputDialog(mapFrame,
             		"This road will lead from village " + start + " to village " + end
             		+ "\nPlease enter an integer for the toll of the new road.",
-            		JOptionPane.PLAIN_MESSAGE,
-            		null);
+            		"Building a road",
+            		JOptionPane.PLAIN_MESSAGE);
 		
-		int startVill = Integer.parseInt(start);
-		int endVill = Integer.parseInt(end);
+		int intStart = Integer.parseInt(start);
+		int intEnd = Integer.parseInt(end);
+		int intCost = Integer.parseInt(cost);
 		
-		
-		graph.find(startVill).connect(cost, graph.find(endVill));
-		graph.printGraph(); */
+		try {
+			graph.find(intStart).connect(intCost, graph.find(intEnd));
+			graph.printGraph();
+		} catch (RoadAlreadyExistsException e) {
+			String message = e.getMessage();
+			JOptionPane.showMessageDialog(mapFrame, message, "RoadAlreadyExistsException", JOptionPane.ERROR_MESSAGE);}
+		/*} catch (SameVillageException e) {
+			String message = e.getMessage();
+			JOptionPane.showMessageDialog(mapFrame, message, "SameVillageException", JOptionPane.ERROR_MESSAGE);
+		}*/
 	}
 	
 	public void welcomeButton() {

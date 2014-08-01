@@ -49,6 +49,7 @@ public class Village {
 	
 	public void connect (int cost, Village newNeighbor) throws RoadAlreadyExistsException{
 		try {
+			if (this.equals(newNeighbor)) {throw new SameVillageException();}
 			if (!adjacent.isEmpty()) { //if list not empty				
 					RoadIterator currentRoad = adjacent.firstRoad;
 					do { //first check if road exists already
@@ -75,7 +76,8 @@ public class Village {
 			this.outdegree++;
 			adjacent.length++;
 			
-		} catch (RoadAlreadyExistsException e) { System.out.println(e.getMessage()); } 
+		} catch (RoadAlreadyExistsException e) { System.out.println(e.getMessage());
+		} catch (SameVillageException e) {System.out.println(e.getMessage());}
 	}//end connect
 	
 	public String getAdjList() {
@@ -116,7 +118,13 @@ public class Village {
 	public class RoadAlreadyExistsException extends Exception {
 		public RoadAlreadyExistsException(int cost, int start, int end) {
 			super("A road cost " + cost + " already connects Village " + start + " and " + end + "!");
-		}//end default constructor
+		}
 	}//end RoadAlreadyExistsException
+	
+	public class SameVillageException extends Exception {
+		public SameVillageException() {
+			super("A road cannot lead to and from the same village.");
+		}
+	}
 	
 }//end Village class
