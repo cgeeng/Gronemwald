@@ -1,5 +1,7 @@
 package finproject;
 
+import finproject.Exceptions.GraphEmptyException;
+import finproject.Exceptions.NotFoundException;
 import finproject.Exceptions.*;
 
 public class Queue {
@@ -16,14 +18,20 @@ public class Queue {
 	public Node getLast() {return this.lastNode;}
 	public boolean isEmpty() {return length==0;}
 	
-	public Village find(int name) { // TODO create binary search tree?
-			if (! isEmpty()) {
-				Node current = this.firstNode;
-				while (current.getNext() != null) {
-					if (current.getVillage().getName() == name) {return current.getVillage();}
-					current = current.getNext();} 
-				if (current.equals(this.lastNode)) {throw new NotFoundException(); return null;}
-			} else {throw new GraphEmptyException(); return null;}
+	public Village find(int name) throws NotFoundException { // TODO create binary search tree?
+			try {
+				if (! isEmpty()) {
+					Node current = this.firstNode;
+					while (current.getNext() != null) {
+						if (current.getVillage().getName() == name) {return current.getVillage();}
+						current = current.getNext();} 
+					if (! current.equals(this.lastNode)) {throw new NotFoundException();}
+					else {return this.lastNode.getVillage();}
+				} else {throw new GraphEmptyException();}
+			} catch (NotFoundException | GraphEmptyException e) {
+				System.out.println(e.getMessage());
+				return null;
+			}
 	} // end of method find()
 	
 	public void insert(Node nodeWithVillage){

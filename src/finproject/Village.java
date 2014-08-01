@@ -1,5 +1,7 @@
 package finproject;
 
+import finproject.Exceptions.*;
+
 public class Village {
 	static int totalVillage = 0;
 	public int name;
@@ -47,7 +49,7 @@ public class Village {
 	
 	//methods
 	
-	public void connect (int cost, Village newNeighbor) throws RoadAlreadyExistsException{
+	public void connect (int cost, Village newNeighbor) {
 		try {
 			if (this.equals(newNeighbor)) {throw new SameVillageException();}
 			if (!adjacent.isEmpty()) { //if list not empty				
@@ -79,6 +81,8 @@ public class Village {
 		// RoadAlreadyExistsException caught by MapGUI for error message window
 		} catch (SameVillageException sve) { // not possible in the GUI
 			sve.getMessage();
+		} catch (RoadAlreadyExistsException e) {
+			e.getMessage();
 		}
 	}//end connect
 	
@@ -116,17 +120,5 @@ public class Village {
 	}
 	
 //exceptions
-	
-	public class RoadAlreadyExistsException extends Exception {
-		public RoadAlreadyExistsException(int cost, int start, int end) {
-			super("A road " + cost + " already connects villages " + start + " and " + end + ".");
-		}
-	}//end RoadAlreadyExistsException
-	
-	public class SameVillageException extends Exception {
-		public SameVillageException() {
-			super("A road cannot lead to and from the same village.");
-		}
-	}
 	
 }//end Village class
