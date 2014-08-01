@@ -1,5 +1,7 @@
 package finproject;
 
+import finproject.Exceptions.*;
+
 public class Queue {
 	private int length;
 	private Node firstNode;
@@ -15,15 +17,13 @@ public class Queue {
 	public boolean isEmpty() {return length==0;}
 	
 	public Village find(int name) { // TODO create binary search tree?
-		try {
 			if (! isEmpty()) {
 				Node current = this.firstNode;
-				while (current != null) {
+				while (current.getNext() != null) {
 					if (current.getVillage().getName() == name) {return current.getVillage();}
-					current = current.getNext();
-				} throw new NotFoundException("This village could not be found.");
-			} else {System.out.println("This graph is empty."); return null;}
-		} catch (NotFoundException e) {return null;}
+					current = current.getNext();} 
+				if (current.equals(this.lastNode)) {throw new NotFoundException(); return null;}
+			} else {throw new GraphEmptyException(); return null;}
 	} // end of method find()
 	
 	public void insert(Node nodeWithVillage){
@@ -40,9 +40,9 @@ public class Queue {
 	
 	public Node remove(){
 		Node temp = firstNode;
-		if(firstNode.getNext() != null){
+		if (firstNode.getNext() != null) {
 			firstNode = firstNode.getNext();
-		}else{
+		} else {
 			firstNode = null;
 		}
 		length--;
@@ -60,10 +60,5 @@ public class Queue {
 			}
 		} else {System.out.println("This graph is empty.");}
 	} // end of printGraph()
-	
-	public class NotFoundException extends Exception {
-		public NotFoundException(String message) {
-			super(message);
-		}//end default constructor
-	}//end RoadAlreadyExistsException
+
 }

@@ -7,8 +7,7 @@ package finproject;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import finproject.Village.RoadAlreadyExistsException;
-import finproject.Village.SameVillageException;
+import finproject.Exceptions.*;
 
 public class MapGUI implements ActionListener {
 		int state = 0; // holds state of application
@@ -143,7 +142,8 @@ public class MapGUI implements ActionListener {
     } // end of actionPerformed() 
 	
 	public void addVillage() {
-		System.out.println("Add village button"); // TODO
+		System.out.println("Add village button"); // TODO options for number of gnomes, adding roads
+		graph.insert(new Node(new Village())); // default to zero gnomes
 	}
 	
 	public void delVillage() {
@@ -159,58 +159,62 @@ public class MapGUI implements ActionListener {
 	} 
 	
 	public void addRoad() {
-		Object [] options = {"1","2","3","4","5"};
+		try {
+		if (graph.isEmpty()) {throw new GraphEmptyException();}
+		
+		Object [] options = new Object [graph.length()]; // creates list of all village names
+		Node current = graph.getFirst(); int nextIndex = 0;
+		for (int i=0; i<graph.length(); i++) {
+			while (current.getNext() != null) {
+				options[nextIndex] = current.getVillage().getName();
+				current = current.getNext();
+				nextIndex++; }}
+		
 		String start = (String) JOptionPane.showInputDialog(mapFrame,
 		            "Please choose the village you would like \nthe road to start at:",
-		            "Building a road",
-		            JOptionPane.PLAIN_MESSAGE,
-		            null,
-		            options,
-		            options[0]);
+		            "Building a road", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 		if (start == null) {return;}
 		
 		// takes away choice of starting village
 		Object [] lessOptions = new Object [options.length-1];
-		int nextIndex = 0;
+		int nextIndex2 = 0;
 		for (int i=0; i<options.length; i++) {
-			if (! options[i].equals(start)) {lessOptions[nextIndex] = options[i]; nextIndex++;}}
+			if (! options[i].equals(start)) {lessOptions[nextIndex2] = options[i]; nextIndex2++;}}
 		
 		String end = (String) JOptionPane.showInputDialog(mapFrame,
                 	"Village " + start + " was chosen as the starting village."
                 		+ "\nNow please choose the end village.",
-                	"Building a road",
-                	JOptionPane.PLAIN_MESSAGE,
-                	null,
-                	lessOptions,
-                	lessOptions[0]);
+                	"Building a road", JOptionPane.PLAIN_MESSAGE, null, lessOptions, lessOptions[0]);
 		if (end == null) {return;}
 		
 		String cost = (String) JOptionPane.showInputDialog(mapFrame,
             		"This road will lead from village " + start + " to village " + end
             		+ "\nPlease enter an integer for the toll of the new road.",
-            		"Building a road",
-            		JOptionPane.PLAIN_MESSAGE);
+            		"Building a road", JOptionPane.PLAIN_MESSAGE);
 		
-		try {
-			int intStart = Integer.parseInt(start);
-			int intEnd = Integer.parseInt(end);
-			int intCost = Integer.parseInt(cost);
+		int intStart = Integer.parseInt(start);
+		int intEnd = Integer.parseInt(end);
+		int intCost = Integer.parseInt(cost);
 			
-			graph.find(intStart).connect(intCost, graph.find(intEnd));
-			graph.printGraph();
-		} catch (RoadAlreadyExistsException raee) {
-			String message = raee.getMessage();
-			JOptionPane.showMessageDialog(mapFrame, message, "RoadAlreadyExistsException", JOptionPane.ERROR_MESSAGE);
-		} catch (NumberFormatException nfe) {
+		graph.find(intStart).connect(intCost, graph.find(intEnd));
+		graph.printGraph();
+		
+		} catch (RoadAlreadyExistsException e) {
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "RoadAlreadyExistsException", JOptionPane.ERROR_MESSAGE);
+		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
+		} catch (NotFoundException e) { // theoretically not possible, but trying to handle all possibilities
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "NotFoundException", JOptionPane.ERROR_MESSAGE);
+		} catch (GraphEmptyException e) {
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "GraphEmptyException", JOptionPane.ERROR_MESSAGE);
 		}
-	}
+	} // end of addRoad()
 	
 	public void welcomeButton() {
 		welcomePanel.setVisible(false);
 		state = GUIConstants.STATE_ACTIVE;
 		controller();
-	}
+	} // end of welcomeButton()
 	
 	public static void createAndShowGUI() {
 		JFrame.setDefaultLookAndFeelDecorated(true);
