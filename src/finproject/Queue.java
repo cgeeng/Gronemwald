@@ -20,19 +20,13 @@ public class Queue {
 	
 	public Village find(int name) throws NotFoundException, GraphEmptyException { // TODO create binary search tree?
 		// exceptions caught by MapGUI so pop-up error message can be generated
-			//try {
-				if (! isEmpty()) {
-					Node current = this.firstNode;
-					while (current.getNext() != null) {
-						if (current.getVillage().getName() == name) {return current.getVillage();}
-						current = current.getNext();} 
-					if (! current.equals(this.lastNode)) {throw new NotFoundException();}
-					else {return this.lastNode.getVillage();}
-				} else {throw new GraphEmptyException();}
-			//} catch (NotFoundException e) {
-			//	System.out.println(e.getMessage());
-			//	return null;
-			//}
+		if (! isEmpty()) {
+			Node current = this.firstNode;
+			while (current != null) {						
+				if (current.getVillage().getName() == name) {return current.getVillage();}
+				current = current.getNext();
+			} throw new NotFoundException();
+		} else {throw new GraphEmptyException();}
 	} // end of method find()
 	
 	public void insert(Node nodeWithVillage){

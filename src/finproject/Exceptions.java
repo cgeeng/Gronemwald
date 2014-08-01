@@ -21,7 +21,7 @@ public class Exceptions {
 	
 	public static class RoadAlreadyExistsException extends Exception {
 		public RoadAlreadyExistsException(int cost, int start, int end) {
-			super("A road " + cost + " already connects villages " + start + " and " + end + ".");
+			super("A road cost " + cost + " already connects villages " + start + " and " + end + ".");
 		}
 	}//end RoadAlreadyExistsException
 	

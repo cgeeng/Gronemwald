@@ -165,11 +165,12 @@ public class MapGUI implements ActionListener {
 		try {
 		if (graph.isEmpty()) {throw new GraphEmptyException();}
 		
-		Object [] options = new Object [graph.length()]; // creates list of all village names
+		// creates list of all village names
+		Object [] options = new Object [graph.length()];
 		Node current = graph.getFirst(); int nextIndex = 0;
 		for (int i=0; i<graph.length(); i++) {
-			while (current.getNext() != null) {
-				options[nextIndex] = current.getVillage().getName();
+			while (current != null) {
+				options[nextIndex] = Integer.toString(current.getVillage().getName());
 				current = current.getNext();
 				nextIndex++; }}
 		
