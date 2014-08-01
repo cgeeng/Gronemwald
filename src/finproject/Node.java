@@ -26,9 +26,16 @@ public class Node {
 		this.data = new Village();
 	}
 */
-	Village village;
-	Node next;
-	Node previous;
+	private Village village;
+	private Node next;
+	private Node previous;
+	
+	public Village getVillage() {return this.village;}
+	public void setNext(Node n) {this.next = n;}
+	public Node getNext() {return this.next;}
+	public void setPrev(Node p) {this.previous = p;}
+	public Node getPrev() {return this.previous;}
+	
 	public Node(Village someVill){ // constructor
 		 this.village = someVill;
 	}

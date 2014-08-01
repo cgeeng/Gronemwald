@@ -81,12 +81,14 @@ public class MapGUI implements ActionListener {
 	} // end of addTitle()
 	
 	public void createGraph() { // TODO ask user for inputs
-		if (graph == null) {
+		if (graph == null) { // creates new graph with 5 villages of population 5
 			graph = new Queue();
 			for (int i=0; i<5; i++) {
-				
+				graph.insert(new Node(new Village(5)));
 			}
 		}
+		
+		graph.printGraph();
 	} // end of addGraph()
 	
 	public void drawGraph() {

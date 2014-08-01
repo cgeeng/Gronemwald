@@ -5,6 +5,7 @@ public class Village {
 	public int name;
 	AdjList adjacent;
 	Gnome[] population = new Gnome[11]; //Limit of 10 gnomes can be here
+	int populationSize;
 	int outdegree;
 	int indegree;
 	//int currentPopulation = 1;
@@ -23,8 +24,9 @@ public class Village {
 	}//end Village constructor
 	*/
 	
-	public int getName() {return this.name;}
-
+	public int getName() {return this.name;}	
+	public int getIndegree(){return indegree;}
+	public int getOutdegree(){return outdegree;} // = adjacent.length?
 	
 	public Village() {
 		this.name = ++totalVillage; //Create name starting from 1
@@ -96,11 +98,9 @@ public class Village {
 		return roadList;
 	}//end getAdjList()
 	
-	public int getIndegree(){	return indegree;	}
-	public int getOutdegree(){	return outdegree=adjacent.length;	}
 	
 	//Class AdjList
-	public class AdjList { // TODO should make this a linked list (insert and delete methods)
+	public class AdjList {
 		RoadIterator firstRoad;
 		RoadIterator lastRoad;
 		int length = 0;

@@ -40,7 +40,7 @@ public class Gnome {
 	}//end constructor establishing Gnome's village
 	
 	//methods
-	public Village place(Village starting) {
+	public Village place(Village starting) { // TODO should be in Village?
 		//Return previous village if exists, otherwise return null
 		
 		//Remove gnome from current village if has been previously placed
@@ -49,20 +49,21 @@ public class Gnome {
 		
 		//find next empty spot in population array
 		int i = 0;
-		while (starting.population[i] != null) {
-			++i;
-		}
+		while (starting.population[i] != null) {++i;}
+		
 		starting.population[i] = this;
-		this.current = starting;
+		current = starting;
+		current.populationSize++;
 		return oldVillage;
 	}//end place
 	
-	private Village removeGnome() {
-		//remove gnome from its current village. Return its previous current village?
+	private Village removeGnome() { // TODO should be in Village?
+		//remove gnome from its current village. Return its previous village?
 		int i = 0;
 		while ( current.population[i] != null) {
 			if (current.population[i].ID == this.ID) {
 				current.population[i] = null;
+				current.populationSize--;
 			}
 		}//Gnome's current village still has not been changed; will be changed in place()
 		return current;
@@ -124,8 +125,8 @@ public class Gnome {
 		String pathToTake = "";
 		System.out.println("is it emtpy? "+q.isEmpty());
 		while(!q.isEmpty()){
-			a = q.remove().village;
-			System.out.println("a has been removed from q. q length is now "+q.length);
+			a = q.remove().getVillage();
+			System.out.println("a has been removed from q. q length is now "+q.length());
 			//System.out.println("hello?");
 			pathToTake += a.name + " ";
 			System.out.println("a.name is "+pathToTake+" and adjacent length is "+a.adjacent.length);
@@ -156,7 +157,7 @@ public class Gnome {
 				someQ.insert(new Node(MovingMap.testVillage[i]));
 			}
 		}
-		System.out.println("someQ length is"+ someQ.length);
+		System.out.println("someQ length is"+ someQ.length());
 		return someQ;
 	}	
 	
