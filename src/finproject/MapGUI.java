@@ -8,39 +8,61 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class MapGUI implements ActionListener {
+		int state = 0; // holds state of application
 		JFrame mapFrame;
-		JPanel titlePanel, mapPanel, optionsPanel;
-		JButton addVillage, delVillage, placeGnome, moveGnome, addRoad;
+		JPanel welcomePanel, titlePanel, mapPanel, optionsPanel;
+		JButton addVillage, delVillage, placeGnome, moveGnome, addRoad, welcomeButton;
 	
 	public MapGUI() { // builds the window
-		mapFrame = new JFrame("Gnomenwald");
-		mapFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		mapFrame.setSize(600,400);
-		mapFrame.setMinimumSize(new Dimension(800,500));
-		
-		titlePanel = new JPanel();
-		titlePanel.setPreferredSize(new Dimension(800,50));
-		titlePanel.setBackground(Color.DARK_GRAY);
-		
-		mapPanel = new JPanel();
-		mapPanel.setPreferredSize(new Dimension(650,450));
-		mapPanel.setBackground(Color.RED);
-		
-		optionsPanel = new JPanel();
-		optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
-		optionsPanel.setPreferredSize(new Dimension(150,450));
-		optionsPanel.setBackground(Color.BLUE);
-		
-		addTitle();
-		addGraph();
-		addOptions();
-		
-		mapFrame.getContentPane().add(titlePanel, BorderLayout.NORTH);
-		mapFrame.getContentPane().add(mapPanel, BorderLayout.CENTER);
-		mapFrame.getContentPane().add(optionsPanel, BorderLayout.EAST);
-        mapFrame.pack();
-        mapFrame.setVisible(true);
+		if (state == 0) {
+			mapFrame = new JFrame("Gnomenwald");
+			mapFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			mapFrame.setSize(600, 400);
+			mapFrame.setMinimumSize(new Dimension(800, 500));
+			
+			welcomePanel = new JPanel();
+			welcomePanel.setPreferredSize(new Dimension (600,400));
+			welcomePanel.setBackground(Color.GRAY);
+			
+			addWelcome();
+			
+			mapFrame.getContentPane().add(welcomePanel, BorderLayout.CENTER);
+			mapFrame.pack();
+			mapFrame.setVisible(true); }
+		else if (state == 1) {
+			//mapFrame = new JFrame("Gnomenwald");
+			//mapFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			//mapFrame.setSize(600, 400);
+			//mapFrame.setMinimumSize(new Dimension(800, 500));
+			titlePanel = new JPanel();
+			titlePanel.setPreferredSize(new Dimension(800, 50));
+			titlePanel.setBackground(Color.DARK_GRAY);
+			mapPanel = new JPanel();
+			mapPanel.setPreferredSize(new Dimension(650, 450));
+			mapPanel.setBackground(Color.RED);
+			optionsPanel = new JPanel();
+			optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
+			optionsPanel.setPreferredSize(new Dimension(150, 450));
+			optionsPanel.setBackground(Color.BLUE);
+			addTitle();
+			addGraph();
+			addOptions();
+			mapFrame.getContentPane().add(titlePanel, BorderLayout.NORTH);
+			mapFrame.getContentPane().add(mapPanel, BorderLayout.CENTER);
+			mapFrame.getContentPane().add(optionsPanel, BorderLayout.EAST);
+			mapFrame.pack();
+			mapFrame.setVisible(true);
+		}
 	} // end of constructor
+	
+	public void addWelcome() {
+		JLabel welcomeLabel = new JLabel("Welcome to Gnomenwald!", SwingConstants.CENTER);
+		welcomeButton = new JButton("Click to start");
+		welcomeButton.addActionListener(this);
+		
+		welcomePanel.add(welcomeLabel);
+		welcomePanel.add(welcomeButton);
+	} // end of addWelcome()
 	
 	public void addTitle() {
 		JLabel title = new JLabel("Gnomenwald", SwingConstants.CENTER);
@@ -73,7 +95,6 @@ public class MapGUI implements ActionListener {
 		optionsPanel.add(button);
 	} // end of addOptionsButton()
 	
-	
 	public void actionPerformed(ActionEvent e) {  
         if (e.getSource() == addVillage) {
         	addVillage();
@@ -85,6 +106,8 @@ public class MapGUI implements ActionListener {
         	moveGnome();
         } else if (e.getSource() == addRoad) {
         	addRoad();
+        } else if (e.getSource() == welcomeButton) {
+        	welcomeButton();
         }
     } // end of actionPerformed() 
 	
@@ -107,6 +130,11 @@ public class MapGUI implements ActionListener {
 	public void addRoad() {
 		
 	} // TODO
+	
+	public void welcomeButton() {
+		welcomePanel.setVisible(false);
+		state = GUIConstants.STATE_ACTIVE;
+	}
 	
 	public static void createAndShowGUI() {
 		JFrame.setDefaultLookAndFeelDecorated(true);
