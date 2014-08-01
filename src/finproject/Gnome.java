@@ -45,7 +45,7 @@ public class Gnome {
 		
 		//Remove gnome from current village if has been previously placed
 		Village oldVillage = null;
-		if (current != null) oldVillage = removeGnome();
+		if (current != null) {oldVillage = removeGnome();}
 		
 		//find next empty spot in population array
 		int i = 0;

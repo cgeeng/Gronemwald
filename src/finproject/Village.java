@@ -7,7 +7,6 @@ public class Village {
 	Gnome[] population = new Gnome[11]; //Limit of 10 gnomes can be here
 	int outdegree;
 	int indegree;
-	// TODO find and store indegree
 	//int currentPopulation = 1;
 	//int maxPopulation = 3;
 	//static int defaultPopulation;
@@ -34,6 +33,18 @@ public class Village {
 		indegree = 0;
 		
 	}//end Constructor
+	
+	public Village(int population) { // for testing
+		this.name = ++totalVillage;
+		adjacent = new AdjList();
+		outdegree = 0;
+		indegree = 0;
+		
+		for (int i=0; i<population; i++) {
+			Gnome temp = new Gnome();
+			temp.place(this);
+		}
+	}
 	
 	//methods
 	
