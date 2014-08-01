@@ -159,7 +159,7 @@ public class MapGUI implements ActionListener {
 	} 
 	
 	public void addRoad() {
-		Object[] options = {"1","2","3","4","5"};
+		Object [] options = {"1","2","3","4","5"};
 		String start = (String) JOptionPane.showInputDialog(mapFrame,
 		            "Please choose the village you would like \nthe road to start at:",
 		            "Building a road",
@@ -167,6 +167,13 @@ public class MapGUI implements ActionListener {
 		            null,
 		            options,
 		            options[0]);
+		if (start == null) {return;}
+		
+		// takes away choice of starting village
+		Object [] lessOptions = new Object [options.length-1];
+		int nextIndex = 0;
+		for (int i=0; i<options.length; i++) {
+			if (! options[i].equals(start)) {lessOptions[nextIndex] = options[i]; nextIndex++;}}
 		
 		String end = (String) JOptionPane.showInputDialog(mapFrame,
                 	"Village " + start + " was chosen as the starting village."
@@ -174,8 +181,9 @@ public class MapGUI implements ActionListener {
                 	"Building a road",
                 	JOptionPane.PLAIN_MESSAGE,
                 	null,
-                	options,
-                	options[0]);
+                	lessOptions,
+                	lessOptions[0]);
+		if (end == null) {return;}
 		
 		String cost = (String) JOptionPane.showInputDialog(mapFrame,
             		"This road will lead from village " + start + " to village " + end
@@ -195,10 +203,7 @@ public class MapGUI implements ActionListener {
 			JOptionPane.showMessageDialog(mapFrame, message, "RoadAlreadyExistsException", JOptionPane.ERROR_MESSAGE);
 		} catch (NumberFormatException nfe) {
 			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
-		} //catch (SameVillageException sve) {
-			//String message = sve.getMessage();
-			//JOptionPane.showMessageDialog(mapFrame, message, "SameVillageException", JOptionPane.ERROR_MESSAGE);
-		//}
+		}
 	}
 	
 	public void welcomeButton() {

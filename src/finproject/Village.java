@@ -75,9 +75,11 @@ public class Village {
 			newNeighbor.indegree++;
 			this.outdegree++;
 			adjacent.length++;
-			
-		} catch (RoadAlreadyExistsException e) { System.out.println(e.getMessage());
-		} catch (SameVillageException e) {System.out.println(e.getMessage());}
+		
+		// RoadAlreadyExistsException caught by MapGUI for error message window
+		} catch (SameVillageException sve) { // not possible in the GUI
+			sve.getMessage();
+		}
 	}//end connect
 	
 	public String getAdjList() {
@@ -117,7 +119,7 @@ public class Village {
 	
 	public class RoadAlreadyExistsException extends Exception {
 		public RoadAlreadyExistsException(int cost, int start, int end) {
-			super("A road cost " + cost + " already connects Village " + start + " and " + end + "!");
+			super("A road " + cost + " already connects villages " + start + " and " + end + ".");
 		}
 	}//end RoadAlreadyExistsException
 	
