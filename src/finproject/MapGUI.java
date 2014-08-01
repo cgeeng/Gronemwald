@@ -1,3 +1,5 @@
+// round button class from http://stackoverflow.com/questions/778222/make-a-button-round
+
 package finproject;
 
 // >>>>>>> origin/master
@@ -13,57 +15,21 @@ public class MapGUI implements ActionListener {
 		JPanel welcomePanel, titlePanel, mapPanel, optionsPanel;
 		JButton addVillage, delVillage, placeGnome, moveGnome, addRoad, welcomeButton;
 	
-	public MapGUI() { // builds the window
-		// if (state == 0) {
+	public MapGUI() { // builds the main window/frame
 			mapFrame = new JFrame("Gnomenwald");
 			mapFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			mapFrame.setSize(600, 400);
 			mapFrame.setMinimumSize(new Dimension(800, 500));
 			
 			controller();
-		
-		/*
-			welcomePanel = new JPanel();
-			welcomePanel.setPreferredSize(new Dimension (600,400));
-			welcomePanel.setBackground(Color.GRAY);
-			
-			addWelcome();
-			
-			mapFrame.getContentPane().add(welcomePanel, BorderLayout.CENTER);
-			mapFrame.pack();
-			mapFrame.setVisible(true); }
-		else if (state == 1) {
-			//mapFrame = new JFrame("Gnomenwald");
-			//mapFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			//mapFrame.setSize(600, 400);
-			//mapFrame.setMinimumSize(new Dimension(800, 500));
-			titlePanel = new JPanel();
-			titlePanel.setPreferredSize(new Dimension(800, 50));
-			titlePanel.setBackground(Color.DARK_GRAY);
-			mapPanel = new JPanel();
-			mapPanel.setPreferredSize(new Dimension(650, 450));
-			mapPanel.setBackground(Color.RED);
-			optionsPanel = new JPanel();
-			optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
-			optionsPanel.setPreferredSize(new Dimension(150, 450));
-			optionsPanel.setBackground(Color.BLUE);
-			addTitle();
-			addGraph();
-			addOptions();
-			mapFrame.getContentPane().add(titlePanel, BorderLayout.NORTH);
-			mapFrame.getContentPane().add(mapPanel, BorderLayout.CENTER);
-			mapFrame.getContentPane().add(optionsPanel, BorderLayout.EAST);
-			mapFrame.pack();
-			mapFrame.setVisible(true);
-		}
-		*/
 	} // end of constructor
 	
-	public void controller () {
+	public void controller () { // does the heavy lifting, handles state changes
 		if (state == 0) {
 			welcomePanel = new JPanel();
 			welcomePanel.setPreferredSize(new Dimension (600,400));
 			welcomePanel.setBackground(Color.GRAY);
+			welcomePanel.setLayout(new BorderLayout());
 		
 			addWelcome();
 		
@@ -102,8 +68,8 @@ public class MapGUI implements ActionListener {
 		welcomeButton = new JButton("Click to start");
 		welcomeButton.addActionListener(this);
 		
-		welcomePanel.add(welcomeLabel);
-		welcomePanel.add(welcomeButton);
+		welcomePanel.add(welcomeLabel, BorderLayout.CENTER);
+		welcomePanel.add(welcomeButton, BorderLayout.SOUTH);
 	} // end of addWelcome()
 	
 	public void addTitle() {
@@ -150,28 +116,28 @@ public class MapGUI implements ActionListener {
         	addRoad();
         } else if (e.getSource() == welcomeButton) {
         	welcomeButton();
-        }
+        } 
     } // end of actionPerformed() 
 	
 	public void addVillage() {
-		// TODO
+		System.out.println("Add village button");
 	}
 	
 	public void delVillage() {
-		
-	} // TODO
+		System.out.println("Delete village button");
+	} 
 	
 	public void placeGnome() {
-		
-	} // TODO
+		System.out.println("Place gnome button");
+	} 
 	
 	public void moveGnome() {
-		
-	} // TODO
+		System.out.println("Move gnome button");
+	} 
 	
 	public void addRoad() {
-		
-	} // TODO
+		System.out.println("Add road button");
+	} 
 	
 	public void welcomeButton() {
 		welcomePanel.setVisible(false);
@@ -189,6 +155,28 @@ public class MapGUI implements ActionListener {
 			public void run() { createAndShowGUI(); }
 		});
 	} // end of main()
+	
+	public class RoundButton extends JButton {
+		public RoundButton(String label) {
+			super(label);
+			
+			Dimension size = getPreferredSize();
+			size.width = size.height = Math.max(size.width, size.height);
+			setContentAreaFilled(false);
+		}
+		
+		protected void paintComponent(Graphics g) {
+			g.setColor(getBackground());
+			g.fillOval(0,0,getSize().width,getSize().height);
+			super.paintComponent(g);
+		}
+		
+		protected void paintBorder(Graphics g) {
+			g.setColor(getForeground());
+			g.drawOval(0,0,getSize().width,getSize().height);
+		}
+		
+	} // end of class RoundButton
 	
 } // end of MapGUI()
 // >>>>>>> origin/master
