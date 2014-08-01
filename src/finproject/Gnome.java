@@ -11,6 +11,8 @@ public class Gnome {
 	public Village current;
 	static int counter;
 	static String[][] villAndCost = new String[MovingMap.testVillage.length][];
+	
+	/*
 	static{
 		for (int i = 1; i < MovingMap.testVillage.length; i++){
 			villAndCost[i] = new String[3];
@@ -23,6 +25,7 @@ public class Gnome {
 			villAndCost[i][2] = String.valueOf(MovingMap.testVillage[i].getOutdegree()); 
 		}
 	}
+	*/
 
 	//Constructors
 	public Gnome (String name) {

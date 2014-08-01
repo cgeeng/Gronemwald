@@ -9,6 +9,8 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
+import finproject.Village.RoadAlreadyExistsException;
+
 public class MapGUI implements ActionListener {
 		int state = 0; // holds state of application
 		JFrame mapFrame;
@@ -54,7 +56,7 @@ public class MapGUI implements ActionListener {
 			
 			addTitle();
 			addOptions();
-			if (graph != null) {createGraph();}
+			if (graph == null) {createGraph();}
 			drawGraph();
 			
 			mapFrame.getContentPane().add(titlePanel, BorderLayout.NORTH);
@@ -83,10 +85,19 @@ public class MapGUI implements ActionListener {
 	public void createGraph() { // TODO ask user for inputs
 		if (graph == null) { // creates new graph with 5 villages of population 5
 			graph = new Queue();
-			for (int i=0; i<5; i++) {
-				graph.insert(new Node(new Village(5)));
-			}
+			for (int i=0; i<5; i++) {graph.insert(new Node(new Village(5)));}
 		}
+		
+		// trying known values for now for testing
+		try {
+			graph.find(1).connect(2, graph.find(2));
+			graph.find(1).connect(4, graph.find(3));
+			graph.find(2).connect(5, graph.find(4));
+			graph.find(2).connect(1, graph.find(3));
+			graph.find(4).connect(1, graph.find(5)); // two-way road
+			graph.find(5).connect(1, graph.find(4)); // two-way road
+			graph.find(5).connect(3, graph.find(3));
+		} catch (RoadAlreadyExistsException e) {System.out.println(e.getMessage());}
 		
 		graph.printGraph();
 	} // end of addGraph()

@@ -42,16 +42,12 @@ public class Village {
 		outdegree = 0;
 		indegree = 0;
 		
-		for (int i=0; i<population; i++) {
-			Gnome temp = new Gnome();
-			temp.place(this);
-		}
+		for (int i=0; i<population; i++) {Gnome temp = new Gnome(this);}
 	}
 	
 	//methods
 	
 	public void connect (int cost, Village newNeighbor) throws RoadAlreadyExistsException{
-
 		try {
 			if (!adjacent.isEmpty()) { //if list not empty				
 					RoadIterator currentRoad = adjacent.firstRoad;
@@ -68,7 +64,6 @@ public class Village {
 					newRoadIt.previous = adjacent.lastRoad;
 					adjacent.lastRoad = newRoadIt;	
 			}// end if
-			
 			else { //list empty, construct new road
 				Road newRoad = new Road (cost, newNeighbor );
 				RoadIterator newRoadIt = new RoadIterator (newRoad);
@@ -77,6 +72,7 @@ public class Village {
 				adjacent.lastRoad = newRoadIt;
 			}//end else
 			newNeighbor.indegree++;
+			this.outdegree++;
 			adjacent.length++;
 			
 		} catch (RoadAlreadyExistsException e) { System.out.println(e.getMessage()); } 
