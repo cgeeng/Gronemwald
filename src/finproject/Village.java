@@ -108,8 +108,17 @@ public class Village {
 		}
 	} // end of insertGnome()
 	
-	public void printGnomes() { // string representation of gnomes in village
-		
+	public Gnome find(int gnomeID) throws VillageEmptyException, NotFoundException { // finds gnome with given ID
+		if (isEmpty()) {throw new VillageEmptyException();}
+		for (int i=0; i<populationSize; i++) {
+			if (population[i].getID() == gnomeID) {return population[i];}
+		} throw new NotFoundException();
+	} // end of method find()
+	
+	public void printGnomes() { // string representation of gnomes in village, used for testing
+		String gnomes = "";
+		for (int i=0; i<populationSize; i++) {gnomes += population[i].getID() + "  ";}
+		System.out.println("Village " + this.name + " has gnomes: " + gnomes);
 	} // end of printGnomes()
 	
 	public String getAdjList() {

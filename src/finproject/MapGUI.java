@@ -159,19 +159,19 @@ public class MapGUI implements ActionListener {
 
 			Object [] options = villageList();
 			
-			String village = (String) JOptionPane.showInputDialog(mapFrame,
+			String strVillage = (String) JOptionPane.showInputDialog(mapFrame,
 			            "Which village would you like to place the new gnome in?",
 			            "Placing a new gnome", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-			if (village == null) {return;}
+			if (strVillage == null) {return;}
 			
-			int intVillage = Integer.parseInt(village);
-			graph.find(intVillage).insertGnome(new Gnome());
+			Village village = graph.find(Integer.parseInt(strVillage));
+			village.printGnomes();
+			village.insertGnome(new Gnome());
+			village.printGnomes();
 			
 			JOptionPane.showMessageDialog(mapFrame,
-	            		"A new gnome has been placed in village " + intVillage,
+	            		"A new gnome has been placed in village " + village.getName(),
 	            		"Placing a gnome", JOptionPane.PLAIN_MESSAGE);
-			
-			graph.find(intVillage).printGnomes();
 			
 			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
@@ -185,8 +185,66 @@ public class MapGUI implements ActionListener {
 	} // end of placeGnome()
 	
 	public void moveGnome() {
-		System.out.println("Move gnome button"); // TODO
-	} 
+		try {
+			if (graph.isEmpty()) {throw new GraphEmptyException();}
+
+			Object [] villOptions = villageList();
+			
+			String start = (String) JOptionPane.showInputDialog(mapFrame,
+			            "From which village would you like to move a gnome?",
+			            "Moving a gnome", JOptionPane.PLAIN_MESSAGE, null, villOptions, villOptions[0]);
+			if (start == null) {return;}
+			
+			Village startVillage = graph.find(Integer.parseInt(start));
+			startVillage.printGnomes();
+			
+			Object [] gnomeOptions = gnomeList(startVillage);
+			
+			String gnomeID = (String) JOptionPane.showInputDialog(mapFrame,
+		            "Choose a gnome from village " + start + " to remove.",
+		            "Moving a gnome", JOptionPane.PLAIN_MESSAGE, null, gnomeOptions, gnomeOptions[0]);
+			if (gnomeID == null) {return;}
+			
+			Gnome gnome = startVillage.find(Integer.parseInt(gnomeID));
+			
+			// takes away choice of starting village
+			Object [] lessOptions = new Object [villOptions.length-1];
+			int nextIndex2 = 0;
+			for (int i=0; i<villOptions.length; i++) {
+				if (! villOptions[i].equals(start)) {lessOptions[nextIndex2] = villOptions[i]; nextIndex2++;}}
+			
+			String end = (String) JOptionPane.showInputDialog(mapFrame,
+		            "Gnome " + gnome.getID() + " has been chosen." + 
+		            	"\nAnd to which village would you like to move the gnome?",
+		            "Moving a gnome", JOptionPane.PLAIN_MESSAGE, null, lessOptions, lessOptions[0]);
+			if (end == null) {return;}
+
+			Village endVillage = graph.find(Integer.parseInt(end));
+			endVillage.printGnomes();
+
+			startVillage.removeGnome(gnome);
+			endVillage.insertGnome(gnome);
+			
+			startVillage.printGnomes();
+			endVillage.printGnomes();
+			
+			JOptionPane.showMessageDialog(mapFrame,
+	            		"The gnome " + gnome.getID() + " has been moved from village " + 
+	            			startVillage.getName() + "\nto village " + endVillage.getName(),
+	            		"Placing a gnome", JOptionPane.PLAIN_MESSAGE);
+			
+			} catch (NumberFormatException e) {
+				JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
+			} catch (GraphEmptyException e) {
+				JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "GraphEmptyException", JOptionPane.ERROR_MESSAGE);
+			} catch (NotFoundException e) { // theoretically not possible
+				JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "NotFoundException", JOptionPane.ERROR_MESSAGE);
+			} catch (VillageFullException e) {
+				JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "VillageFullException", JOptionPane.ERROR_MESSAGE);
+			} catch (VillageEmptyException e) { // should go back to first screen to choose another village
+				JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "VillageEmptyException", JOptionPane.ERROR_MESSAGE);
+			}
+	} // end of moveGnome()
 	
 	public void addRoad() { 
 		try {
@@ -252,6 +310,15 @@ public class MapGUI implements ActionListener {
 				current = current.getNext();
 				nextIndex++;
 			}
+		}
+		return options;
+	} // end of villageList()
+	
+	public Object [] gnomeList(Village v) {
+		Object [] options = new Object[v.populationSize];
+		
+		for (int i=0; i<v.populationSize; i++) {
+			options[i] = Integer.toString(v.population[i].getID());
 		}
 		return options;
 	}
