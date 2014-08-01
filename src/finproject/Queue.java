@@ -18,8 +18,9 @@ public class Queue {
 	public Node getLast() {return this.lastNode;}
 	public boolean isEmpty() {return length==0;}
 	
-	public Village find(int name) throws NotFoundException { // TODO create binary search tree?
-			try {
+	public Village find(int name) throws NotFoundException, GraphEmptyException { // TODO create binary search tree?
+		// exceptions caught by MapGUI so pop-up error message can be generated
+			//try {
 				if (! isEmpty()) {
 					Node current = this.firstNode;
 					while (current.getNext() != null) {
@@ -28,10 +29,10 @@ public class Queue {
 					if (! current.equals(this.lastNode)) {throw new NotFoundException();}
 					else {return this.lastNode.getVillage();}
 				} else {throw new GraphEmptyException();}
-			} catch (NotFoundException | GraphEmptyException e) {
-				System.out.println(e.getMessage());
-				return null;
-			}
+			//} catch (NotFoundException e) {
+			//	System.out.println(e.getMessage());
+			//	return null;
+			//}
 	} // end of method find()
 	
 	public void insert(Node nodeWithVillage){

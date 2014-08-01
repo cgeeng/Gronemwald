@@ -95,7 +95,10 @@ public class MapGUI implements ActionListener {
 			graph.find(4).connect(1, graph.find(5)); // two-way road
 			graph.find(5).connect(1, graph.find(4)); // two-way road
 			graph.find(5).connect(3, graph.find(3));
-		} catch (RoadAlreadyExistsException e) {System.out.println(e.getMessage());}
+		} catch (RoadAlreadyExistsException e) {System.out.println(e.getMessage());
+		} catch (GraphEmptyException e) {System.out.println(e.getMessage());
+		} catch (NotFoundException e) {System.out.println(e.getMessage());
+		} catch (SameVillageException e) {System.out.println(e.getMessage());}
 		
 		graph.printGraph();
 	} // end of addGraph()
@@ -158,7 +161,7 @@ public class MapGUI implements ActionListener {
 		System.out.println("Move gnome button"); // TODO
 	} 
 	
-	public void addRoad() {
+	public void addRoad() { 
 		try {
 		if (graph.isEmpty()) {throw new GraphEmptyException();}
 		
@@ -203,10 +206,12 @@ public class MapGUI implements ActionListener {
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "RoadAlreadyExistsException", JOptionPane.ERROR_MESSAGE);
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
-		} catch (NotFoundException e) { // theoretically not possible, but trying to handle all possibilities
-			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "NotFoundException", JOptionPane.ERROR_MESSAGE);
 		} catch (GraphEmptyException e) {
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "GraphEmptyException", JOptionPane.ERROR_MESSAGE);
+		} catch (NotFoundException e) { // theoretically not possible
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "NotFoundException", JOptionPane.ERROR_MESSAGE);
+		} catch (SameVillageException e) { // theoretically not possible
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "SameVillageException", JOptionPane.ERROR_MESSAGE);
 		}
 	} // end of addRoad()
 	

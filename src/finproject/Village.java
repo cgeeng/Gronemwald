@@ -49,8 +49,8 @@ public class Village {
 	
 	//methods
 	
-	public void connect (int cost, Village newNeighbor) {
-		try {
+	public void connect (int cost, Village newNeighbor) throws SameVillageException, RoadAlreadyExistsException {
+		// exceptions caught by MapGUI so pop-up error message can be generated
 			if (this.equals(newNeighbor)) {throw new SameVillageException();}
 			if (!adjacent.isEmpty()) { //if list not empty				
 					RoadIterator currentRoad = adjacent.firstRoad;
@@ -78,12 +78,6 @@ public class Village {
 			this.outdegree++;
 			adjacent.length++;
 		
-		// RoadAlreadyExistsException caught by MapGUI for error message window
-		} catch (SameVillageException sve) { // not possible in the GUI
-			sve.getMessage();
-		} catch (RoadAlreadyExistsException e) {
-			e.getMessage();
-		}
 	}//end connect
 	
 	public String getAdjList() {

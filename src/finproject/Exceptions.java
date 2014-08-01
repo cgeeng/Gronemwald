@@ -1,7 +1,7 @@
 package finproject;
 
 public class Exceptions {
-	public class NotFoundException extends Exception {
+	public static class NotFoundException extends Exception {
 		public NotFoundException(String message) {
 			super(message);
 		}
@@ -10,7 +10,7 @@ public class Exceptions {
 		}
 	}// end NotFoundException
 	
-	public class GraphEmptyException extends Exception {
+	public static class GraphEmptyException extends Exception {
 		public GraphEmptyException(String message) {
 			super(message);
 		}
@@ -19,13 +19,13 @@ public class Exceptions {
 		}
 	}// end GraphEmptyException
 	
-	public class RoadAlreadyExistsException extends Exception {
+	public static class RoadAlreadyExistsException extends Exception {
 		public RoadAlreadyExistsException(int cost, int start, int end) {
 			super("A road " + cost + " already connects villages " + start + " and " + end + ".");
 		}
 	}//end RoadAlreadyExistsException
 	
-	public class SameVillageException extends Exception {
+	public static class SameVillageException extends Exception {
 		public SameVillageException() {
 			super("A road cannot lead to and from the same village.");
 		}

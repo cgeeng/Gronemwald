@@ -4,7 +4,8 @@ package finproject;
 
 import java.io.*;
 
-import finproject.Village.RoadAlreadyExistsException;
+import finproject.Exceptions.SameVillageException;
+import finproject.Exceptions.*;
 
 public class MovingMap {
 	
@@ -37,25 +38,27 @@ public class MovingMap {
 		for(int i = 1; i <=14; i++){
 			testVillage[i] = new Village();
 		}
-		testVillage[1].connect(2, testVillage[2]);
-		testVillage[1].connect(3, testVillage[3]);
-		testVillage[1].connect(3, testVillage[6]);
-		testVillage[2].connect(4, testVillage[3]);
-		testVillage[2].connect(5, testVillage[4]);
-		testVillage[2].connect(5, testVillage[5]);
-		testVillage[3].connect(2, testVillage[4]);
-		testVillage[4].connect(1, testVillage[9]);
-		testVillage[5].connect(2, testVillage[4]);
-		testVillage[5].connect(4, testVillage[9]);
-		testVillage[6].connect(1, testVillage[7]);
-		testVillage[7].connect(2, testVillage[11]);
-		testVillage[8].connect(1, testVillage[11]);
-		testVillage[9].connect(1, testVillage[8]);
-		testVillage[10].connect(2, testVillage[14]);
-		testVillage[11].connect(3, testVillage[10]);
-		testVillage[12].connect(2, testVillage[11]);
-		testVillage[12].connect(1, testVillage[13]);
-		testVillage[13].connect(2, testVillage[14]);
+		try {
+			testVillage[1].connect(2, testVillage[2]);
+			testVillage[1].connect(3, testVillage[3]);
+			testVillage[1].connect(3, testVillage[6]);
+			testVillage[2].connect(4, testVillage[3]);
+			testVillage[2].connect(5, testVillage[4]);
+			testVillage[2].connect(5, testVillage[5]);
+			testVillage[3].connect(2, testVillage[4]);
+			testVillage[4].connect(1, testVillage[9]);
+			testVillage[5].connect(2, testVillage[4]);
+			testVillage[5].connect(4, testVillage[9]);
+			testVillage[6].connect(1, testVillage[7]);
+			testVillage[7].connect(2, testVillage[11]);
+			testVillage[8].connect(1, testVillage[11]);
+			testVillage[9].connect(1, testVillage[8]);
+			testVillage[10].connect(2, testVillage[14]);
+			testVillage[11].connect(3, testVillage[10]);
+			testVillage[12].connect(2, testVillage[11]);
+			testVillage[12].connect(1, testVillage[13]);
+			testVillage[13].connect(2, testVillage[14]);
+		} catch (SameVillageException e) {System.out.println(e.getMessage());}
 	//	A B C D E F G H I  J  K  L  M  N 
 	//	1 2 3 4 5 6 7 8 9 10 11 12 13 14
 		printMap(testVillage);
