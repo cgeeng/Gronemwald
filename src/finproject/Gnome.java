@@ -7,7 +7,7 @@ public class Gnome {
 	public BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	public static int totalGnome = 0;
 	public String name = "no name";
-	public int ID;
+	private int ID;
 	public Village current;
 	static int counter;
 	static String[][] villAndCost = new String[MovingMap.testVillage.length][];
@@ -26,6 +26,8 @@ public class Gnome {
 		}
 	}
 	*/
+	
+	public int getID() {return this.ID;}
 
 	//Constructors
 	public Gnome (String name) {
@@ -41,6 +43,7 @@ public class Gnome {
 		ID = ++totalGnome;
 		this.place(starting);
 	}//end constructor establishing Gnome's village
+	
 	
 	//methods
 	public Village place(Village starting) { // TODO should be in Village?
@@ -74,7 +77,6 @@ public class Gnome {
 
 	
 	public void travelRandom () {
-		
 		try {
 			//Limited to gnomes that are in a village already
 			if (current == null) throw new NotInVillageException();
@@ -94,7 +96,6 @@ public class Gnome {
 			Village destination = temp.getVillage();			
 			Village oldVillage = this.place(destination);			
 			System.out.println("Gnome " + ID + " has moved from Village " + oldVillage.name + " to Village " + current.name);
-			
 		} catch (NotInVillageException e) { 
 			System.out.println(e.getMessage()); 
 		} catch (NoAdjacentVillagesException e) { System.out.println(e.getMessage()); }

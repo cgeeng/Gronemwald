@@ -110,7 +110,7 @@ public class MapGUI implements ActionListener {
 	public void addOptions() {
 		addVillage = new JButton("Add village");
 		delVillage = new JButton("Delete village");
-		placeGnome = new JButton("Place gnome");
+		placeGnome = new JButton("Place new gnome");
 		moveGnome = new JButton("Move gnome");
 		addRoad = new JButton("Add road");
 		
@@ -154,7 +154,33 @@ public class MapGUI implements ActionListener {
 	} 
 	
 	public void placeGnome() {
-		System.out.println("Place gnome button"); // TODO
+		try {
+			if (graph.isEmpty()) {throw new GraphEmptyException();}
+
+			Object [] options = villageList();
+			
+			String village = (String) JOptionPane.showInputDialog(mapFrame,
+			            "Which village would you like to place the new gnome in?",
+			            "Placing a new gnome", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+			if (village == null) {return;}
+			
+			int intVillage = Integer.parseInt(village);
+			Gnome temp = new Gnome(graph.find(intVillage));
+			
+			JOptionPane.showMessageDialog(mapFrame,
+	            		"New gnome " + temp.getID() + " has been placed in village " + intVillage,
+	            		"Placing a gnome", JOptionPane.PLAIN_MESSAGE);
+
+			
+			} catch (NumberFormatException e) {
+				JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
+			} catch (GraphEmptyException e) {
+				JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "GraphEmptyException", JOptionPane.ERROR_MESSAGE);
+			} catch (NotFoundException e) { // theoretically not possible
+				JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "NotFoundException", JOptionPane.ERROR_MESSAGE);
+			} catch (VillageFullException e) {
+				JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "VillageFullException", JOptionPane.ERROR_MESSAGE);
+			}
 	} 
 	
 	public void moveGnome() {
@@ -165,14 +191,7 @@ public class MapGUI implements ActionListener {
 		try {
 		if (graph.isEmpty()) {throw new GraphEmptyException();}
 		
-		// creates list of all village names
-		Object [] options = new Object [graph.length()];
-		Node current = graph.getFirst(); int nextIndex = 0;
-		for (int i=0; i<graph.length(); i++) {
-			while (current != null) {
-				options[nextIndex] = Integer.toString(current.getVillage().getName());
-				current = current.getNext();
-				nextIndex++; }}
+		Object [] options = villageList();
 		
 		String start = (String) JOptionPane.showInputDialog(mapFrame,
 		            "Please choose the village you would like \nthe road to start at:",
@@ -221,6 +240,20 @@ public class MapGUI implements ActionListener {
 		state = GUIConstants.STATE_ACTIVE;
 		controller();
 	} // end of welcomeButton()
+	
+	public Object [] villageList() { // returns the villages in the graph as an array of their names
+									 // used for main options buttons
+		Object [] options = new Object [graph.length()];
+		Node current = graph.getFirst(); int nextIndex = 0;
+		for (int i=0; i<graph.length(); i++) {
+			while (current != null) {
+				options[nextIndex] = Integer.toString(current.getVillage().getName());
+				current = current.getNext();
+				nextIndex++;
+			}
+		}
+		return options;
+	}
 	
 	public static void createAndShowGUI() {
 		JFrame.setDefaultLookAndFeelDecorated(true);

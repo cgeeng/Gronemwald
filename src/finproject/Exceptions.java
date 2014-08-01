@@ -8,7 +8,7 @@ public class Exceptions {
 		public NotFoundException() {
 			super("This village could not be found.");
 		}
-	}// end NotFoundException
+	} // end NotFoundException
 	
 	public static class GraphEmptyException extends Exception {
 		public GraphEmptyException(String message) {
@@ -17,17 +17,29 @@ public class Exceptions {
 		public GraphEmptyException() {
 			super("This graph is empty.");
 		}
-	}// end GraphEmptyException
+	} // end GraphEmptyException
 	
 	public static class RoadAlreadyExistsException extends Exception {
 		public RoadAlreadyExistsException(int cost, int start, int end) {
 			super("A road cost " + cost + " already connects villages " + start + " and " + end + ".");
 		}
-	}//end RoadAlreadyExistsException
+	} //end RoadAlreadyExistsException
 	
 	public static class SameVillageException extends Exception {
 		public SameVillageException() {
 			super("A road cannot lead to and from the same village.");
 		}
-	}
+	} // end SameVillageException
+	
+	public static class VillageEmptyException extends Exception {
+		public VillageEmptyException() {
+			super("This village is empty.");
+		}
+	} // end VillageEmptyException
+	
+	public static class VillageFullException extends Exception {
+		public VillageFullException() {
+			super("This village has already reached its limit of 10 gnomes!");
+		}
+	} // end of VillageFullException
 }

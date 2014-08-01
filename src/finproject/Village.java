@@ -6,7 +6,7 @@ public class Village {
 	static int totalVillage = 0;
 	public int name;
 	AdjList adjacent;
-	Gnome[] population = new Gnome[11]; //Limit of 10 gnomes can be here
+	Gnome[] population = new Gnome[10]; //Limit of 10 gnomes
 	int populationSize;
 	int outdegree;
 	int indegree;
@@ -29,6 +29,8 @@ public class Village {
 	public int getName() {return this.name;}	
 	public int getIndegree(){return indegree;}
 	public int getOutdegree(){return outdegree;} // = adjacent.length?
+	public boolean isEmpty() {return this.populationSize == 0;}
+	public boolean isFull() {return this.populationSize == 10;}
 	
 	public Village() {
 		this.name = ++totalVillage; //Create name starting from 1
@@ -80,6 +82,20 @@ public class Village {
 		
 	}//end connect
 	
+	public Gnome removeGnome() throws VillageEmptyException {
+		if (isEmpty()) {throw new VillageEmptyException();}
+		else {
+			
+		}
+	}
+	
+	public void insertGnome(Gnome g) throws VillageFullException {
+		if (isFull()) {throw new VillageFullException();}
+		else {
+			
+		}
+	}
+	
 	public String getAdjList() {
 
 		String roadList = "";
@@ -113,6 +129,5 @@ public class Village {
 		public boolean isEmpty() { return length == 0;}
 	}
 	
-//exceptions
 	
 }//end Village class
