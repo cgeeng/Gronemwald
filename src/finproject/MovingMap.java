@@ -86,7 +86,7 @@ public class MovingMap {
 			else {
 				while (map[i].population[j] != null) { //get population
 				
-					population += map[i].population[j].ID + ", ";
+					population += map[i].population[j].getID() + ", ";
 					j++;
 				}
 			}

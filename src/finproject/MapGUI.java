@@ -170,7 +170,8 @@ public class MapGUI implements ActionListener {
 			JOptionPane.showMessageDialog(mapFrame,
 	            		"New gnome " + temp.getID() + " has been placed in village " + intVillage,
 	            		"Placing a gnome", JOptionPane.PLAIN_MESSAGE);
-
+			
+			graph.find(intVillage).printGnomes();
 			
 			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);

@@ -82,19 +82,35 @@ public class Village {
 		
 	}//end connect
 	
-	public Gnome removeGnome() throws VillageEmptyException {
+	public Gnome removeGnome(Gnome g) throws VillageEmptyException {
 		if (isEmpty()) {throw new VillageEmptyException();}
 		else {
-			
+			int gIndex=10; // will be replaced by wanted gnome's index, unreachable in for loop otherwise
+			for (int i=0; i<populationSize; i++) {
+				if (population[i].getID() == g.getID()) {
+					population[i] = null; g.setVillage(null);
+					i=gIndex;}
+				if (i>gIndex) {population[i-1] = population[i];}
+			}
+			this.populationSize--;
+			return g;
 		}
-	}
+	} // end of removeGnome()
 	
 	public void insertGnome(Gnome g) throws VillageFullException {
 		if (isFull()) {throw new VillageFullException();}
 		else {
-			
+			int nextIndex=0; // next open index
+			for (int i=0; i<populationSize; i++) {if (population[i] != null) {nextIndex++;}}
+			population[nextIndex] = g;
+			g.setVillage(this);
+			this.populationSize++;
 		}
-	}
+	} // end of insertGnome()
+	
+	public void printGnomes() { // string representation of gnomes in village
+		
+	} // end of printGnomes()
 	
 	public String getAdjList() {
 

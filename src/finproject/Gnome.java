@@ -3,6 +3,8 @@ package finproject;
 import java.util.*;
 import java.io.*;
 
+import finproject.Exceptions.VillageFullException;
+
 public class Gnome {
 	public BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	public static int totalGnome = 0;
@@ -28,6 +30,7 @@ public class Gnome {
 	*/
 	
 	public int getID() {return this.ID;}
+	public void setVillage(Village v) {this.current = v;}
 
 	//Constructors
 	public Gnome (String name) {
@@ -40,12 +43,16 @@ public class Gnome {
 	}//end default constructor
 	
 	public Gnome(Village starting) {
-		ID = ++totalGnome;
-		this.place(starting);
+		try {
+			ID = ++totalGnome;
+			starting.insertGnome(this);
+		} catch (VillageFullException e) {System.out.println(e.getMessage());}
 	}//end constructor establishing Gnome's village
 	
 	
 	//methods
+	
+	/*
 	public Village place(Village starting) { // TODO should be in Village?
 		//Return previous village if exists, otherwise return null
 		
@@ -74,7 +81,7 @@ public class Gnome {
 		}//Gnome's current village still has not been changed; will be changed in place()
 		return current;
 	}//end removeGnome method
-
+	*/
 	
 	public void travelRandom () {
 		try {
