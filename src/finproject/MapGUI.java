@@ -14,18 +14,19 @@ public class MapGUI implements ActionListener {
 		JFrame mapFrame;
 		JPanel welcomePanel, titlePanel, mapPanel, optionsPanel;
 		JButton addVillage, delVillage, placeGnome, moveGnome, addRoad, welcomeButton;
+		Queue graph;
 	
 	public MapGUI() { // builds the main window/frame
-			mapFrame = new JFrame("Gnomenwald");
-			mapFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			mapFrame.setSize(600, 400);
-			mapFrame.setMinimumSize(new Dimension(800, 500));
+		mapFrame = new JFrame("Gnomenwald");
+		mapFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		mapFrame.setSize(600, 400);			
+		mapFrame.setMinimumSize(new Dimension(800, 500));
 			
-			controller();
+		controller();
 	} // end of constructor
 	
 	public void controller () { // does the heavy lifting, handles state changes
-		if (state == 0) {
+		if (state == GUIConstants.STATE_WELCOME) {
 			welcomePanel = new JPanel();
 			welcomePanel.setPreferredSize(new Dimension (600,400));
 			welcomePanel.setBackground(Color.GRAY);
@@ -37,7 +38,7 @@ public class MapGUI implements ActionListener {
 			mapFrame.pack();
 			mapFrame.setVisible(true); }
 		
-		else if (state == 1) {
+		else if (state == GUIConstants.STATE_ACTIVE) {
 			titlePanel = new JPanel();
 			titlePanel.setPreferredSize(new Dimension(800, 50));
 			titlePanel.setBackground(Color.DARK_GRAY);
@@ -52,8 +53,9 @@ public class MapGUI implements ActionListener {
 			optionsPanel.setBackground(Color.BLUE);
 			
 			addTitle();
-			addGraph();
 			addOptions();
+			if (graph != null) {createGraph();}
+			drawGraph();
 			
 			mapFrame.getContentPane().add(titlePanel, BorderLayout.NORTH);
 			mapFrame.getContentPane().add(mapPanel, BorderLayout.CENTER);
@@ -78,9 +80,18 @@ public class MapGUI implements ActionListener {
 		titlePanel.add(title);
 	} // end of addTitle()
 	
-	public void addGraph() {
-
+	public void createGraph() { // TODO ask user for inputs
+		if (graph == null) {
+			graph = new Queue();
+			for (int i=0; i<5; i++) {
+				
+			}
+		}
 	} // end of addGraph()
+	
+	public void drawGraph() {
+		// TODO
+	}
 	
 	public void addOptions() {
 		addVillage = new JButton("Add village");
@@ -120,23 +131,23 @@ public class MapGUI implements ActionListener {
     } // end of actionPerformed() 
 	
 	public void addVillage() {
-		System.out.println("Add village button");
+		System.out.println("Add village button"); // TODO
 	}
 	
 	public void delVillage() {
-		System.out.println("Delete village button");
+		System.out.println("Delete village button"); // TODO
 	} 
 	
 	public void placeGnome() {
-		System.out.println("Place gnome button");
+		System.out.println("Place gnome button"); // TODO
 	} 
 	
 	public void moveGnome() {
-		System.out.println("Move gnome button");
+		System.out.println("Move gnome button"); // TODO
 	} 
 	
 	public void addRoad() {
-		System.out.println("Add road button");
+		System.out.println("Add road button"); // TODO
 	} 
 	
 	public void welcomeButton() {
