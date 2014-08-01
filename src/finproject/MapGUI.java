@@ -159,19 +159,14 @@ public class MapGUI implements ActionListener {
 	} 
 	
 	public void addRoad() {
-		System.out.println("Add road button");
-		
 		Object[] options = {"1","2","3","4","5"};
 		String start = (String) JOptionPane.showInputDialog(mapFrame,
-		            (Object) "Please choose the village you would like the road to start at:",
+		            "Please choose the village you would like \nthe road to start at:",
 		            "Building a road",
 		            JOptionPane.PLAIN_MESSAGE,
 		            null,
 		            options,
 		            options[0]);
-		
-		System.out.println("Starting village is: " + start);
-
 		
 		String end = (String) JOptionPane.showInputDialog(mapFrame,
                 	"Village " + start + " was chosen as the starting village."
@@ -188,20 +183,22 @@ public class MapGUI implements ActionListener {
             		"Building a road",
             		JOptionPane.PLAIN_MESSAGE);
 		
-		int intStart = Integer.parseInt(start);
-		int intEnd = Integer.parseInt(end);
-		int intCost = Integer.parseInt(cost);
-		
 		try {
+			int intStart = Integer.parseInt(start);
+			int intEnd = Integer.parseInt(end);
+			int intCost = Integer.parseInt(cost);
+			
 			graph.find(intStart).connect(intCost, graph.find(intEnd));
 			graph.printGraph();
-		} catch (RoadAlreadyExistsException e) {
-			String message = e.getMessage();
-			JOptionPane.showMessageDialog(mapFrame, message, "RoadAlreadyExistsException", JOptionPane.ERROR_MESSAGE);}
-		/*} catch (SameVillageException e) {
-			String message = e.getMessage();
-			JOptionPane.showMessageDialog(mapFrame, message, "SameVillageException", JOptionPane.ERROR_MESSAGE);
-		}*/
+		} catch (RoadAlreadyExistsException raee) {
+			String message = raee.getMessage();
+			JOptionPane.showMessageDialog(mapFrame, message, "RoadAlreadyExistsException", JOptionPane.ERROR_MESSAGE);
+		} catch (NumberFormatException nfe) {
+			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
+		} //catch (SameVillageException sve) {
+			//String message = sve.getMessage();
+			//JOptionPane.showMessageDialog(mapFrame, message, "SameVillageException", JOptionPane.ERROR_MESSAGE);
+		//}
 	}
 	
 	public void welcomeButton() {

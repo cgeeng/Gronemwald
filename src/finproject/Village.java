@@ -53,7 +53,7 @@ public class Village {
 			if (!adjacent.isEmpty()) { //if list not empty				
 					RoadIterator currentRoad = adjacent.firstRoad;
 					do { //first check if road exists already
-						if (currentRoad.getVillage() == newNeighbor) throw new RoadAlreadyExistsException(currentRoad.getCost(), this.name, newNeighbor.name); 
+						if (currentRoad.getVillage() == newNeighbor) {throw new RoadAlreadyExistsException(currentRoad.getCost(), this.name, newNeighbor.name);} 
 						currentRoad = currentRoad.next;
 					} while (currentRoad != null);
 					//Construct new road
