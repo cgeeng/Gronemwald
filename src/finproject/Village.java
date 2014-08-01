@@ -89,7 +89,7 @@ public class Village {
 			for (int i=0; i<populationSize; i++) {
 				if (population[i].getID() == g.getID()) {
 					population[i] = null; g.setVillage(null);
-					i=gIndex;}
+					gIndex=i;}
 				if (i>gIndex) {population[i-1] = population[i];}
 			}
 			this.populationSize--;

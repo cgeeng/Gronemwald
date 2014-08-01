@@ -229,8 +229,8 @@ public class MapGUI implements ActionListener {
 			endVillage.printGnomes();
 			
 			JOptionPane.showMessageDialog(mapFrame,
-	            		"The gnome " + gnome.getID() + " has been moved from village " + 
-	            			startVillage.getName() + "\nto village " + endVillage.getName(),
+	            		"Gnome " + gnome.getID() + " has been moved from village " + 
+	            			startVillage.getName() + " to village " + endVillage.getName(),
 	            		"Placing a gnome", JOptionPane.PLAIN_MESSAGE);
 			
 			} catch (NumberFormatException e) {
