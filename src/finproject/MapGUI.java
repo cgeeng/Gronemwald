@@ -14,12 +14,15 @@ public class MapGUI implements ActionListener {
 		JButton addVillage, delVillage, placeGnome, moveGnome, addRoad, welcomeButton;
 	
 	public MapGUI() { // builds the window
-		if (state == 0) {
+		// if (state == 0) {
 			mapFrame = new JFrame("Gnomenwald");
 			mapFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			mapFrame.setSize(600, 400);
 			mapFrame.setMinimumSize(new Dimension(800, 500));
 			
+			controller();
+		
+		/*
 			welcomePanel = new JPanel();
 			welcomePanel.setPreferredSize(new Dimension (600,400));
 			welcomePanel.setBackground(Color.GRAY);
@@ -53,7 +56,46 @@ public class MapGUI implements ActionListener {
 			mapFrame.pack();
 			mapFrame.setVisible(true);
 		}
+		*/
 	} // end of constructor
+	
+	public void controller () {
+		if (state == 0) {
+			welcomePanel = new JPanel();
+			welcomePanel.setPreferredSize(new Dimension (600,400));
+			welcomePanel.setBackground(Color.GRAY);
+		
+			addWelcome();
+		
+			mapFrame.getContentPane().add(welcomePanel, BorderLayout.CENTER);
+			mapFrame.pack();
+			mapFrame.setVisible(true); }
+		
+		else if (state == 1) {
+			titlePanel = new JPanel();
+			titlePanel.setPreferredSize(new Dimension(800, 50));
+			titlePanel.setBackground(Color.DARK_GRAY);
+			
+			mapPanel = new JPanel();
+			mapPanel.setPreferredSize(new Dimension(650, 450));
+			mapPanel.setBackground(Color.RED);
+			
+			optionsPanel = new JPanel();
+			optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
+			optionsPanel.setPreferredSize(new Dimension(150, 450));
+			optionsPanel.setBackground(Color.BLUE);
+			
+			addTitle();
+			addGraph();
+			addOptions();
+			
+			mapFrame.getContentPane().add(titlePanel, BorderLayout.NORTH);
+			mapFrame.getContentPane().add(mapPanel, BorderLayout.CENTER);
+			mapFrame.getContentPane().add(optionsPanel, BorderLayout.EAST);
+			mapFrame.pack();
+			mapFrame.setVisible(true);
+		}
+	} // end of controller()
 	
 	public void addWelcome() {
 		JLabel welcomeLabel = new JLabel("Welcome to Gnomenwald!", SwingConstants.CENTER);
@@ -134,6 +176,7 @@ public class MapGUI implements ActionListener {
 	public void welcomeButton() {
 		welcomePanel.setVisible(false);
 		state = GUIConstants.STATE_ACTIVE;
+		controller();
 	}
 	
 	public static void createAndShowGUI() {
