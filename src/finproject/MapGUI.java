@@ -165,10 +165,10 @@ public class MapGUI implements ActionListener {
 			if (village == null) {return;}
 			
 			int intVillage = Integer.parseInt(village);
-			Gnome temp = new Gnome(graph.find(intVillage));
+			graph.find(intVillage).insertGnome(new Gnome());
 			
 			JOptionPane.showMessageDialog(mapFrame,
-	            		"New gnome " + temp.getID() + " has been placed in village " + intVillage,
+	            		"A new gnome has been placed in village " + intVillage,
 	            		"Placing a gnome", JOptionPane.PLAIN_MESSAGE);
 			
 			graph.find(intVillage).printGnomes();
@@ -182,7 +182,7 @@ public class MapGUI implements ActionListener {
 			} catch (VillageFullException e) {
 				JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "VillageFullException", JOptionPane.ERROR_MESSAGE);
 			}
-	} 
+	} // end of placeGnome()
 	
 	public void moveGnome() {
 		System.out.println("Move gnome button"); // TODO

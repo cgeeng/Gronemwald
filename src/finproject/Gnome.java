@@ -100,12 +100,13 @@ public class Gnome {
 				temp = temp.next;
 			}
 			//Assign destination village
-			Village destination = temp.getVillage();			
-			Village oldVillage = this.place(destination);			
+			Village oldVillage = this.current;
+			Village destination = temp.getVillage();
+			destination.insertGnome(this);			
 			System.out.println("Gnome " + ID + " has moved from Village " + oldVillage.name + " to Village " + current.name);
-		} catch (NotInVillageException e) { 
-			System.out.println(e.getMessage()); 
-		} catch (NoAdjacentVillagesException e) { System.out.println(e.getMessage()); }
+		} catch (NotInVillageException e) {System.out.println(e.getMessage()); 
+		} catch (NoAdjacentVillagesException e) {System.out.println(e.getMessage());
+		} catch (VillageFullException e) {System.out.println(e.getMessage());}
 	}//end travelRandom
 	
 	public void travelPick() throws NumberFormatException, IOException { // deal with exception later
@@ -120,12 +121,13 @@ public class Gnome {
 			System.out.println(message + destinations);
 			
 			System.out.println("From the above neighboring villages listed, which village would you like to move to? Enter the village number.");
-			Village oldVillage = this.place(MovingMap.testVillage[Integer.parseInt(br.readLine())]);
+			Village oldVillage = this.current;
+			MovingMap.testVillage[Integer.parseInt(br.readLine())].insertGnome(this);
 			System.out.println("Gnome " + ID + " has moved from Village " + oldVillage.name + " to Village " + current.name);
 			
-		} catch (NotInVillageException e) { 
-			System.out.println(e.getMessage()); 
-		} catch (NoAdjacentVillagesException e) { System.out.println(e.getMessage()); }
+		} catch (NotInVillageException e) {System.out.println(e.getMessage()); 
+		} catch (NoAdjacentVillagesException e) { System.out.println(e.getMessage());
+		} catch (VillageFullException e) {System.out.println(e.getMessage());}
 	}//end travelPick()
 	
 	public String travelTopSort(){ // need to check for cycles?
