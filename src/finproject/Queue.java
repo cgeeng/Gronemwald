@@ -41,7 +41,7 @@ public class Queue {
 		length++;
 	}
 	
-	public Node remove(){
+	public Node remove(){ // TODO remove specific village
 		Node temp = firstNode;
 		if (firstNode.getNext() != null) {
 			firstNode = firstNode.getNext();
