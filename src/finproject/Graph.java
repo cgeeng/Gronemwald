@@ -100,7 +100,14 @@ public class Graph {
 		proposal = new ProposalGraph(this);
 	}
 	
-	public void addProposal() {};
+	public void addProposal(Village a, Village b, int cost) throws NotFoundException, GraphEmptyException, SameVillageException, RoadAlreadyExistsException {
+		//Assumes a village with no roads out of it has been created in the Graph
+		Village proposalA = proposal.find(a.getName());
+		Village proposalB = proposal.find(b.getName());
+		Road newRoad = proposalA.connect(cost,  proposalB);
+		newRoad.built = false;
+		
+	}
 	
 	public void printGraph() { // string representation of graph, used for testing
 		if (! isEmpty()) {

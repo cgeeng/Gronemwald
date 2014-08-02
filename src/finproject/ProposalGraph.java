@@ -60,6 +60,12 @@ public class ProposalGraph {
 		
 	}//end deep copy
 	
+	
+	public void addProposal() {
+		//Assumes a village with no roads out of it has been created in the Graph
+		
+	}
+	
 	public void findMinSpanTree() {
 		//uses priority queue
 		//returns a Graph?

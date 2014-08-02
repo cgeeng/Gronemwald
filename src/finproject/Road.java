@@ -10,6 +10,12 @@ public class Road {
 		this.cost = cost;
 		this.end = end;
 	} //end Constructor
+	
+	public Road (boolean built, int cost, Village end) {
+		this.built = built;
+		this.cost = cost;
+		this.end = end;
+	} //end Constructor
 
 	public Road(Village start, Village end, int cost) {
 		this.cost = cost;
