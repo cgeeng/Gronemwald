@@ -2,6 +2,8 @@ package finproject;
 
 import finproject.Exceptions.GraphEmptyException;
 import finproject.Exceptions.NotFoundException;
+import finproject.Exceptions.RoadAlreadyExistsException;
+import finproject.Exceptions.SameVillageException;
 
 public class ProposalGraph {
 	//DEEP copy of object Graph, STRIPPEd DOWN
@@ -17,13 +19,13 @@ public class ProposalGraph {
 	
 	//constructor
 	
-	public ProposalGraph (Graph original) {
+	public ProposalGraph (Graph original) throws SameVillageException, RoadAlreadyExistsException, NotFoundException, GraphEmptyException {
 		deepCopy(original);
 	}
 	
 	//methods
 
-	public void deepCopy(Graph original) {
+	public void deepCopy(Graph original) throws SameVillageException, RoadAlreadyExistsException, NotFoundException, GraphEmptyException {
 		//Recreate villages first
 		//Then create roads
 		if (original.firstVillage == null) { System.out.println("I don't think your country exists!"); }
@@ -42,13 +44,21 @@ public class ProposalGraph {
 			for (int i = 1; i <= original.getLength(); i++) { 
 				//double check if villages are mapped correctly in case
 				//if (originalVillage.getName() != proposalVillage.name) throws new ProposalVillageDoesNotMatchException;
+				if ( originalVillage == proposalVillage ) { System.out.println("It's the same village! Deep copy goofed."); }
+				if ( !originalVillage.outgoing.isEmpty() ) { //if Village has roads out
+					//loop through through and add road to proposal village
+					RoadIterator oRoad = originalVillage.outgoing.firstRoad;
+					for (int j = 1; j <= originalVillage.outgoing.length; j++ ) {
+						System.out.println("Village" + proposalVillage.getName() + "original road destination" + find(oRoad.getData().end.getName()) );
+						proposalVillage.connect( oRoad.getCost() , find(oRoad.getData().end.getName()));
+						oRoad = oRoad.getNext();
+					}//end road loop
+				}//end if
 				
-				
-				
-			}
-		}
+			}//end village loop
+		}//end else
 		
-	}
+	}//end deep copy
 	
 	public void findMinSpanTree() {
 		//uses priority queue
@@ -104,6 +114,7 @@ public class ProposalGraph {
 	public int getLength() { return length; }
 
 	public void printGraph() { // string representation of graph, used for testing
+		System.out.println("Proposal graph representation!");
 		if (! isEmpty()) {
 			Village current = this.firstVillage;
 			while (current != null) {

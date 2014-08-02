@@ -1,5 +1,9 @@
 package finproject;
 
+import finproject.Exceptions.GraphEmptyException;
+import finproject.Exceptions.NotFoundException;
+import finproject.Exceptions.RoadAlreadyExistsException;
+import finproject.Exceptions.SameVillageException;
 import finproject.Exceptions.*;
 
 public class Graph {
@@ -91,7 +95,7 @@ public class Graph {
 		} else {throw new GraphEmptyException();}
 	}
 
-	public void createProposal() {
+	public void createProposal() throws SameVillageException, RoadAlreadyExistsException, NotFoundException, GraphEmptyException {
 		//create proposal instance; WILL NOT BE UPDATED IF ROADS ARE BUILT INTO ACTUAL GRAPH
 		proposal = new ProposalGraph(this);
 	}

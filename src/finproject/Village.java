@@ -34,6 +34,8 @@ public class Village {
 		this.name = name;
 		this.forProposal = forProposal;
 		outgoing = new AdjList(); incoming = new AdjList();
+		outdegree = 0;
+		indegree = 0;
 		
 	}//end Constructor
 	
