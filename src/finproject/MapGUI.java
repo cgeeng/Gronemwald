@@ -2,8 +2,6 @@
 
 package finproject;
 
-// >>>>>>> origin/master
-
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -357,4 +355,3 @@ public class MapGUI implements ActionListener {
 	} // end of class RoundButton
 	
 } // end of MapGUI()
-// >>>>>>> origin/master
