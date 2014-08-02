@@ -3,6 +3,7 @@ package finproject;
 public class Road {
 	int cost;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	boolean built = true;
 	Village startVillage, endVillage; // start and end points
 	
@@ -13,6 +14,11 @@ public class Road {
 	} //end Constructor
 	
 	public Road(int cost, Village startVillage, Village endVillage) {
+=======
+	Village start, end; // start and end villages
+
+	public Road(Village start, Village end, int cost) {
+>>>>>>> origin/master
 =======
 	Village start, end; // start and end villages
 
