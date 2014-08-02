@@ -9,7 +9,7 @@ public class ProposalGraph {
 	Village lastVillage;
 	
 	//methods
-	public findMinSpanTree();
+	public void findMinSpanTree() {};
 		//uses priority queue
 		//returns a Graph?
 }
