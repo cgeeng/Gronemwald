@@ -21,6 +21,7 @@ public class ProposalGraph {
 	}
 	
 	//methods
+
 	public void deepCopy(Graph original) {
 		//Recreate villages first
 		//Then create roads
@@ -37,7 +38,8 @@ public class ProposalGraph {
 		
 	}
 	
-	public void findMinSpanTree() {
+	public void findMinSpanTree() {};
+
 		//uses priority queue
 		//returns a Graph?
 		//Adds to list of roads to be made
