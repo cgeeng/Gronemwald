@@ -418,7 +418,7 @@ public class MapGUI implements ActionListener {
 			}
 		} // end of createImageIcon
 		
-		/*
+		/* 
 		public DrawVillage(Village v) {	
 			setPreferredSize(new Dimension(40,40));
 			setBackground(Color.WHITE);
