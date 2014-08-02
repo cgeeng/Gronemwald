@@ -2,7 +2,9 @@ package finproject;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
+import java.awt.geom.*;
+// import java.net.MalformedURLException;
+// import java.net.URL;
 
 import javax.swing.*;
 
@@ -109,7 +111,7 @@ public class MapGUI implements ActionListener {
 		if (! graph.isEmpty()) {
 			Village currentVill = graph.getFirst();
 			while (currentVill != null) {
-				new DrawVillage(currentVill);
+				DrawVillage temp = new DrawVillage(currentVill);
 				/*
 				if (! currentVill.outgoing.isEmpty()) {
 					RoadIterator currentRoad = currentVill.outgoing.getFirst();
@@ -119,7 +121,7 @@ public class MapGUI implements ActionListener {
 						currentRoad = currentRoad.getNext();
 					}
 				}*/
-				
+				mapPanel.add(temp);
 				currentVill = currentVill.getNext();
 			}
 		}
@@ -167,17 +169,17 @@ public class MapGUI implements ActionListener {
     } // end of actionPerformed() 
 	
 	public void addVillage() {
-		Village temp = new Village();
-		graph.insert(temp); // default to zero gnomes
+		Village newVill = new Village();
+		graph.insert(newVill); // default to zero gnomes
 		
-		DrawVillage newVill = new DrawVillage(temp);
-		mapPanel.add(newVill);
+		DrawVillage temp = new DrawVillage(newVill);
+		mapPanel.add(temp);
 		
 		JOptionPane.showMessageDialog(mapFrame,
-        		"Village " + temp.getName() + " has been created with a population of zero gnomes.",
+        		"Village " + newVill.getName() + " has been created with a population of zero gnomes.",
         		"Adding a village", JOptionPane.PLAIN_MESSAGE);
 		
-		mapFrame.repaint();
+		mapPanel.repaint();
 	}
 	
 	public void delVillage() {
@@ -251,7 +253,6 @@ public class MapGUI implements ActionListener {
 			if (start == null) {return;}
 			
 			Village startVillage = graph.find(Integer.parseInt(start));
-			startVillage.printGnomes();
 			
 			Object [] gnomeOptions = gnomeList(startVillage);
 			
@@ -275,18 +276,19 @@ public class MapGUI implements ActionListener {
 			if (end == null) {return;}
 
 			Village endVillage = graph.find(Integer.parseInt(end));
-			endVillage.printGnomes();
-
+			
+			JOptionPane.showMessageDialog(mapFrame,
+            		"The shortest path from village " + startVillage.getName() + " to village " + 
+            			endVillage.getName() + " is by paths ",
+            		"Moving a gnome", JOptionPane.PLAIN_MESSAGE);
+			
 			startVillage.removeGnome(gnome);
 			endVillage.insertGnome(gnome);
-			
-			startVillage.printGnomes();
-			endVillage.printGnomes();
 			
 			JOptionPane.showMessageDialog(mapFrame,
 	            		"Gnome " + gnome.getID() + " has been moved from village " + 
 	            			startVillage.getName() + " to village " + endVillage.getName(),
-	            		"Placing a gnome", JOptionPane.PLAIN_MESSAGE);
+	            		"Moving a gnome", JOptionPane.PLAIN_MESSAGE);
 			
 			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
@@ -396,21 +398,7 @@ public class MapGUI implements ActionListener {
 	
 	public class DrawVillage extends JPanel {
 		Village village;
-		BufferedImage img;
 		
-		public DrawVillage(Village v) {
-			this.village = v;
-			
-			ImageIcon icon = new ImageIcon(URL);
-			JLabel label = new JLabel(Integer.toString(village.getName()), icon, JLabel.CENTER);
-			mapPanel.add(label);
-		}
-		
-		public Dimension getPreferredSize() {
-			return new Dimension(40,40);
-		}
-		
-		/* 
 		public DrawVillage(Village v) {	
 			setPreferredSize(new Dimension(40,40));
 			setBackground(Color.WHITE);
@@ -418,22 +406,16 @@ public class MapGUI implements ActionListener {
 			
 			this.village = v;
 		}
-	
+		
+		public Dimension getPreferredSize() {
+			return new Dimension(40,40);
+		}
 		
 		protected void paintComponent(Graphics g) {
-			super.paintComponent(g);
-			Graphics2D g2D = (Graphics2D) g.create();
-			
-			Shape circle = new Ellipse2D.Double(0,0,40,40);
-			g2D.setColor(getBackground());
-			g2D.fill(circle);
-			
-			ShapeIcon circleIcon = new ShapeIcon(circle);
-			JLabel circleLabel = new JLabel(circleIcon);
-			
-			g2D.dispose();
+			g.setColor(getBackground());
+			g.fillOval(100,50,40,40);
 		}
-		*/
+		
 	} // end of drawVillage
 	
 	public class DrawRoad extends JPanel {
