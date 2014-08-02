@@ -50,7 +50,7 @@ public class Gnome {
 			RoadIterator temp = current.outgoing.firstRoad;
 			for (int i = 1; i < randomTraverse; i++) {
 				System.out.println("i is " + i);
-				temp = temp.next;
+				temp = temp.getNext();
 			}
 			//Assign destination village
 			Village oldVillage = this.current;
@@ -112,7 +112,7 @@ public class Gnome {
 						q.insert(new Node(b.endVillage()));
 						System.out.println("added to the q is village "+b.endVillage().getName() +" with indegree "+b.endVillage().indegree);
 					}
-					b = b.next;
+					b = b.getNext();
 				} // end of while
 			} // end of if
 		} // end of while

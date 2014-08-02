@@ -73,7 +73,7 @@ public class MovingMap {
 			while (currentRoad != null ) { //get adjacent roads
 
 				roadList += "Road to " + currentRoad.endVillage().getName() + " cost " + currentRoad.getCost() + ", ";
-				currentRoad = currentRoad.next;
+				currentRoad = currentRoad.getNext();
 				
 			} //AdjList loop
 			pw.println("Village " + current.getName() + ":" + roadList);	

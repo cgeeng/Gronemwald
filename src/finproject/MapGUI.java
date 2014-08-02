@@ -9,7 +9,7 @@ public class MapGUI implements ActionListener {
 		int state = 0; // holds state of application
 		JFrame mapFrame;
 		JPanel welcomePanel, titlePanel, mapPanel, optionsPanel;
-		JButton addVillage, delVillage, placeGnome, moveGnome, addRoad, welcomeButton;
+		JButton addVillage, delVillage, placeGnome, moveGnome, addRoad, welcomeButton, addCountry;
 		Graph graph;
 	
 	public MapGUI() { // builds the main window/frame
@@ -114,13 +114,15 @@ public class MapGUI implements ActionListener {
 		placeGnome = new JButton("Place new gnome");
 		moveGnome = new JButton("Move gnome");
 		addRoad = new JButton("Add road");
+		addCountry = new JButton("Add country");
 		
 		optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
 		addOptionsButton(addVillage); optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
 		addOptionsButton(delVillage); optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
 		addOptionsButton(placeGnome); optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
-		addOptionsButton(moveGnome); optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
-		addOptionsButton(addRoad); optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
+		addOptionsButton(moveGnome);  optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
+		addOptionsButton(addRoad);    optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
+		addOptionsButton(addCountry); optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
 	} // end of addOptions()
 	
 	public void addOptionsButton(JButton button) {
@@ -142,6 +144,8 @@ public class MapGUI implements ActionListener {
         	moveGnome();
         } else if (e.getSource() == addRoad) {
         	addRoad();
+        } else if (e.getSource() == addCountry) {
+        	addCountry();
         }
     } // end of actionPerformed() 
 	
@@ -172,7 +176,7 @@ public class MapGUI implements ActionListener {
 			// deletes all associated roads
 			RoadIterator current = village.outgoing.firstRoad;
 			for (int i=0; i<village.outgoing.length; i++) {
-				village.outgoing.delete(current); current = current.getNext();
+				village.deleteRoad(current, true); current = current.getNext();
 			}
 			
 			graph.delete(village.getName());
@@ -327,6 +331,10 @@ public class MapGUI implements ActionListener {
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "SameVillageException", JOptionPane.ERROR_MESSAGE);
 		}
 	} // end of addRoad()
+	
+	public void addCountry() {
+		System.out.println("Adding a country");
+	} // end of addCountry()
 	
 	public void welcomeButton() {
 		welcomePanel.setVisible(false);
