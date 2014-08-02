@@ -3,8 +3,6 @@ package finproject;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
-// import java.net.MalformedURLException;
-// import java.net.URL;
 
 import javax.swing.*;
 
@@ -48,7 +46,7 @@ public class MapGUI implements ActionListener {
 			mapPanel = new JPanel();
 			mapPanel.setPreferredSize(new Dimension(650, 450));
 			mapPanel.setBackground(Color.RED);
-			mapPanel.setLayout(new GridLayout(3,3));
+			mapPanel.setLayout(new GridLayout(4,3));
 			
 			optionsPanel = new JPanel();
 			optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
@@ -108,6 +106,7 @@ public class MapGUI implements ActionListener {
 	} // end of addGraph()
 	
 	public void drawGraph() {
+		
 		if (! graph.isEmpty()) {
 			Village currentVill = graph.getFirst();
 			while (currentVill != null) {
@@ -123,8 +122,8 @@ public class MapGUI implements ActionListener {
 				}*/
 				mapPanel.add(temp);
 				currentVill = currentVill.getNext();
-			}
-		}
+			}}
+		
 	} // end of drawGraph()
 	
 	public void addOptions() {
@@ -413,7 +412,9 @@ public class MapGUI implements ActionListener {
 		
 		protected void paintComponent(Graphics g) {
 			g.setColor(getBackground());
-			g.fillOval(100,50,40,40);
+			
+			int x = 100,y = 50, d=40;
+			g.fillOval(x,y,d,d);
 		}
 		
 	} // end of drawVillage
@@ -422,13 +423,13 @@ public class MapGUI implements ActionListener {
 		RoadIterator ri;
 		
 		public DrawRoad(RoadIterator ri) {
-			setBackground(Color.WHITE);
+			setForeground(Color.WHITE);
 			this.ri = ri;
 		}
 		
 		protected void paintComponent(Graphics g) {
-			Graphics2D g2D = (Graphics2D) g;
-			g2D.setColor(getBackground());
+			g.setColor(getForeground());
+			g.drawLine(50, 50, 200, 200);
 			
 			
 			
