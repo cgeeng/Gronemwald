@@ -91,6 +91,13 @@ public class Graph {
 		} else {throw new GraphEmptyException();}
 	}
 
+	public void createProposal() {
+		//create proposal instance; WILL NOT BE UPDATED IF ROADS ARE BUILT INTO ACTUAL GRAPH
+		proposal = new ProposalGraph(this);
+	}
+	
+	public void addProposal() {};
+	
 	public void printGraph() { // string representation of graph, used for testing
 		if (! isEmpty()) {
 			Village current = this.firstVillage;

@@ -26,6 +26,9 @@ public class MovingMap {
 		Gr.find(1).connect(2, Gr.find(3));
 		Gr.find(1).connect(2, Gr.find(2));
 		printMap( Gr );
+		
+		Gr.createProposal();
+		Gr.proposal.printGraph();
 
 		//testGnomes[0].travelRandom();
 		//testGnomes[0].travelPick();

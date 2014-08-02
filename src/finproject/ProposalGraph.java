@@ -29,16 +29,20 @@ public class ProposalGraph {
 		else {
 			Village originalVillage = original.firstVillage;
 			for (int i = 1; i <= original.getLength(); i++) { 
-				//iterate through original Village linked list
-				Village temp = new Village()
-				
-			}
+				//iterate through original Village linked list, CREATE NEW VILLAGES
+				Village temp = new Village(true, originalVillage.getName());
+				insert(temp);
+				originalVillage = originalVillage.getNext();
+			}//end village loop
+			
+			//loop to get ROADS
+			Village originalVillage = original.firstVillage;
+			for (int i = 1; i <= original.getLength(); i++) { 
 		}
-		
 		
 	}
 	
-	public void findMinSpanTree() {};
+	public void findMinSpanTree() {
 
 		//uses priority queue
 		//returns a Graph?
@@ -80,8 +84,8 @@ public class ProposalGraph {
 		if (! isEmpty()) {
 			Village current = this.firstVillage;
 			while (current != null) {
-				System.out.println("Village " + current.getName() + " holds " + current.populationSize + " gnomes.");
-				System.out.println("   It leads to " + current.getAdjList());
+				System.out.println("(Proposal) Village " + current.getName() + " holds " + current.populationSize + " gnomes.");
+				//System.out.println("   It leads to " + current.getAdjList());
 				current = current.getNext();
 			}
 		} else {System.out.println("This graph is empty.");}
