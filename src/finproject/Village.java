@@ -5,12 +5,12 @@ import finproject.Exceptions.*;
 public class Village {
 	static int totalVillage = 0;
 	
-	public int name;
+	private int name;
 	AdjList adjacent;
 	Gnome[] population = new Gnome[10]; // limit of 10 gnomes
 	int populationSize;
 	int outdegree, indegree;
-	Village next, previous;
+	private Village next, previous;
 	
 	public int getName() {return this.name;}	
 	public int getIndegree(){return indegree;}

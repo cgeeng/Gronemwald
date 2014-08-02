@@ -24,8 +24,8 @@ public class Graph {
 			lastVillage = newVillage;
 		}
 		else {
-			lastVillage.next = newVillage;
-			newVillage.previous = lastVillage;
+			lastVillage.setNext(newVillage);
+			newVillage.setPrev(lastVillage);
 			lastVillage = newVillage;
 		}
 		length++;
@@ -52,7 +52,7 @@ public class Graph {
 					ri = ri.next;
 				}
 			}
-			villLeadingTo = villLeadingTo.next;
+			villLeadingTo = villLeadingTo.getNext();
 		}
 	} // end of delete method
 	
@@ -62,13 +62,11 @@ public class Graph {
 		Village found = temp;
 			while (temp!= null) {
 				if (temp.getName() == name) found = temp;
-				temp = temp.next;
+				temp = temp.getNext();
 			}
 			if ( found.getName() != name) throw new NotFoundException();
 		return found;
 	}
-
-	
 
 	public void printGraph() { // string representation of graph, used for testing
 		if (! isEmpty()) {

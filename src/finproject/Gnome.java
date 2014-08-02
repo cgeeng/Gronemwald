@@ -40,7 +40,7 @@ public class Gnome {
 		try {
 			//Limited to gnomes that are in a village already
 			if (current == null) throw new NotInVillageException();
-			if (current.adjacent.length == 0) throw new NoAdjacentVillagesException(current.name);
+			if (current.adjacent.length == 0) throw new NoAdjacentVillagesException(current.getName());
 			
 			Random generate = new Random();
 			int randomTraverse = 1 + generate.nextInt(current.adjacent.length);
@@ -56,7 +56,7 @@ public class Gnome {
 			Village oldVillage = this.current;
 			Village destination = temp.getVillage();
 			destination.insertGnome(this);			
-			System.out.println("Gnome " + ID + " has moved from Village " + oldVillage.name + " to Village " + current.name);
+			System.out.println("Gnome " + ID + " has moved from Village " + oldVillage.getName() + " to Village " + current.getName());
 		} catch (NotInVillageException e) {System.out.println(e.getMessage()); 
 		} catch (NoAdjacentVillagesException e) {System.out.println(e.getMessage());
 		} catch (VillageFullException e) {System.out.println(e.getMessage());}
@@ -98,7 +98,7 @@ public class Gnome {
 			a = q.remove().getVillage();
 			System.out.println("a has been removed from q. q length is now "+q.length());
 			//System.out.println("hello?");
-			pathToTake += a.name + " ";
+			pathToTake += a.getName() + " ";
 			System.out.println("a.name is "+pathToTake+" and adjacent length is "+a.adjacent.length);
 			// for each adjacent village to village a, decrease each indegree and if it equals 0, add to queue
 			if(a.adjacent.length!=0){
@@ -110,7 +110,7 @@ public class Gnome {
 					if( b.getVillage().indegree  == 0 ){
 						System.out.println("about to insert...");
 						q.insert(new Node(b.getVillage()));
-						System.out.println("added to the q is village "+b.getVillage().name+" with indegree "+b.getVillage().indegree);
+						System.out.println("added to the q is village "+b.getVillage().getName() +" with indegree "+b.getVillage().indegree);
 					}
 					b = b.next;
 				} // end of while
