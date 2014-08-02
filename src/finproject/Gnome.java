@@ -36,37 +36,6 @@ public class Gnome {
 	
 	//methods
 	
-	/*
-	public Village place(Village starting) { // TODO should be in Village?
-		//Return previous village if exists, otherwise return null
-		
-		//Remove gnome from current village if has been previously placed
-		Village oldVillage = null;
-		if (current != null) {oldVillage = removeGnome();}
-		
-		//find next empty spot in population array
-		int i = 0;
-		while (starting.population[i] != null) {++i;}
-		
-		starting.population[i] = this;
-		current = starting;
-		current.populationSize++;
-		return oldVillage;
-	}//end place
-	
-	private Village removeGnome() { // TODO should be in Village?
-		//remove gnome from its current village. Return its previous village?
-		int i = 0;
-		while ( current.population[i] != null) {
-			if (current.population[i].ID == this.ID) {
-				current.population[i] = null;
-				current.populationSize--;
-			}
-		}//Gnome's current village still has not been changed; will be changed in place()
-		return current;
-	}//end removeGnome method
-	*/
-	
 	public void travelRandom () {
 		try {
 			//Limited to gnomes that are in a village already
@@ -93,6 +62,8 @@ public class Gnome {
 		} catch (VillageFullException e) {System.out.println(e.getMessage());}
 	}//end travelRandom
 	
+	// unnecessary with GUI 
+	/*
 	public void travelPick() throws NumberFormatException, IOException { // deal with exception later
 
 		try {
@@ -113,7 +84,9 @@ public class Gnome {
 		} catch (NoAdjacentVillagesException e) { System.out.println(e.getMessage());
 		} catch (VillageFullException e) {System.out.println(e.getMessage());}
 	}//end travelPick()
+	*/
 	
+	// TODO make gnome into thread that traverses the minimum path? (animated)
 	public String travelTopSort(){ // need to check for cycles?
 		Queue q = new Queue();
 		Village a;

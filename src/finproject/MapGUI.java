@@ -4,6 +4,7 @@ package finproject;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.*;
 import javax.swing.*;
 import finproject.Exceptions.*;
 
@@ -102,7 +103,10 @@ public class MapGUI implements ActionListener {
 	} // end of addGraph()
 	
 	public void drawGraph() {
-		// TODO
+		for (int i=0; i<graph.length(); i++) {
+			DrawVillage newVill = new DrawVillage();
+			mapPanel.add(newVill);
+		}
 	}
 	
 	public void addOptions() {
@@ -353,5 +357,20 @@ public class MapGUI implements ActionListener {
 		}
 		
 	} // end of class RoundButton
+	
+	public class DrawVillage extends JPanel {
+		
+		public DrawVillage() {
+			setPreferredSize(new Dimension(30,30));
+			setBackground(Color.WHITE);
+			setOpaque(true);
+		}
+		
+		protected void paintComponent(Graphics g) {
+			Graphics2D g2D = (Graphics2D) g;
+			g2D.setColor(getBackground());
+			g2D.fillOval(0,0,20,20);
+		}
+	} // end of drawVillage
 	
 } // end of MapGUI()
