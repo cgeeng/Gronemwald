@@ -13,8 +13,8 @@ public class Graph {
 		lastVillage = null;
 	} 
 	
-	public boolean isEmpty() { return length == 0; }
-	public int getLength() { return length; }
+	public boolean isEmpty() {return length == 0;}
+	public int getLength() {return length;}
 	public Village getFirst() {return this.firstVillage;}
 	public Village getLast() {return this.lastVillage;}
 	
@@ -31,7 +31,27 @@ public class Graph {
 		length++;
 	}
 	
-	public void delete(int villageName) throws GraphEmptyException, NotFoundException {
+	public void delete(int name) throws GraphEmptyException, NotFoundException {
+		if (isEmpty()) {throw new GraphEmptyException();}
+		else if (getLength() == 1) {
+			this.firstVillage = null;
+			this.lastVillage = null; }
+		else {
+			Village found = find(name);
+			if (found.equals(firstVillage)) {
+				found.getNext().setPrev(null);
+				firstVillage = found.getNext();}
+			else if (found.equals(lastVillage)) {
+				lastVillage = found.getPrev(); 
+				lastVillage.setNext(null);}
+			else {
+				found.getPrev().setNext(found.getNext());
+				found.getNext().setPrev(found.getPrev());
+			}}
+		this.length--;
+		
+		// roads are going to be handled in the GUI (user's choice)
+		/*
 		if (isEmpty()) {throw new GraphEmptyException();}
 		Village villToDelete = find(villageName); 
 		if(villToDelete.outdegree > 0){
@@ -42,6 +62,8 @@ public class Graph {
 			}
 		}
 		Village villLeadingTo = firstVillage;
+		
+		
 		while(villLeadingTo != null){
 			if(villLeadingTo.outdegree > 0){
 				RoadIterator ri = villLeadingTo.adjacent.firstRoad;
@@ -54,18 +76,18 @@ public class Graph {
 			}
 			villLeadingTo = villLeadingTo.getNext();
 		}
+		*/
 	} // end of delete method
 	
 	public Village find(int name) throws NotFoundException, GraphEmptyException {
-		if (isEmpty()) {throw new GraphEmptyException();}
-		Village temp = firstVillage;
-		Village found = temp;
-			while (temp!= null) {
-				if (temp.getName() == name) found = temp;
-				temp = temp.getNext();
-			}
-			if ( found.getName() != name) throw new NotFoundException();
-		return found;
+		// exceptions caught by MapGUI so pop-up error message can be generated
+		if (! isEmpty()) {
+			Village current = this.firstVillage;
+			while (current != null) {					
+				if (current.getName() == name) {return current;}
+				current = current.getNext();
+			} throw new NotFoundException();
+		} else {throw new GraphEmptyException();}
 	}
 
 	public void printGraph() { // string representation of graph, used for testing

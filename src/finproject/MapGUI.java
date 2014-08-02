@@ -151,7 +151,6 @@ public class MapGUI implements ActionListener {
     } // end of actionPerformed() 
 	
 	public void addVillage() {
-		System.out.println("Add village button");
 		Village temp = new Village();
 		graph.insert(temp); // default to zero gnomes
 		
@@ -169,8 +168,6 @@ public class MapGUI implements ActionListener {
 			if (strVillage == null) {return;}
 			
 			Village village = graph.find(Integer.parseInt(strVillage));
-			
-			
 			
 			graph.delete(village.getName());
 			
