@@ -4,9 +4,10 @@ import finproject.Exceptions.GraphEmptyException;
 import finproject.Exceptions.NotFoundException;
 
 public class ProposalGraph {
-	//DEEP copy of object Graph, STRIPPE DOWN
+	//DEEP copy of object Graph, STRIPPEd DOWN
 	//will NOT be updated if Graph is updated
 	//should probably deleted after proposals all made
+	//I don't think indegrees out degrees are necessary for this
 	
 	public Road[] toBuild; //contains acceptable roads to be built after minimum spanning tree found
 	
@@ -36,17 +37,39 @@ public class ProposalGraph {
 			}//end village loop
 			
 			//loop to get ROADS
-			Village originalVillage = original.firstVillage;
+			originalVillage = original.firstVillage;
+			Village proposalVillage = firstVillage;
 			for (int i = 1; i <= original.getLength(); i++) { 
+				//double check if villages are mapped correctly in case
+				//if (originalVillage.getName() != proposalVillage.name) throws new ProposalVillageDoesNotMatchException;
+				
+				
+				
+			}
 		}
 		
 	}
 	
 	public void findMinSpanTree() {
-
 		//uses priority queue
 		//returns a Graph?
 		//Adds to list of roads to be made
+		//straight up COPY of textbook pseudocode for REFERENCE
+		
+		/*
+		 * takes in list of EDGES, number of VERTICES
+		 * new GRAPH
+		 * PriorityQueue pq
+		 * Graph gr
+		 * 
+		 * while graph.length() != numberVertices - 1 
+		 * 
+		 * road r = pq.deleteMin();
+		 * Village u = get road home
+		 * VIllage v = get road destination
+		 * 
+		 * if (u != v) { gr.add( r ); union stuff???
+		 */
 	}
 	
 	//generic methods

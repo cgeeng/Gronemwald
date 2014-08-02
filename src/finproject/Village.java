@@ -33,6 +33,7 @@ public class Village {
 		//CONSTRUCTOR FOR PROPOSALGRAPH
 		this.name = name;
 		this.forProposal = forProposal;
+		outgoing = new AdjList(); incoming = new AdjList();
 		
 	}//end Constructor
 	
