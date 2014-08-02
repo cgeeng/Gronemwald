@@ -11,6 +11,7 @@ public class Village {
 	int populationSize;
 	int indegree, outdegree;
 	private Village next, previous;
+	boolean forProposal = false;
 	
 	public int getName() {return this.name;}	
 	public Village getNext() {return this.next;}
@@ -25,6 +26,13 @@ public class Village {
 		outgoing = new AdjList(); incoming = new AdjList();
 		outdegree = 0;
 		indegree = 0;
+		
+	}//end Constructor
+	
+	public Village(boolean forProposal, int name) {
+		//CONSTRUCTOR FOR PROPOSALGRAPH
+		this.name = name;
+		this.forProposal = forProposal;
 		
 	}//end Constructor
 	

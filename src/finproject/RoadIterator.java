@@ -19,14 +19,7 @@ public class RoadIterator {
 	public void setPrev(RoadIterator p) {this.previous = p;}
 	public RoadIterator getPrev() {return this.previous;}
 	public int getCost() { return data.cost; };
-<<<<<<< HEAD
-<<<<<<< HEAD
 	public boolean getBuilt() { return data.built; }
-=======
 	public Road getData() {return this.data;}
->>>>>>> origin/master
-=======
-	public Road getData() {return this.data;}
->>>>>>> origin/master
 
 }//end class

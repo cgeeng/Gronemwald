@@ -90,16 +90,6 @@ public class Graph {
 			} throw new NotFoundException();
 		} else {throw new GraphEmptyException();}
 	}
-<<<<<<< HEAD
-	
-	public Graph 
-	
-	public boolean isEmpty() { return length == 0; }
-	public int getLength() { return length; }
-	
-
-=======
->>>>>>> origin/master
 
 	public void printGraph() { // string representation of graph, used for testing
 		if (! isEmpty()) {
