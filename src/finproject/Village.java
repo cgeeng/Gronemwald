@@ -50,7 +50,7 @@ public class Village {
 	
 	//methods
 	
-	public void connect (int cost, Village newNeighbor) throws SameVillageException, RoadAlreadyExistsException {
+	public Road connect (int cost, Village newNeighbor) throws SameVillageException, RoadAlreadyExistsException {
 		// exceptions caught by MapGUI so pop-up error message can be generated
 		if (this.equals(newNeighbor)) {throw new SameVillageException();}			
 		if (! outgoing.isEmpty()) {
@@ -68,6 +68,8 @@ public class Village {
 		
 		this.outdegree++;
 		newNeighbor.indegree++;
+		
+		return newRoad;
 	}//end connect
 	
 	public void deleteOutRoad(Road r) throws NotFoundException {
