@@ -1,7 +1,5 @@
 package finproject;
 
-import finproject.Exceptions.GraphEmptyException;
-import finproject.Exceptions.NotFoundException;
 import finproject.Exceptions.*;
 
 public class Queue {
@@ -18,7 +16,7 @@ public class Queue {
 	public Node getLast() {return this.lastNode;}
 	public boolean isEmpty() {return length==0;}
 	
-	public Village find(int name) throws NotFoundException, GraphEmptyException { // TODO create binary search tree?
+	public Village find(int name) throws NotFoundException, GraphEmptyException {
 		// exceptions caught by MapGUI so pop-up error message can be generated
 		if (! isEmpty()) {
 			Node current = this.firstNode;
@@ -41,7 +39,7 @@ public class Queue {
 		length++;
 	}
 	
-	public Node remove(){ // TODO remove specific village
+	public Node remove(){ // default to last in queue	
 		Node temp = firstNode;
 		if (firstNode.getNext() != null) {
 			firstNode = firstNode.getNext();
@@ -51,6 +49,7 @@ public class Queue {
 		length--;
 		return temp;
 	}
+	
 	
 	public void printGraph() { // string representation of graph, used for testing
 		if (! isEmpty()) {

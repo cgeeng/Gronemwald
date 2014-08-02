@@ -4,23 +4,26 @@ import finproject.Exceptions.*;
 
 public class Village {
 	static int totalVillage = 0;
+	
 	public int name;
 	AdjList adjacent;
-	Gnome[] population = new Gnome[10]; //Limit of 10 gnomes
+	Gnome[] population = new Gnome[10]; // limit of 10 gnomes
 	int populationSize;
-	int outdegree;
-	int indegree;
-	Village next;
-	Village previous;
+	int outdegree, indegree;
+	Village next, previous;
 	
 	public int getName() {return this.name;}	
 	public int getIndegree(){return indegree;}
-	public int getOutdegree(){return outdegree;} // = adjacent.length?
+	public int getOutdegree(){return outdegree;}
+	public Village getNext() {return this.next;}
+	public void setNext(Village n) {this.next = n;}
+	public Village getPrev() {return this.previous;}
+	public void setPrev(Village p) {this.previous = p;}
 	public boolean isEmpty() {return this.populationSize == 0;}
 	public boolean isFull() {return this.populationSize == 10;}
 	
 	public Village() {
-		this.name = ++totalVillage; //Create name starting from 1
+		this.name = ++totalVillage;
 		adjacent = new AdjList();
 		outdegree = 0;
 		indegree = 0;

@@ -1,5 +1,7 @@
 package finproject;
 
+import finproject.Exceptions.*;
+
 public class Graph {
 	private int length = 0;
 	Village firstVillage;
@@ -9,11 +11,14 @@ public class Graph {
 	public Graph() {
 		firstVillage = null;
 		lastVillage = null;
-
 	} 
 	
+	public boolean isEmpty() { return length == 0; }
+	public int getLength() { return length; }
+	public Village getFirst() {return this.firstVillage;}
+	public Village getLast() {return this.lastVillage;}
+	
 	public void insert ( Village newVillage ) {
-		
 		if (isEmpty()) {
 			firstVillage = newVillage;
 			lastVillage = newVillage;
@@ -26,8 +31,9 @@ public class Graph {
 		length++;
 	}
 	
-	public void delete(int villageName){
-		Village villToDelete = findVillage(villageName); 
+	public void delete(int villageName) throws GraphEmptyException, NotFoundException {
+		if (isEmpty()) {throw new GraphEmptyException();}
+		Village villToDelete = find(villageName); 
 		if(villToDelete.outdegree > 0){
 			RoadIterator ri = villToDelete.adjacent.firstRoad;
 			while(ri != null){
@@ -50,27 +56,28 @@ public class Graph {
 		}
 	} // end of delete method
 	
-	public Village findVillage(int name) {
+	public Village find(int name) throws NotFoundException, GraphEmptyException {
+		if (isEmpty()) {throw new GraphEmptyException();}
 		Village temp = firstVillage;
 		Village found = temp;
-		try {
 			while (temp!= null) {
 				if (temp.getName() == name) found = temp;
 				temp = temp.next;
 			}
-			if ( found.getName() != name) throw new VillageNotFoundException(name);
-		} catch (VillageNotFoundException e) { System.out.println(e.getMessage()); }
+			if ( found.getName() != name) throw new NotFoundException();
 		return found;
 	}
+
 	
-	public boolean isEmpty() { return length == 0; }
-	public int getLength() { return length; }
-	
-	//exception
-	public class VillageNotFoundException extends Exception {
-		public VillageNotFoundException (int name) {
-			super("Village "+name + " does not exist!");
-		}
-	}//end VIllageNotFoundException
+	public void printGraph() { // string representation of graph, used for testing
+		if (! isEmpty()) {
+			Village current = this.firstVillage;
+			while (current != null) {
+				System.out.println("Village " + current.getName() + " holds " + current.populationSize + " gnomes.");
+				System.out.println("   It leads to " + current.getAdjList());
+				current = current.getNext();
+			}
+		} else {System.out.println("This graph is empty.");}
+	} // end of printGraph()
 	
 }//end VillageList class

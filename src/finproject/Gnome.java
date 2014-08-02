@@ -3,7 +3,7 @@ package finproject;
 import java.util.*;
 import java.io.*;
 
-import finproject.Exceptions.VillageFullException;
+import finproject.Exceptions.*;
 
 public class Gnome {
 	public BufferedReader br = new BufferedReader(new InputStreamReader(System.in));

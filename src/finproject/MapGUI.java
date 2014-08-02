@@ -4,8 +4,11 @@ package finproject;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.*;
+
 import javax.swing.*;
+
+import finproject.Exceptions.GraphEmptyException;
+import finproject.Exceptions.NotFoundException;
 import finproject.Exceptions.*;
 
 public class MapGUI implements ActionListener {
@@ -13,7 +16,7 @@ public class MapGUI implements ActionListener {
 		JFrame mapFrame;
 		JPanel welcomePanel, titlePanel, mapPanel, optionsPanel;
 		JButton addVillage, delVillage, placeGnome, moveGnome, addRoad, welcomeButton;
-		Queue graph;
+		Graph graph;
 	
 	public MapGUI() { // builds the main window/frame
 		mapFrame = new JFrame("Gnomenwald");
@@ -21,6 +24,7 @@ public class MapGUI implements ActionListener {
 		mapFrame.setSize(600, 400);			
 		mapFrame.setMinimumSize(new Dimension(800, 500));
 			
+		mapFrame.getContentPane().repaint();
 		controller();
 	} // end of constructor
 	
@@ -79,10 +83,10 @@ public class MapGUI implements ActionListener {
 		titlePanel.add(title);
 	} // end of addTitle()
 	
-	public void createGraph() { // TODO ask user for inputs
+	public void createGraph() {
 		if (graph == null) { // creates new graph with 5 villages of population 5
-			graph = new Queue();
-			for (int i=0; i<5; i++) {graph.insert(new Node(new Village(5)));}
+			graph = new Graph();
+			for (int i=0; i<5; i++) {graph.insert(new Village(5));}
 		}
 		
 		// trying known values for now for testing
@@ -103,7 +107,7 @@ public class MapGUI implements ActionListener {
 	} // end of addGraph()
 	
 	public void drawGraph() {
-		for (int i=0; i<graph.length(); i++) {
+		for (int i=0; i<graph.getLength(); i++) {
 			DrawVillage newVill = new DrawVillage();
 			mapPanel.add(newVill);
 		}
@@ -147,12 +151,32 @@ public class MapGUI implements ActionListener {
     } // end of actionPerformed() 
 	
 	public void addVillage() {
-		System.out.println("Add village button"); // TODO options for number of gnomes, adding roads
-		graph.insert(new Node(new Village())); // default to zero gnomes
+		System.out.println("Add village button");
+		Village temp = new Village();
+		graph.insert(temp); // default to zero gnomes
+		
+		JOptionPane.showMessageDialog(mapFrame,
+        		"Village " + temp.getName() + " has been created with a population of zero gnomes.",
+        		"Adding a village", JOptionPane.PLAIN_MESSAGE);
 	}
 	
 	public void delVillage() {
-		System.out.println("Delete village button"); // TODO
+		try {
+			Object [] options = villageList();
+			String strVillage = (String) JOptionPane.showInputDialog(mapFrame,
+			        "Which village would you like to delete?",
+			        "Deleting a village", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+			if (strVillage == null) {return;}
+			
+			Village village = graph.find(Integer.parseInt(strVillage));
+			
+		} catch (NumberFormatException e) {
+			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
+		} catch (NotFoundException e) {
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "NotFoundException", JOptionPane.ERROR_MESSAGE);
+		} catch (GraphEmptyException e) {
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "GraphEmptyException", JOptionPane.ERROR_MESSAGE);
+		}
 	} 
 	
 	public void placeGnome() {
@@ -304,11 +328,11 @@ public class MapGUI implements ActionListener {
 	
 	public Object [] villageList() { // returns the villages in the graph as an array of their names
 									 // used for main options buttons
-		Object [] options = new Object [graph.length()];
-		Node current = graph.getFirst(); int nextIndex = 0;
-		for (int i=0; i<graph.length(); i++) {
+		Object [] options = new Object [graph.getLength()];
+		Village current = graph.getFirst(); int nextIndex = 0;
+		for (int i=0; i<graph.getLength(); i++) {
 			while (current != null) {
-				options[nextIndex] = Integer.toString(current.getVillage().getName());
+				options[nextIndex] = Integer.toString(current.getName());
 				current = current.getNext();
 				nextIndex++;
 			}
