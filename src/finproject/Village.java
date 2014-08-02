@@ -44,14 +44,14 @@ public class Village {
 	public void connect (int cost, Village newNeighbor) throws SameVillageException, RoadAlreadyExistsException {
 		// exceptions caught by MapGUI so pop-up error message can be generated
 			if (this.equals(newNeighbor)) {throw new SameVillageException();}
-			if (!adjacent.isEmpty()) { //if list not empty				
+			if (! adjacent.isEmpty()) { //if list not empty				
 					RoadIterator currentRoad = adjacent.firstRoad;
 					do { //first check if road exists already
-						if (currentRoad.getVillage() == newNeighbor) {throw new RoadAlreadyExistsException(currentRoad.getCost(), this.name, newNeighbor.name);} 
+						if (currentRoad.endVillage() == newNeighbor) {throw new RoadAlreadyExistsException(currentRoad.getCost(), this.name, newNeighbor.name);} 
 						currentRoad = currentRoad.next;
 					} while (currentRoad != null);
 					//Construct new road
-					Road newRoad = new Road (cost, newNeighbor ); 
+					Road newRoad = new Road (this, newNeighbor, cost); 
 					RoadIterator newRoadIt = new RoadIterator (newRoad);
 					
 					//update existing AdjList
@@ -60,7 +60,7 @@ public class Village {
 					adjacent.lastRoad = newRoadIt;	
 			}// end if
 			else { //list empty, construct new road
-				Road newRoad = new Road (cost, newNeighbor );
+				Road newRoad = new Road (this, newNeighbor, cost);
 				RoadIterator newRoadIt = new RoadIterator (newRoad);
 				
 				adjacent.firstRoad = newRoadIt;
@@ -112,14 +112,14 @@ public class Village {
 	} // end of printGnomes()
 	
 	public String getAdjList() {
-
 		String roadList = "";
+		
 		RoadIterator current = this.adjacent.firstRoad;
 		if (current == null)  roadList += "nowhere."; 
 		else {
 			while (current != null ) {
 	
-				roadList += "Village " + current.getVillage().getName() + ", cost " + current.getCost() + ", ";
+				roadList += "Village " + current.endVillage().getName() + ", cost " + current.getCost() + ", ";
 				current = current.next;
 				
 			} //AdjList loop

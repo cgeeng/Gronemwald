@@ -77,7 +77,7 @@ public class MovingMap {
 				
 			} //AdjList loop
 			pw.println("Village " + current.getName() + ":" + roadList);	
-			current = current.next;
+			current = current.getNext();
 			
 			String population = "Population is Gnome ";
 			int j = 0;

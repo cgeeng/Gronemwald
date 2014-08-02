@@ -170,6 +170,8 @@ public class MapGUI implements ActionListener {
 			
 			Village village = graph.find(Integer.parseInt(strVillage));
 			
+			
+			
 			graph.delete(village.getName());
 			
 		} catch (NumberFormatException e) {

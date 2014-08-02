@@ -54,7 +54,7 @@ public class Gnome {
 			}
 			//Assign destination village
 			Village oldVillage = this.current;
-			Village destination = temp.getVillage();
+			Village destination = temp.endVillage();
 			destination.insertGnome(this);			
 			System.out.println("Gnome " + ID + " has moved from Village " + oldVillage.getName() + " to Village " + current.getName());
 		} catch (NotInVillageException e) {System.out.println(e.getMessage()); 
@@ -104,13 +104,13 @@ public class Gnome {
 			if(a.adjacent.length!=0){
 				b = a.adjacent.firstRoad;
 				while(b != null){
-					System.out.println("b's indegree is "+b.getVillage().getIndegree());
-					b.getVillage().indegree--;
-					System.out.println("b's indegree is nowww "+b.getVillage().getIndegree());
-					if( b.getVillage().indegree  == 0 ){
+					System.out.println("b's indegree is "+b.endVillage().getIndegree());
+					b.endVillage().indegree--;
+					System.out.println("b's indegree is nowww "+b.endVillage().getIndegree());
+					if( b.endVillage().indegree  == 0 ){
 						System.out.println("about to insert...");
-						q.insert(new Node(b.getVillage()));
-						System.out.println("added to the q is village "+b.getVillage().getName() +" with indegree "+b.getVillage().indegree);
+						q.insert(new Node(b.endVillage()));
+						System.out.println("added to the q is village "+b.endVillage().getName() +" with indegree "+b.endVillage().indegree);
 					}
 					b = b.next;
 				} // end of while

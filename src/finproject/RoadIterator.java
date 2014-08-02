@@ -13,7 +13,8 @@ public class RoadIterator {
 	}//end constructor
 	
 	//methods
-	public Village getVillage() { return data.endVillage; } //returns village that road leads to
+	public Village endVillage() { return data.end; } //returns village that road leads to
+	public Village startVillage() {return data.start;}
 	public int getCost() { return data.cost; };
 
 }//end class

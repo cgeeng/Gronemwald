@@ -37,7 +37,7 @@ public class Graph {
 		if(villToDelete.outdegree > 0){
 			RoadIterator ri = villToDelete.adjacent.firstRoad;
 			while(ri != null){
-				ri.getVillage().indegree--;
+				ri.endVillage().indegree--;
 				ri = ri.next;
 			}
 		}
@@ -46,7 +46,7 @@ public class Graph {
 			if(villLeadingTo.outdegree > 0){
 				RoadIterator ri = villLeadingTo.adjacent.firstRoad;
 				while(ri != null){
-					if(ri.getVillage() == villToDelete){
+					if(ri.endVillage() == villToDelete){
 						//remove(ri); // MAKE METHOD TO REMOVE A ROADITERATOR
 					}
 					ri = ri.next;
