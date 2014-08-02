@@ -5,7 +5,6 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-import finproject.Exceptions.FileNotFoundException;
 import finproject.Exceptions.*;
 
 public class MapGUI implements ActionListener {
@@ -109,7 +108,7 @@ public class MapGUI implements ActionListener {
 		if (! graph.isEmpty()) {
 			Village currentVill = graph.getFirst();
 			while (currentVill != null) {
-				DrawVillage newVill = new DrawVillage(currentVill);
+				new DrawVillage(currentVill);
 				/*
 				if (! currentVill.outgoing.isEmpty()) {
 					RoadIterator currentRoad = currentVill.outgoing.getFirst();
@@ -119,8 +118,7 @@ public class MapGUI implements ActionListener {
 						currentRoad = currentRoad.getNext();
 					}
 				}*/
-					
-				mapPanel.add(newVill);
+				
 				currentVill = currentVill.getNext();
 			}
 		}
@@ -401,22 +399,10 @@ public class MapGUI implements ActionListener {
 		public DrawVillage(Village v) {
 			this.village = v;
 			
-			ImageIcon icon = createImageIcon("/Users/Kate/JavaProjects/Gronemwald/src/finproject/villageCircle.gif",
-					"village");
+			ImageIcon icon = new ImageIcon(Image.class.getResource("/resources/villageCircle.gif"));
 			JLabel label = new JLabel(Integer.toString(village.getName()), icon, JLabel.CENTER);
+			mapPanel.add(label);
 		}
-		
-		protected ImageIcon createImageIcon(String path, String description) {
-			try {
-				java.net.URL imgURL = getClass().getResource(path);
-				if (imgURL != null) {
-					return new ImageIcon(imgURL, description);
-				} else {throw new FileNotFoundException();}
-			} catch (FileNotFoundException e) {
-				JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "FileNotFoundException", JOptionPane.ERROR_MESSAGE);
-				return null;
-			}
-		} // end of createImageIcon
 		
 		/* 
 		public DrawVillage(Village v) {	
