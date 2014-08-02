@@ -12,22 +12,6 @@ public class Gnome {
 	private int ID;
 	public Village current;
 	static int counter;
-	static String[][] villAndCost = new String[MovingMap.testVillage.length][];
-	
-	/*
-	static{
-		for (int i = 1; i < MovingMap.testVillage.length; i++){
-			villAndCost[i] = new String[3];
-			System.out.println("length is "+villAndCost[i].length);
-			//System.out.println("HI");
-			//System.out.println("length is "+villAndCost.length);
-			villAndCost[i][0] = ""; // prior village name
-			villAndCost[i][1] = ""; // total cost get to this village		
-			// outdegree that decreases to 0, which indicates that village is has been "dealt with"
-			villAndCost[i][2] = String.valueOf(MovingMap.testVillage[i].getOutdegree()); 
-		}
-	}
-	*/
 	
 	public int getID() {return this.ID;}
 	public void setVillage(Village v) {this.current = v;}
