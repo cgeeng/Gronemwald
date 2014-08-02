@@ -1,4 +1,5 @@
 package finproject;
+import finproject.Exceptions.*;
 
 import finproject.Exceptions.*;
 
@@ -69,6 +70,7 @@ public class Graph {
 	}
 
 	
+
 	public void printGraph() { // string representation of graph, used for testing
 		if (! isEmpty()) {
 			Village current = this.firstVillage;

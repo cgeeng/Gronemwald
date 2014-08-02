@@ -12,29 +12,25 @@ public class MovingMap {
 	static PrintWriter pw = new PrintWriter (System.out, true);
 	static Village[] testVillage = new Village[15];
 	static Gnome[] testGnomes = new Gnome[10];
+	static Graph Gr = new Graph();
 	
 
-	public static void main(String[] args) throws NumberFormatException, IOException, RoadAlreadyExistsException{
+	public static void main(String[] args) throws NumberFormatException, IOException, RoadAlreadyExistsException, SameVillageException, 
+	NotFoundException, GraphEmptyException {
 
-		//MapGUI hello = new MapGUI();
 		
-		/*testVillage[1] = new Village();
-		testVillage[2] = new Village();
-		testVillage[3] = new Village();
-		testVillage[4] = new Village();
-		testVillage[1].connect(3,  testVillage[2]);
-		testVillage[1].connect(1,  testVillage[3]);
-		testVillage[1].connect(1,  testVillage[4]);
-		testVillage[2].connect(5,  testVillage[3]);
-		testVillage[4].connect(5,  testVillage[1]);
+		Gr.insert( new Village());
+		Gr.insert( new Village());
+		Gr.insert( new Village());
 		
-		printMap( testVillage );
-		
-		testGnomes[0] = new Gnome();
+		Gr.find(1).connect(2, Gr.find(3));
+		Gr.find(1).connect(2, Gr.find(2));
+		printMap( Gr );
 
 		//testGnomes[0].travelRandom();
-		testGnomes[0].travelPick();
-		printMap( testVillage );*/
+		//testGnomes[0].travelPick();
+
+		/*
 		for(int i = 1; i <=14; i++){
 			testVillage[i] = new Village();
 		}
@@ -64,10 +60,45 @@ public class MovingMap {
 		printMap(testVillage);
 		testGnomes[0] = new Gnome();
 		testGnomes[0].travelTopSort();
+		*/
 	}
 	
+	public static void printMap( Graph map) throws NotFoundException, GraphEmptyException {
+		int i = 1;
+		Village current = map.firstVillage;
+		while (i <= map.getLength() ) {
+			
+			String roadList = "";
+			RoadIterator currentRoad = current.adjacent.firstRoad;
+			while (currentRoad != null ) { //get adjacent roads
+
+				roadList += "Road to " + currentRoad.getVillage().getName() + " cost " + currentRoad.getCost() + ", ";
+				currentRoad = currentRoad.next;
+				
+			} //AdjList loop
+			pw.println("Village " + current.getName() + ":" + roadList);	
+			current = current.next;
+			
+			String population = "Population is Gnome ";
+			int j = 0;
+			if (map.find(i).population[j] == null) population = "Population is no one.";
+			else {
+				while (map.find(i).population[j] != null) { //get population
+				
+					population += map.find(i).population[j].getID() + ", ";
+					j++;
+				}
+			}
+			pw.println(population);	
+
+			i++;
+		}//end while
+
+	}
+	
+/*	
 	public static void printMap( Village[] map ) {
-		
+		//for arrays
 		for (int i = 1; i <= 4; i++) {
 			
 			String roadList = "";
@@ -97,5 +128,5 @@ public class MovingMap {
 	
 
 	} // end printMap method
-	
+	*/
 }
