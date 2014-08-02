@@ -191,10 +191,14 @@ public class MapGUI implements ActionListener {
 			
 			Village village = graph.find(Integer.parseInt(strVillage));
 			
-			// deletes all associated roads
+			// deletes all associated roads (could be moved into village)
 			RoadIterator current = village.outgoing.firstRoad;
-			for (int i=0; i<village.outgoing.length; i++) {
-				village.deleteRoad(current.getData()); current = current.getNext();
+			while (current != null) {
+				village.deleteOutRoad(current.getData()); current = current.getNext();
+			}
+			RoadIterator current2 = village.incoming.firstRoad;
+			while (current2 != null) {
+				village.deleteInRoad(current2.getData()); current2 = current2.getNext();
 			}
 			
 			graph.delete(village.getName());
@@ -397,9 +401,9 @@ public class MapGUI implements ActionListener {
 	
 	public class DrawVillage extends JPanel {
 		Village village;
+		Dimension preferredSize = new Dimension(40,40);
 		
 		public DrawVillage(Village v) {	
-			setPreferredSize(new Dimension(40,40));
 			setBackground(Color.WHITE);
 			setOpaque(true);
 			
@@ -407,7 +411,7 @@ public class MapGUI implements ActionListener {
 		}
 		
 		public Dimension getPreferredSize() {
-			return new Dimension(40,40);
+			return preferredSize;
 		}
 		
 		protected void paintComponent(Graphics g) {

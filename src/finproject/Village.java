@@ -44,12 +44,11 @@ public class Village {
 		if (this.equals(newNeighbor)) {throw new SameVillageException();}			
 		if (! outgoing.isEmpty()) {
 			RoadIterator currentRoad = outgoing.firstRoad;
-			do { // first check if road exists already
+			while (currentRoad != null) { // first check if road exists already
 				if (currentRoad.endVillage() == newNeighbor) {
 					throw new RoadAlreadyExistsException(currentRoad.getCost(), this.name, newNeighbor.name);
-				}
-				currentRoad = currentRoad.getNext();
-			} while (currentRoad != null);
+				} currentRoad = currentRoad.getNext();
+			}
 		}
 		Road newRoad = new Road(this, newNeighbor, cost);
 					
@@ -60,11 +59,18 @@ public class Village {
 		newNeighbor.indegree++;
 	}//end connect
 	
-	public void deleteRoad(Road r) throws NotFoundException {
-		r.end.incoming.delete(r);
-		r.end.indegree--;
+	public void deleteOutRoad(Road r) throws NotFoundException {
 		outgoing.delete(r);
 		this.outdegree--;
+		r.end.incoming.delete(r);
+		r.end.indegree--;
+	}
+	
+	public void deleteInRoad(Road r) throws NotFoundException {
+		incoming.delete(r);
+		this.indegree--;
+		r.start.outgoing.delete(r);
+		r.start.outdegree++;
 	}
 	
 	public Gnome removeGnome(Gnome g) throws VillageEmptyException {
@@ -146,16 +152,14 @@ public class Village {
 				lastRoad = ri;
 			}
 			length++;
-		}
+		} // end of insert()
 		
 		public void delete(Road r) throws NotFoundException {
-			// pass isStart to see if end point has yet to be deleted as well
-			RoadIterator ri = find(r);
-			
 			if (length <= 1) {
 				this.firstRoad = null;
 				this.lastRoad = null;}
 			else {
+				RoadIterator ri = find(r);
 				if (ri.equals(firstRoad)) {
 					ri.getNext().setPrev(null);
 					firstRoad = ri.getNext();}
