@@ -2,6 +2,7 @@ package finproject;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 
 import javax.swing.*;
 
@@ -395,13 +396,18 @@ public class MapGUI implements ActionListener {
 	
 	public class DrawVillage extends JPanel {
 		Village village;
+		BufferedImage img;
 		
 		public DrawVillage(Village v) {
 			this.village = v;
 			
-			ImageIcon icon = new ImageIcon(Image.class.getResource("/resources/villageCircle.gif"));
+			ImageIcon icon = new ImageIcon(URL);
 			JLabel label = new JLabel(Integer.toString(village.getName()), icon, JLabel.CENTER);
 			mapPanel.add(label);
+		}
+		
+		public Dimension getPreferredSize() {
+			return new Dimension(40,40);
 		}
 		
 		/* 
