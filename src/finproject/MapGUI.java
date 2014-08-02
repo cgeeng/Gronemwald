@@ -1,14 +1,8 @@
-// round button class from http://stackoverflow.com/questions/778222/make-a-button-round
-
 package finproject;
 
 import java.awt.*;
 import java.awt.event.*;
-
 import javax.swing.*;
-
-import finproject.Exceptions.GraphEmptyException;
-import finproject.Exceptions.NotFoundException;
 import finproject.Exceptions.*;
 
 public class MapGUI implements ActionListener {
@@ -84,13 +78,13 @@ public class MapGUI implements ActionListener {
 	} // end of addTitle()
 	
 	public void createGraph() {
+		try {
 		if (graph == null) { // creates new graph with 5 villages of population 5
 			graph = new Graph();
 			for (int i=0; i<5; i++) {graph.insert(new Village(5));}
 		}
 		
 		// trying known values for now for testing
-		try {
 			graph.find(1).connect(2, graph.find(2));
 			graph.find(1).connect(4, graph.find(3));
 			graph.find(2).connect(5, graph.find(4));
@@ -101,7 +95,8 @@ public class MapGUI implements ActionListener {
 		} catch (RoadAlreadyExistsException e) {System.out.println(e.getMessage());
 		} catch (GraphEmptyException e) {System.out.println(e.getMessage());
 		} catch (NotFoundException e) {System.out.println(e.getMessage());
-		} catch (SameVillageException e) {System.out.println(e.getMessage());}
+		} catch (SameVillageException e) {System.out.println(e.getMessage());
+		} catch (VillageFullException e) {System.out.println(e.getMessage());} 
 		
 		graph.printGraph();
 	} // end of addGraph()
@@ -154,9 +149,14 @@ public class MapGUI implements ActionListener {
 		Village temp = new Village();
 		graph.insert(temp); // default to zero gnomes
 		
+		DrawVillage newVill = new DrawVillage();
+		mapPanel.add(newVill);
+		
 		JOptionPane.showMessageDialog(mapFrame,
         		"Village " + temp.getName() + " has been created with a population of zero gnomes.",
         		"Adding a village", JOptionPane.PLAIN_MESSAGE);
+		
+		mapFrame.repaint();
 	}
 	
 	public void delVillage() {
@@ -169,7 +169,14 @@ public class MapGUI implements ActionListener {
 			
 			Village village = graph.find(Integer.parseInt(strVillage));
 			
+			// deletes all associated roads
+			RoadIterator current = village.outgoing.firstRoad;
+			for (int i=0; i<village.outgoing.length; i++) {
+				village.outgoing.delete(current); current = current.getNext();
+			}
+			
 			graph.delete(village.getName());
+			graph.printGraph();
 			
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
@@ -361,32 +368,10 @@ public class MapGUI implements ActionListener {
 		});
 	} // end of main()
 	
-	public class RoundButton extends JButton {
-		public RoundButton(String label) {
-			super(label);
-			
-			Dimension size = getPreferredSize();
-			size.width = size.height = Math.max(size.width, size.height);
-			setContentAreaFilled(false);
-		}
-		
-		protected void paintComponent(Graphics g) {
-			g.setColor(getBackground());
-			g.fillOval(0,0,getSize().width,getSize().height);
-			super.paintComponent(g);
-		}
-		
-		protected void paintBorder(Graphics g) {
-			g.setColor(getForeground());
-			g.drawOval(0,0,getSize().width,getSize().height);
-		}
-		
-	} // end of class RoundButton
-	
 	public class DrawVillage extends JPanel {
 		
 		public DrawVillage() {
-			setPreferredSize(new Dimension(30,30));
+			setPreferredSize(new Dimension(40,40));
 			setBackground(Color.WHITE);
 			setOpaque(true);
 		}

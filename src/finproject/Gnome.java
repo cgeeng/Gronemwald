@@ -40,14 +40,14 @@ public class Gnome {
 		try {
 			//Limited to gnomes that are in a village already
 			if (current == null) throw new NotInVillageException();
-			if (current.adjacent.length == 0) throw new NoAdjacentVillagesException(current.getName());
+			if (current.outgoing.length == 0) throw new NoAdjacentVillagesException(current.getName());
 			
 			Random generate = new Random();
-			int randomTraverse = 1 + generate.nextInt(current.adjacent.length);
+			int randomTraverse = 1 + generate.nextInt(current.outgoing.length);
 			System.out.println("Random number is " + randomTraverse);
 			
 			//Iterate across AdjList of gnome's current village to find random road
-			RoadIterator temp = current.adjacent.firstRoad;
+			RoadIterator temp = current.outgoing.firstRoad;
 			for (int i = 1; i < randomTraverse; i++) {
 				System.out.println("i is " + i);
 				temp = temp.next;
@@ -99,14 +99,14 @@ public class Gnome {
 			System.out.println("a has been removed from q. q length is now "+q.length());
 			//System.out.println("hello?");
 			pathToTake += a.getName() + " ";
-			System.out.println("a.name is "+pathToTake+" and adjacent length is "+a.adjacent.length);
+			System.out.println("a.name is "+pathToTake+" and adjacent length is "+a.outgoing.length);
 			// for each adjacent village to village a, decrease each indegree and if it equals 0, add to queue
-			if(a.adjacent.length!=0){
-				b = a.adjacent.firstRoad;
+			if(a.outgoing.length!=0){
+				b = a.outgoing.firstRoad;
 				while(b != null){
-					System.out.println("b's indegree is "+b.endVillage().getIndegree());
+					System.out.println("b's indegree is "+b.endVillage().indegree);
 					b.endVillage().indegree--;
-					System.out.println("b's indegree is nowww "+b.endVillage().getIndegree());
+					System.out.println("b's indegree is nowww "+b.endVillage().indegree);
 					if( b.endVillage().indegree  == 0 ){
 						System.out.println("about to insert...");
 						q.insert(new Node(b.endVillage()));
@@ -123,7 +123,7 @@ public class Gnome {
 	
 	public Queue queueZero(Queue someQ){
 		for(int i = 1; i < MovingMap.testVillage.length; i++){
-			if(MovingMap.testVillage[i].getIndegree() == 0){
+			if(MovingMap.testVillage[i].indegree == 0){
 				someQ.insert(new Node(MovingMap.testVillage[i]));
 			}
 		}

@@ -69,10 +69,10 @@ public class MovingMap {
 		while (i <= map.getLength() ) {
 			
 			String roadList = "";
-			RoadIterator currentRoad = current.adjacent.firstRoad;
+			RoadIterator currentRoad = current.outgoing.firstRoad;
 			while (currentRoad != null ) { //get adjacent roads
 
-				roadList += "Road to " + currentRoad.getVillage().getName() + " cost " + currentRoad.getCost() + ", ";
+				roadList += "Road to " + currentRoad.endVillage().getName() + " cost " + currentRoad.getCost() + ", ";
 				currentRoad = currentRoad.next;
 				
 			} //AdjList loop
