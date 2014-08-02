@@ -2,7 +2,10 @@ package finproject;
 
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
+
+import finproject.Exceptions.FileNotFoundException;
 import finproject.Exceptions.*;
 
 public class MapGUI implements ActionListener {
@@ -43,6 +46,7 @@ public class MapGUI implements ActionListener {
 			mapPanel = new JPanel();
 			mapPanel.setPreferredSize(new Dimension(650, 450));
 			mapPanel.setBackground(Color.RED);
+			mapPanel.setLayout(new GridLayout(3,3));
 			
 			optionsPanel = new JPanel();
 			optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
@@ -77,7 +81,7 @@ public class MapGUI implements ActionListener {
 		titlePanel.add(title);
 	} // end of addTitle()
 	
-	public void createGraph() {
+	public void createGraph() { // used for testing, will change to user input
 		try {
 		if (graph == null) { // creates new graph with 5 villages of population 5
 			graph = new Graph();
@@ -102,11 +106,25 @@ public class MapGUI implements ActionListener {
 	} // end of addGraph()
 	
 	public void drawGraph() {
-		for (int i=0; i<graph.getLength(); i++) {
-			DrawVillage newVill = new DrawVillage();
-			mapPanel.add(newVill);
+		if (! graph.isEmpty()) {
+			Village currentVill = graph.getFirst();
+			while (currentVill != null) {
+				DrawVillage newVill = new DrawVillage(currentVill);
+				/*
+				if (! currentVill.outgoing.isEmpty()) {
+					RoadIterator currentRoad = currentVill.outgoing.getFirst();
+					while (currentRoad != null) {
+						DrawRoad newRoad = new DrawRoad(currentRoad);
+						mapPanel.add(newRoad);
+						currentRoad = currentRoad.getNext();
+					}
+				}*/
+					
+				mapPanel.add(newVill);
+				currentVill = currentVill.getNext();
+			}
 		}
-	}
+	} // end of drawGraph()
 	
 	public void addOptions() {
 		addVillage = new JButton("Add village");
@@ -153,7 +171,7 @@ public class MapGUI implements ActionListener {
 		Village temp = new Village();
 		graph.insert(temp); // default to zero gnomes
 		
-		DrawVillage newVill = new DrawVillage();
+		DrawVillage newVill = new DrawVillage(temp);
 		mapPanel.add(newVill);
 		
 		JOptionPane.showMessageDialog(mapFrame,
@@ -378,18 +396,70 @@ public class MapGUI implements ActionListener {
 	} // end of main()
 	
 	public class DrawVillage extends JPanel {
+		Village village;
 		
-		public DrawVillage() {
+		public DrawVillage(Village v) {
+			this.village = v;
+			
+			ImageIcon icon = createImageIcon("/Users/Kate/JavaProjects/Gronemwald/src/finproject/villageCircle.gif",
+					"village");
+			JLabel label = new JLabel(Integer.toString(village.getName()), icon, JLabel.CENTER);
+		}
+		
+		protected ImageIcon createImageIcon(String path, String description) {
+			try {
+				java.net.URL imgURL = getClass().getResource(path);
+				if (imgURL != null) {
+					return new ImageIcon(imgURL, description);
+				} else {throw new FileNotFoundException();}
+			} catch (FileNotFoundException e) {
+				JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "FileNotFoundException", JOptionPane.ERROR_MESSAGE);
+				return null;
+			}
+		} // end of createImageIcon
+		
+		/*
+		public DrawVillage(Village v) {	
 			setPreferredSize(new Dimension(40,40));
 			setBackground(Color.WHITE);
 			setOpaque(true);
+			
+			this.village = v;
+		}
+	
+		
+		protected void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			Graphics2D g2D = (Graphics2D) g.create();
+			
+			Shape circle = new Ellipse2D.Double(0,0,40,40);
+			g2D.setColor(getBackground());
+			g2D.fill(circle);
+			
+			ShapeIcon circleIcon = new ShapeIcon(circle);
+			JLabel circleLabel = new JLabel(circleIcon);
+			
+			g2D.dispose();
+		}
+		*/
+	} // end of drawVillage
+	
+	public class DrawRoad extends JPanel {
+		RoadIterator ri;
+		
+		public DrawRoad(RoadIterator ri) {
+			setBackground(Color.WHITE);
+			this.ri = ri;
 		}
 		
 		protected void paintComponent(Graphics g) {
 			Graphics2D g2D = (Graphics2D) g;
 			g2D.setColor(getBackground());
-			g2D.fillOval(0,0,20,20);
+			
+			
+			
+			// g2D.drawLine(x1, y1, x2, y2);
 		}
-	} // end of drawVillage
+	} // end of DrawRoad
 	
 } // end of MapGUI()

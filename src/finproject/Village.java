@@ -131,6 +131,8 @@ public class Village {
 		}
 		
 		public boolean isEmpty() {return this.length == 0;}
+		public RoadIterator getFirst() {return this.firstRoad;}
+		public RoadIterator getLast() {return this.lastRoad;}
 		
 		public void insert(Road r){
 			RoadIterator ri = new RoadIterator(r);

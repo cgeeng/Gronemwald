@@ -47,6 +47,12 @@ public class Exceptions {
 		public VillageNotFoundException (int name) {
 			super("Village "+name + " does not exist!");
 		}
-	}//end VIllageNotFoundException
+	}//end VillageNotFoundException
+	
+	public static class FileNotFoundException extends Exception {
+		public FileNotFoundException () {
+			super("The image file could not be found (check the path).");
+		}
+	}//end FileNotFoundException
 	
 }
