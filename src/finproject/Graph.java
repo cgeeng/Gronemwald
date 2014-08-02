@@ -1,4 +1,5 @@
 package finproject;
+import finproject.Exceptions.*;
 
 public class Graph {
 	private int length = 0;
@@ -58,7 +59,7 @@ public class Graph {
 				if (temp.getName() == name) found = temp;
 				temp = temp.next;
 			}
-			if ( found.getName() != name) throw new VillageNotFoundException(name);
+			if ( found.getName() != name) { throw new VillageNotFoundException(name); }
 		} catch (VillageNotFoundException e) { System.out.println(e.getMessage()); }
 		return found;
 	}
@@ -66,11 +67,6 @@ public class Graph {
 	public boolean isEmpty() { return length == 0; }
 	public int getLength() { return length; }
 	
-	//exception
-	public class VillageNotFoundException extends Exception {
-		public VillageNotFoundException (int name) {
-			super("Village "+name + " does not exist!");
-		}
-	}//end VIllageNotFoundException
-	
+
+
 }//end VillageList class

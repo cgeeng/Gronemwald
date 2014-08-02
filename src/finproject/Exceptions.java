@@ -42,4 +42,11 @@ public class Exceptions {
 			super("This village has already reached its limit of 10 gnomes!");
 		}
 	} // end of VillageFullException
+	
+	public static class VillageNotFoundException extends Exception {
+		public VillageNotFoundException (int name) {
+			super("Village "+name + " does not exist!");
+		}
+	}//end VIllageNotFoundException
+	
 }
