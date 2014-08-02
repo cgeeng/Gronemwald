@@ -10,6 +10,8 @@ public class Village {
 	int populationSize;
 	int outdegree;
 	int indegree;
+	Village next;
+	Village previous;
 	
 	public int getName() {return this.name;}	
 	public int getIndegree(){return indegree;}
