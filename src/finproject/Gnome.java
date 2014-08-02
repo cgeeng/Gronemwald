@@ -3,7 +3,7 @@ package finproject;
 import java.util.*;
 import java.io.*;
 
-import finproject.Exceptions.VillageFullException;
+import finproject.Exceptions.*;
 
 public class Gnome {
 	public BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -40,23 +40,23 @@ public class Gnome {
 		try {
 			//Limited to gnomes that are in a village already
 			if (current == null) throw new NotInVillageException();
-			if (current.adjacent.length == 0) throw new NoAdjacentVillagesException(current.name);
+			if (current.outgoing.length == 0) throw new NoAdjacentVillagesException(current.getName());
 			
 			Random generate = new Random();
-			int randomTraverse = 1 + generate.nextInt(current.adjacent.length);
+			int randomTraverse = 1 + generate.nextInt(current.outgoing.length);
 			System.out.println("Random number is " + randomTraverse);
 			
 			//Iterate across AdjList of gnome's current village to find random road
-			RoadIterator temp = current.adjacent.firstRoad;
+			RoadIterator temp = current.outgoing.firstRoad;
 			for (int i = 1; i < randomTraverse; i++) {
 				System.out.println("i is " + i);
-				temp = temp.next;
+				temp = temp.getNext();
 			}
 			//Assign destination village
 			Village oldVillage = this.current;
-			Village destination = temp.getVillage();
+			Village destination = temp.endVillage();
 			destination.insertGnome(this);			
-			System.out.println("Gnome " + ID + " has moved from Village " + oldVillage.name + " to Village " + current.name);
+			System.out.println("Gnome " + ID + " has moved from Village " + oldVillage.getName() + " to Village " + current.getName());
 		} catch (NotInVillageException e) {System.out.println(e.getMessage()); 
 		} catch (NoAdjacentVillagesException e) {System.out.println(e.getMessage());
 		} catch (VillageFullException e) {System.out.println(e.getMessage());}
@@ -98,21 +98,21 @@ public class Gnome {
 			a = q.remove().getVillage();
 			System.out.println("a has been removed from q. q length is now "+q.length());
 			//System.out.println("hello?");
-			pathToTake += a.name + " ";
-			System.out.println("a.name is "+pathToTake+" and adjacent length is "+a.adjacent.length);
+			pathToTake += a.getName() + " ";
+			System.out.println("a.name is "+pathToTake+" and adjacent length is "+a.outgoing.length);
 			// for each adjacent village to village a, decrease each indegree and if it equals 0, add to queue
-			if(a.adjacent.length!=0){
-				b = a.adjacent.firstRoad;
+			if(a.outgoing.length!=0){
+				b = a.outgoing.firstRoad;
 				while(b != null){
-					System.out.println("b's indegree is "+b.getVillage().getIndegree());
-					b.getVillage().indegree--;
-					System.out.println("b's indegree is nowww "+b.getVillage().getIndegree());
-					if( b.getVillage().indegree  == 0 ){
+					System.out.println("b's indegree is "+b.endVillage().indegree);
+					b.endVillage().indegree--;
+					System.out.println("b's indegree is nowww "+b.endVillage().indegree);
+					if( b.endVillage().indegree  == 0 ){
 						System.out.println("about to insert...");
-						q.insert(new Node(b.getVillage()));
-						System.out.println("added to the q is village "+b.getVillage().name+" with indegree "+b.getVillage().indegree);
+						q.insert(new Node(b.endVillage()));
+						System.out.println("added to the q is village "+b.endVillage().getName() +" with indegree "+b.endVillage().indegree);
 					}
-					b = b.next;
+					b = b.getNext();
 				} // end of while
 			} // end of if
 		} // end of while
@@ -123,7 +123,7 @@ public class Gnome {
 	
 	public Queue queueZero(Queue someQ){
 		for(int i = 1; i < MovingMap.testVillage.length; i++){
-			if(MovingMap.testVillage[i].getIndegree() == 0){
+			if(MovingMap.testVillage[i].indegree == 0){
 				someQ.insert(new Node(MovingMap.testVillage[i]));
 			}
 		}

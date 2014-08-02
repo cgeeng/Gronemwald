@@ -15,15 +15,16 @@ public class MovingMap {
 	static Graph Gr = new Graph();
 	
 
-	public static void main(String[] args) throws NumberFormatException, IOException, RoadAlreadyExistsException, SameVillageException{
+	public static void main(String[] args) throws NumberFormatException, IOException, RoadAlreadyExistsException, SameVillageException, 
+	NotFoundException, GraphEmptyException {
 
 		
 		Gr.insert( new Village());
 		Gr.insert( new Village());
 		Gr.insert( new Village());
 		
-		Gr.findVillage(1).connect(2, Gr.findVillage(3));
-		Gr.findVillage(1).connect(2, Gr.findVillage(2));
+		Gr.find(1).connect(2, Gr.find(3));
+		Gr.find(1).connect(2, Gr.find(2));
 		printMap( Gr );
 
 		//testGnomes[0].travelRandom();
@@ -62,29 +63,29 @@ public class MovingMap {
 		*/
 	}
 	
-	public static void printMap( Graph map) {
+	public static void printMap( Graph map) throws NotFoundException, GraphEmptyException {
 		int i = 1;
 		Village current = map.firstVillage;
 		while (i <= map.getLength() ) {
 			
 			String roadList = "";
-			RoadIterator currentRoad = current.adjacent.firstRoad;
+			RoadIterator currentRoad = current.outgoing.firstRoad;
 			while (currentRoad != null ) { //get adjacent roads
 
-				roadList += "Road to " + currentRoad.getVillage().getName() + " cost " + currentRoad.getCost() + ", ";
-				currentRoad = currentRoad.next;
+				roadList += "Road to " + currentRoad.endVillage().getName() + " cost " + currentRoad.getCost() + ", ";
+				currentRoad = currentRoad.getNext();
 				
 			} //AdjList loop
 			pw.println("Village " + current.getName() + ":" + roadList);	
-			current = current.next;
+			current = current.getNext();
 			
 			String population = "Population is Gnome ";
 			int j = 0;
-			if (map.findVillage(i).population[j] == null) population = "Population is no one.";
+			if (map.find(i).population[j] == null) population = "Population is no one.";
 			else {
-				while (map.findVillage(i).population[j] != null) { //get population
+				while (map.find(i).population[j] != null) { //get population
 				
-					population += map.findVillage(i).population[j].getID() + ", ";
+					population += map.find(i).population[j].getID() + ", ";
 					j++;
 				}
 			}

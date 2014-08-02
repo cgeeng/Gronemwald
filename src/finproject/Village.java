@@ -4,75 +4,73 @@ import finproject.Exceptions.*;
 
 public class Village {
 	static int totalVillage = 0;
-	public int name;
-	AdjList adjacent;
-	Gnome[] population = new Gnome[10]; //Limit of 10 gnomes
+	
+	private int name;
+	AdjList incoming, outgoing;
+	Gnome [] population = new Gnome[10]; // limit of 10 gnomes
 	int populationSize;
-	int outdegree;
-	int indegree;
-	Village next;
-	Village previous;
+	int indegree, outdegree;
+	private Village next, previous;
 	
 	public int getName() {return this.name;}	
-	public int getIndegree(){return indegree;}
-	public int getOutdegree(){return outdegree;} // = adjacent.length?
+	public Village getNext() {return this.next;}
+	public void setNext(Village n) {this.next = n;}
+	public Village getPrev() {return this.previous;}
+	public void setPrev(Village p) {this.previous = p;}
 	public boolean isEmpty() {return this.populationSize == 0;}
 	public boolean isFull() {return this.populationSize == 10;}
 	
 	public Village() {
-		this.name = ++totalVillage; //Create name starting from 1
-		adjacent = new AdjList();
+		this.name = ++totalVillage;
+		outgoing = new AdjList(); incoming = new AdjList();
 		outdegree = 0;
 		indegree = 0;
 		
 	}//end Constructor
 	
-	public Village(int population) { // for testing
+	public Village(int population) throws VillageFullException { // for testing
 		this.name = ++totalVillage;
-		adjacent = new AdjList();
+		outgoing = new AdjList(); incoming = new AdjList();
 		outdegree = 0;
 		indegree = 0;
 		
-		for (int i=0; i<population; i++) {Gnome temp = new Gnome(this);}
+		for (int i=0; i<population; i++) {this.insertGnome(new Gnome());}
 	}
 	
 	//methods
 	
 	public void connect (int cost, Village newNeighbor) throws SameVillageException, RoadAlreadyExistsException {
 		// exceptions caught by MapGUI so pop-up error message can be generated
-			if (this.equals(newNeighbor)) {throw new SameVillageException();}
-			if (!adjacent.isEmpty()) { //if list not empty				
-					RoadIterator currentRoad = adjacent.firstRoad;
-					do { //first check if road exists already
-						if (currentRoad.getVillage() == newNeighbor) {throw new RoadAlreadyExistsException(currentRoad.getCost(), this.name, newNeighbor.name);} 
-						currentRoad = currentRoad.next;
-					} while (currentRoad != null);
-					//Construct new road
-					Road newRoad = new Road (cost, newNeighbor ); 
-					RoadIterator newRoadIt = new RoadIterator (newRoad);
+		if (this.equals(newNeighbor)) {throw new SameVillageException();}			
+		if (! outgoing.isEmpty()) {
+			RoadIterator currentRoad = outgoing.firstRoad;
+			do { // first check if road exists already
+				if (currentRoad.endVillage() == newNeighbor) {
+					throw new RoadAlreadyExistsException(currentRoad.getCost(), this.name, newNeighbor.name);
+				}
+				currentRoad = currentRoad.getNext();
+			} while (currentRoad != null);
+		}
+		Road newRoad = new Road(this, newNeighbor, cost);
 					
-					//update existing AdjList
-					adjacent.lastRoad.next = newRoadIt;
-					newRoadIt.previous = adjacent.lastRoad;
-					adjacent.lastRoad = newRoadIt;	
-			}// end if
-			else { //list empty, construct new road
-				Road newRoad = new Road (cost, newNeighbor );
-				RoadIterator newRoadIt = new RoadIterator (newRoad);
-				
-				adjacent.firstRoad = newRoadIt;
-				adjacent.lastRoad = newRoadIt;
-			}//end else
-			newNeighbor.indegree++;
-			this.outdegree++;
-			adjacent.length++;
+		this.outgoing.insert(newRoad);	
+		newNeighbor.incoming.insert(newRoad);
 		
+		this.outdegree++;
+		newNeighbor.indegree++;
 	}//end connect
+	
+	public void deleteRoad(Road r) throws NotFoundException {
+		r.end.incoming.delete(r);
+		r.end.indegree--;
+		outgoing.delete(r);
+		this.outdegree--;
+	}
 	
 	public Gnome removeGnome(Gnome g) throws VillageEmptyException {
 		if (isEmpty()) {throw new VillageEmptyException();}
 		else {
-			int gIndex=10; // will be replaced by wanted gnome's index, unreachable in for loop otherwise
+			int gIndex=10;
 			for (int i=0; i<populationSize; i++) {
 				if (population[i].getID() == g.getID()) {
 					population[i] = null; g.setVillage(null);
@@ -109,21 +107,16 @@ public class Village {
 	} // end of printGnomes()
 	
 	public String getAdjList() {
-
 		String roadList = "";
-		RoadIterator current = this.adjacent.firstRoad;
-		if (current == null)  roadList += "nowhere."; 
-		else {
-			while (current != null ) {
-	
-				roadList += "Village " + current.getVillage().getName() + ", cost " + current.getCost() + ", ";
-				current = current.next;
-				
-			} //AdjList loop
+		
+		RoadIterator current = this.outgoing.firstRoad;
+		while (current != null ) {
+			roadList += "Village " + current.endVillage().getName() + ", cost " + current.getCost() + ", ";
+			current = current.getNext();
 		}
+
 		return roadList;
 	}//end getAdjList()
-	
 	
 	//Class AdjList
 	public class AdjList {
@@ -137,9 +130,53 @@ public class Village {
 			lastRoad = null;
 		}
 		
-		//methods
-		public boolean isEmpty() { return length == 0;}
-	}
+		public boolean isEmpty() {return this.length == 0;}
+		public RoadIterator getFirst() {return this.firstRoad;}
+		public RoadIterator getLast() {return this.lastRoad;}
+		
+		public void insert(Road r){
+			RoadIterator ri = new RoadIterator(r);
+			if (isEmpty()) {
+				firstRoad = ri;
+				lastRoad = ri;
+			}
+			else {
+				lastRoad.setNext(ri);
+				ri.setPrev(lastRoad);
+				lastRoad = ri;
+			}
+			length++;
+		}
+		
+		public void delete(Road r) throws NotFoundException {
+			// pass isStart to see if end point has yet to be deleted as well
+			RoadIterator ri = find(r);
+			
+			if (length <= 1) {
+				this.firstRoad = null;
+				this.lastRoad = null;}
+			else {
+				if (ri.equals(firstRoad)) {
+					ri.getNext().setPrev(null);
+					firstRoad = ri.getNext();}
+				else if (ri.equals(lastRoad)) {
+					lastRoad = ri.getPrev(); 
+					lastRoad.setNext(null);}
+				else {
+					ri.getPrev().setNext(ri.getNext());
+					ri.getNext().setPrev(ri.getPrev());
+				}}
+			this.length--;
+		} // end of delete()
+		
+		public RoadIterator find(Road r) throws NotFoundException {
+			RoadIterator current = this.firstRoad;
+			while (current != null) {					
+				if (current.getData().equals(r)) {return current;}
+				current = current.getNext();
+			} throw new NotFoundException();
+		} // end of find()
+	} // end of AdjList
 	
 	
 }//end Village class

@@ -6,7 +6,7 @@ public class Exceptions {
 			super(message);
 		}
 		public NotFoundException() {
-			super("This village could not be found.");
+			super("This village/road/gnome could not be found.");
 		}
 	} // end NotFoundException
 	
@@ -47,6 +47,12 @@ public class Exceptions {
 		public VillageNotFoundException (int name) {
 			super("Village "+name + " does not exist!");
 		}
-	}//end VIllageNotFoundException
+	}//end VillageNotFoundException
+	
+	public static class FileNotFoundException extends Exception {
+		public FileNotFoundException () {
+			super("The image file could not be found (check the path).");
+		}
+	}//end FileNotFoundException
 	
 }

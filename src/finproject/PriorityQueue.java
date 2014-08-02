@@ -1,13 +1,15 @@
 package finproject;
 
+import finproject.Exceptions.GraphEmptyException;
+import finproject.Exceptions.NotFoundException;
 import finproject.Exceptions.*;
 
-public class Queue {
+public class PriorityQueue {
 	private int length;
 	private Node firstNode;
 	private Node lastNode;
 	
-	public Queue(){ // constructor
+	public PriorityQueue(){ // constructor
 		this.length = 0;
 	}
 	
@@ -16,7 +18,7 @@ public class Queue {
 	public Node getLast() {return this.lastNode;}
 	public boolean isEmpty() {return length==0;}
 	
-	public Village find(int name) throws NotFoundException, GraphEmptyException {
+	public Village find(int name) throws NotFoundException, GraphEmptyException { // TODO create binary search tree?
 		// exceptions caught by MapGUI so pop-up error message can be generated
 		if (! isEmpty()) {
 			Node current = this.firstNode;
@@ -37,30 +39,8 @@ public class Queue {
 			lastNode = nodeWithVillage;
 		}
 		length++;
-	}
+	}//end insert
 	
-	public Node remove(){ // default to last in queue	
-		Node temp = firstNode;
-		if (firstNode.getNext() != null) {
-			firstNode = firstNode.getNext();
-		} else {
-			firstNode = null;
-		}
-		length--;
-		return temp;
-	}
+	public void removeMin() {}
 	
-	
-	public void printGraph() { // string representation of graph, used for testing
-		if (! isEmpty()) {
-			Node current = this.firstNode;
-			while (current != null) {
-				System.out.println("Village " + current.getVillage().getName() + " holds " + current.getVillage().populationSize + " gnomes.");
-				System.out.println("   It leads to " + current.getVillage().getAdjList());
-				
-				current = current.getNext();
-			}
-		} else {System.out.println("This graph is empty.");}
-	} // end of printGraph()
-
-}
+}//end class
