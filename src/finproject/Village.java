@@ -51,20 +51,20 @@ public class Village {
 				currentRoad = currentRoad.getNext();
 			} while (currentRoad != null);
 		}
-		RoadIterator newRoadIt = new RoadIterator (new Road(this, newNeighbor, cost));
+		Road newRoad = new Road(this, newNeighbor, cost);
 					
-		this.outgoing.insert(newRoadIt);	
-		newNeighbor.incoming.insert(newRoadIt);
+		this.outgoing.insert(newRoad);	
+		newNeighbor.incoming.insert(newRoad);
 		
 		this.outdegree++;
 		newNeighbor.indegree++;
 	}//end connect
 	
-	public void deleteRoad(RoadIterator ri, boolean isStart) {
-		Village end = ri.getData().end;
-		outgoing.delete(ri, isStart);
+	public void deleteRoad(Road r) throws NotFoundException {
+		r.end.incoming.delete(r);
+		r.end.indegree--;
+		outgoing.delete(r);
 		this.outdegree--;
-		end.indegree--;
 	}
 	
 	public Gnome removeGnome(Gnome g) throws VillageEmptyException {
@@ -110,16 +110,13 @@ public class Village {
 		String roadList = "";
 		
 		RoadIterator current = this.outgoing.firstRoad;
-		if (current == null)  {roadList += "nowhere.";}
-		else {
-			while (current != null ) {
-				roadList += "Village " + current.endVillage().getName() + ", cost " + current.getCost() + ", ";
-				current = current.getNext();
-			}
+		while (current != null ) {
+			roadList += "Village " + current.endVillage().getName() + ", cost " + current.getCost() + ", ";
+			current = current.getNext();
 		}
+
 		return roadList;
 	}//end getAdjList()
-	
 	
 	//Class AdjList
 	public class AdjList {
@@ -135,7 +132,8 @@ public class Village {
 		
 		public boolean isEmpty() {return this.length == 0;}
 		
-		public void insert(RoadIterator ri){
+		public void insert(Road r){
+			RoadIterator ri = new RoadIterator(r);
 			if (isEmpty()) {
 				firstRoad = ri;
 				lastRoad = ri;
@@ -145,18 +143,16 @@ public class Village {
 				ri.setPrev(lastRoad);
 				lastRoad = ri;
 			}
-			System.out.println("Inserting... from vil " + ri.getData().start.getName() + " to vil " + ri.getData().end.getName());
 			length++;
 		}
 		
-		public void delete(RoadIterator ri, boolean isStart) {
+		public void delete(Road r) throws NotFoundException {
 			// pass isStart to see if end point has yet to be deleted as well
-			if (isStart) {
-				Village end = ri.getData().end;
-				end.incoming.delete(ri, false);}
+			RoadIterator ri = find(r);
+			
 			if (length <= 1) {
 				this.firstRoad = null;
-				this.lastRoad = null; }
+				this.lastRoad = null;}
 			else {
 				if (ri.equals(firstRoad)) {
 					ri.getNext().setPrev(null);
@@ -169,8 +165,15 @@ public class Village {
 					ri.getNext().setPrev(ri.getPrev());
 				}}
 			this.length--;
-		}
+		} // end of delete()
 		
+		public RoadIterator find(Road r) throws NotFoundException {
+			RoadIterator current = this.firstRoad;
+			while (current != null) {					
+				if (current.getData().equals(r)) {return current;}
+				current = current.getNext();
+			} throw new NotFoundException();
+		} // end of find()
 	} // end of AdjList
 	
 	

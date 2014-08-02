@@ -176,7 +176,7 @@ public class MapGUI implements ActionListener {
 			// deletes all associated roads
 			RoadIterator current = village.outgoing.firstRoad;
 			for (int i=0; i<village.outgoing.length; i++) {
-				village.deleteRoad(current, true); current = current.getNext();
+				village.deleteRoad(current.getData()); current = current.getNext();
 			}
 			
 			graph.delete(village.getName());
@@ -334,6 +334,7 @@ public class MapGUI implements ActionListener {
 	
 	public void addCountry() {
 		System.out.println("Adding a country");
+		Graph graph2 = new Graph();
 	} // end of addCountry()
 	
 	public void welcomeButton() {

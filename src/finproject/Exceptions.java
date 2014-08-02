@@ -6,7 +6,7 @@ public class Exceptions {
 			super(message);
 		}
 		public NotFoundException() {
-			super("This village could not be found.");
+			super("This village/road/gnome could not be found.");
 		}
 	} // end NotFoundException
 	
