@@ -28,7 +28,7 @@ public class MovingMap {
 		printMap( Gr );
 		
 		Gr.createProposal();
-		Gr.proposal.printGraph();
+		printProposalMap(Gr.proposal);
 
 		//testGnomes[0].travelRandom();
 		//testGnomes[0].travelPick();
@@ -65,6 +65,28 @@ public class MovingMap {
 				}
 			}
 			pw.println(population);	
+
+			i++;
+		}//end while
+
+	}
+	
+	public static void printProposalMap( ProposalGraph map) throws NotFoundException, GraphEmptyException {
+		int i = 1;
+		pw.println("Proposal!");
+		Village current = map.firstVillage;
+		while (i <= map.getLength() ) {
+			
+			String roadList = "";
+			RoadIterator currentRoad = current.outgoing.firstRoad;
+			while (currentRoad != null ) { //get adjacent roads
+
+				roadList += "Road to " + currentRoad.endVillage().getName() + " cost " + currentRoad.getCost() + ", ";
+				currentRoad = currentRoad.getNext();
+				
+			} //AdjList loop
+			pw.println("Village " + current.getName() + ":" + roadList);	
+			current = current.getNext();
 
 			i++;
 		}//end while
