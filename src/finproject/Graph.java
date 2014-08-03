@@ -70,7 +70,13 @@ public class Graph {
 	//Just.....forget this method.............creates deep copy of this graph
 	public void createProposal() throws SameVillageException, RoadAlreadyExistsException, NotFoundException, GraphEmptyException {
 		//create proposal instance; WILL NOT BE UPDATED IF ROADS ARE BUILT INTO ACTUAL GRAPH
-		proposal = new ProposalGraph(this);
+		proposal = new ProposalGraph();
+	}
+	
+	public void clearProposal() {
+		//essentially same as createProposal, but here for clarity
+		//Use after finishing finding min tree for existing proposal
+		proposal = new ProposalGraph();
 	}
 	
 	//To be used with deep copy....don't use this

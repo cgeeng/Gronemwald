@@ -28,7 +28,7 @@ public class MovingMap {
 		Gr.find(1).connect(2, Gr.find(2));
 		//printMap( Gr );
 		
-		Gr.proposal = new ProposalGraph();
+		Gr.createProposal();
 		//Gr.proposal.addProposal(Gr.find(1), Gr.find(3), 5);
 		Gr.proposal.addProposal(Gr.find(1), Gr.find(4), 6);
 		//Gr.proposal.addProposal(Gr.find(2), Gr.find(3), 10);
@@ -39,6 +39,7 @@ public class MovingMap {
 		
 		Gr.proposal.printToBuild();
 		//printProposalMap(Gr.proposal);
+		//remember to clear proposal after use!
  
 		//testGnomes[0].travelRandom();
 		//testGnomes[0].travelPick();
