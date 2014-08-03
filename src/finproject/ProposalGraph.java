@@ -63,8 +63,8 @@ public class ProposalGraph {
 	
 	public void findMinSpanTree() throws GraphEmptyException {
 		//Assumes input is connected graph
+		int i = 0;
 		while ( length != connected.length) {
-			int i = 0;
 			System.out.println(i);
 			Road temp = pq.removeMin();
 			if ( !findCycle(temp) ) {
@@ -247,10 +247,28 @@ public class ProposalGraph {
 			setMin();
 			Road temp = min;
 			System.out.println(lastRoad.end);
+			
+			if (length == 1) {
+				firstRoad = null;
+				lastRoad = null;
+				length--;
+				return temp;
+			}
+			else if (temp == lastRoad) {
+				temp.previous.next = null;
+				lastRoad = temp.previous;
+				length--;
+				return temp;
+			}
+			else if (temp == firstRoad) {
+				temp.next.previous = null;
+				firstRoad = temp.next;
+				length--;
+				return temp;
+			}
+			temp.previous.next = temp.next;
+			temp.next.previous = temp.previous;
 			length--;
-			if (temp == lastRoad) temp.previous.next = null;
-			else temp.next.previous = temp.previous;
-			if (temp != firstRoad)	temp.previous.next = temp.next;
 			return temp;
 		}
 		
