@@ -67,15 +67,16 @@ public class Graph implements Runnable {
 			
 	public boolean roadExists(Village v1, Village v2) {
 		// checks if road already exists between two villages
-		boolean roadExists = false;
+		boolean roadExists = false, finished=false;
 		if (!v1.outgoing.isEmpty()) {
 			RoadIterator current = v1.outgoing.getFirst();
-			while (current!=null) {
-				if (current.getData().end.equals(v2)) {roadExists = true;}
+			while (current!=null && !finished) {
+				if (current.getData().end.equals(v2)) {roadExists = true; finished=true;}
+				else {current = current.getNext();}	
 			}
 		}
 		return roadExists;
-	}
+	} // end of roadExists()
 	
 	public synchronized void roadProposal (Village v1, Village v2) {
 		try {

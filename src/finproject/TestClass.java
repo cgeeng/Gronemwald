@@ -4,6 +4,10 @@ import finproject.Exceptions.VillageFullException;
 
 public class TestClass {
 	public static void main (String [] args) {
+		testGraphThread();
+	}
+		
+	public static void testGraphThread() {
 		try {
 			Graph graph = new Graph();
 			
@@ -15,5 +19,5 @@ public class TestClass {
 		} catch (VillageFullException e) {
 			System.out.println("This village is full.");
 		}
-	}
+	} // end of testGraphThread()
 } // end of TestClass

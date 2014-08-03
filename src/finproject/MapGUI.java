@@ -120,7 +120,7 @@ public class MapGUI implements ActionListener {
 	
 	public void drawGraph() {
 		drawVillages();
-		drawRoads();
+		// drawRoads();
 		update();
 	} // end of drawGraph()
 	
@@ -258,6 +258,7 @@ public class MapGUI implements ActionListener {
 			String ans = (String) JOptionPane.showInputDialog(mapFrame,
 			        "Please choose an option for how to deal with the existing road structure.",
 			        "Deleting a village", JOptionPane.PLAIN_MESSAGE, null, delOptions, delOptions[0]);
+			if (ans == null) {return;}
 			
 			if (ans.equals(delOptions[0])) {
 				// deletes all associated roads (could be moved into village)
@@ -273,10 +274,30 @@ public class MapGUI implements ActionListener {
 						"Deleting a village", JOptionPane.PLAIN_MESSAGE);
 			} else {
 				// reroute existing roads
-				for (int i=0; i<village.indegree; i++) {
-					
-				}
-			}
+				if (!village.incoming.isEmpty() && !village.outgoing.isEmpty()) {
+					RoadIterator outFirst = village.outgoing.getFirst();
+					RoadIterator inCurrent = village.incoming.getFirst();
+					RoadIterator outCurrent = village.outgoing.getFirst();
+					for (int in=0; in<village.indegree; in++) {
+						for (int out=0; out<village.outdegree; out++) {
+							Village start = inCurrent.getData().start, end = outCurrent.getData().end; 
+							if (!start.equals(end) && !graph.roadExists(start, end)) {							
+							int ans2 = JOptionPane.showConfirmDialog(mapFrame, "There is no direct road yet between village " + 
+										start.getName() + " and village " + end.getName() + ".\nWould you like to " + 
+										"add one?", "Deleting a village", JOptionPane.YES_NO_CANCEL_OPTION);
+							if (ans2 == JOptionPane.YES_OPTION) {
+								String toll = JOptionPane.showInputDialog(mapFrame, "Please enter a toll for the new road.", 
+										"Deleting a village", JOptionPane.PLAIN_MESSAGE);
+								start.connect(Integer.parseInt(toll), end);
+							} else if (ans2 == JOptionPane.NO_OPTION) {
+								// do nothing, move on to next road
+							} else {return;}
+							} // end if !roadExists
+							outCurrent = outCurrent.getNext();
+						} // end while outCurrent!=null
+						outCurrent = outFirst; inCurrent = inCurrent.getNext();
+					} // end while inCurrent!=null
+			}}
 			
 			graph.delete(village.getName());
 			graph.printGraph();
@@ -288,6 +309,10 @@ public class MapGUI implements ActionListener {
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "NotFoundException", JOptionPane.ERROR_MESSAGE);
 		} catch (GraphEmptyException e) {
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "GraphEmptyException", JOptionPane.ERROR_MESSAGE);
+		} catch (RoadAlreadyExistsException e) { // theoretically not possible
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "RoadAlreadyExistsException", JOptionPane.ERROR_MESSAGE);
+		} catch (SameVillageException e) { // theoretically not possible
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "SameVillageException", JOptionPane.ERROR_MESSAGE);
 		}
 	} // end of delVillage()
 	
@@ -425,7 +450,7 @@ public class MapGUI implements ActionListener {
 		
 		String cost = (String) JOptionPane.showInputDialog(mapFrame,
             		"This road will lead from village " + start + " to village " + end
-            		+ "\nPlease enter an integer for the toll of the new road.",
+            		+ "\nPlease enter a toll for the new road.",
             		"Building a road", JOptionPane.PLAIN_MESSAGE);
 		
 		int intStart = Integer.parseInt(start);
@@ -597,6 +622,13 @@ public class MapGUI implements ActionListener {
 	}
 	
 	public void drawVillages() { // draws all villages currently in graph
+		Village current = graph.getFirst();
+		DrawVillage dv = new DrawVillage(current,0,0);
+		addToArray(dv);
+		mapPanel.add(dv);
+		dv.setBounds(dv.x-dv.r, dv.y-dv.r, dv.r*2, dv.r*2);
+		
+		/*
 		if (! graph.isEmpty()) {
 			int r = GUIConstants.radius, x, y;
 			double angle = 0, step = (2*Math.PI)/graph.getLength();
@@ -623,7 +655,7 @@ public class MapGUI implements ActionListener {
 //				y = (int) Math.round(mapHeight/2 + 7*r*Math.sin(angle));
 //				
 //			}
-		}
+		}*/
 	} // end of drawVillages()
 	
 	public void addToArray(DrawVillage dv) {
