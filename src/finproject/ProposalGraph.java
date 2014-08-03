@@ -45,12 +45,14 @@ public class ProposalGraph {
 			for (int i = 1; i <= original.getLength(); i++) { 
 				//double check if villages are mapped correctly in case
 				//if (originalVillage.getName() != proposalVillage.name) throws new ProposalVillageDoesNotMatchException;
-				if ( originalVillage == proposalVillage ) { System.out.println("It's the same village! Deep copy goofed."); }
+				if ( originalVillage == proposalVillage ) { System.out.println("It's the same village address! Deep copy goofed."); }
 				if ( !originalVillage.outgoing.isEmpty() ) { 
 					//loop through through and add road to proposal village
 					RoadIterator oRoad = originalVillage.outgoing.firstRoad;
 					for (int j = 1; j <= originalVillage.outgoing.length; j++ ) {
-						proposalVillage.connect( oRoad.getCost() , find(oRoad.getData().end.getName()));
+						//proposalVillage.connect( oRoad.getCost() , find(oRoad.getData().end.getName()));
+						//For now don't actually connect villages, just add road to queue
+						pq.insert( proposeRoad ( proposalVillage, oRoad.getCost(), find(oRoad.getData().end.getName())) );
 						oRoad = oRoad.getNext();
 					}//end road loop
 				}//end if
@@ -196,7 +198,8 @@ public class ProposalGraph {
 		}//end find
 			
 	}//end proposalgraph
-		
+	
+	//classes
 	public class Road {
 		Road next, previous;
 		int cost;
