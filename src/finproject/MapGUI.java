@@ -69,9 +69,9 @@ public class MapGUI implements ActionListener {
 	} // end of controller()
 	
 	public void update() {
-		mapFrame.removeAll();
-		mapFrame.validate();
-		mapFrame.repaint();
+		mapPanel.removeAll();
+		mapPanel.validate();
+		mapPanel.repaint();
 		mapFrame.pack();
 	}
 	
@@ -399,7 +399,7 @@ public class MapGUI implements ActionListener {
 				DrawVillage dv = new DrawVillage(current, x, y);
 				addToArray(dv);
 				mapPanel.add(dv);
-				dv.setBounds(dv.x, dv.y, dv.r*2, dv.r*2);
+				dv.setBounds(dv.x-dv.r, dv.y-dv.r, dv.r*2, dv.r*2);
 				
 				angle += step;
 				current = current.getNext();
@@ -468,7 +468,7 @@ public class MapGUI implements ActionListener {
 		
 		public DrawVillage(Village v, int x, int y) {
 			setPreferredSize(new Dimension(GUIConstants.radius*2, GUIConstants.radius*2));
-			setBackground(Color.WHITE);
+			setBackground(mapPanel.getBackground());
 			setOpaque(true);
 			
 			this.village = v;
@@ -481,9 +481,9 @@ public class MapGUI implements ActionListener {
 		
 		@Override
 		protected void paintComponent(Graphics g) {
+			g.setColor(Color.WHITE);
 			super.paintComponent(g);
-			g.setColor(getBackground());
-			g.drawOval(x,y,r*2,r*2);
+			g.drawOval(x-r,y-r,r*2,r*2);
 		}
 		
 	} // end of drawVillage
