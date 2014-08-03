@@ -99,7 +99,7 @@ public class MapGUI implements ActionListener {
 		try {
 		if (graph == null) { // creates new graph with 5 villages of population 5
 			graph = new Graph();
-			for (int i=0; i<5; i++) {graph.insert(new Village(5));}
+			for (int i=0; i<5; i++) {graph.insert(new Village(2));} // 5 villages with 2 gnomes each
 		}
 		
 		graph.find(1).connect(2, graph.find(2));

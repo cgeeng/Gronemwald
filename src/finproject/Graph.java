@@ -24,6 +24,19 @@ public class Graph implements Runnable {
 	public Village getLast() {return this.lastVillage;}
 	
 	public void run() { // run method for Graph
+		if (! isEmpty()) {
+			Village current = firstVillage;
+			while (current!=null) {
+				for(int i=0; i<current.populationSize; i++) {
+					Thread gnomeThread = new Thread(current.population[i]);
+					gnomeThread.start();
+				}
+				current = current.getNext();
+			}
+		}
+		
+		
+		/*
 		int villCount=0;
 		while (! isEmpty() && villCount < 3) { // chooses random village within graph
 				Random rand = new Random();
@@ -49,11 +62,7 @@ public class Graph implements Runnable {
 					System.out.println("The system was interrupted.");
 				}
 				
-//			 	Thread.sleep(100);
-//			} catch (InterruptedException e) {
-//				System.out.println("The program was interrupted.");
-//			}
-		}
+		}*/
 	} // end of run()
 			
 //	public boolean roadExists(Village v1, Village v2) {
