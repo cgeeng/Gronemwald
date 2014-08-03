@@ -20,8 +20,8 @@ public class MapGUI implements ActionListener {
 		JButton addVillage, delVillage, placeGnome, moveGnomeSim, addRoad, welcomeButton, addCountry,
 				moveGnomeExt, delRoad, startThreads;
 		DrawVillage [] villCircles = new DrawVillage[20]; int arrLength=0;// used for building roads
-		Graph graph;
-		Thread g;
+		Graph graph; Thread g;
+		Graph graph2; Thread g2;
 	
 	public MapGUI() { // builds the main window/frame
 		mapFrame = new JFrame("Gnomenwald");
@@ -252,7 +252,7 @@ public class MapGUI implements ActionListener {
 			
 			Village village = graph.find(Integer.parseInt(strVillage));
 			
-			String [] delOptions = {"Delete all associated roads", "Reroute existing roads manually", "Find minimum spanning tree"};
+			String [] delOptions = {"Delete all associated roads", "Reroute existing roads manually"};
 			// last option could lead to WARNING message - "could lead to existing roads being deleted"
 			
 			String ans = (String) JOptionPane.showInputDialog(mapFrame,
@@ -271,10 +271,11 @@ public class MapGUI implements ActionListener {
 				}
 				JOptionPane.showMessageDialog(mapFrame, "All associated roads have been deleted.", 
 						"Deleting a village", JOptionPane.PLAIN_MESSAGE);
-			} else if (ans.equals(delOptions[1])) {
-				// reroute existing roads
 			} else {
-				// minimum spanning tree
+				// reroute existing roads
+				for (int i=0; i<village.indegree; i++) {
+					
+				}
 			}
 			
 			graph.delete(village.getName());
@@ -535,9 +536,9 @@ public class MapGUI implements ActionListener {
 	
 	public void addCountry() {
 		System.out.println("Adding a country");
-		Graph graph2 = new Graph();
+		graph2 = new Graph();
 		
-		update();
+		// update();
 	} // end of addCountry()
 	
 	public void welcomeButton() {	

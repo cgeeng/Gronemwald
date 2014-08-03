@@ -23,7 +23,7 @@ public class Gnome implements Runnable {
 		this.name = name;
 		ID = ++totalGnome;
 		Random rand = new Random();
-		this.sleepTime = 2000+rand.nextInt(2000); // between 2 and 4 seconds
+		this.sleepTime = 2000+rand.nextInt(5000); // between 2 and 7 seconds
 	}
 	
 	public Gnome () {
