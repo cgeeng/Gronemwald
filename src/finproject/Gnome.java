@@ -5,7 +5,7 @@ import java.io.*;
 
 import finproject.Exceptions.*;
 
-public class Gnome {
+public class Gnome implements Runnable {
 	public BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	public static int totalGnome = 0;
 	public String name = "no name";
@@ -33,6 +33,9 @@ public class Gnome {
 		} catch (VillageFullException e) {System.out.println(e.getMessage());}
 	}//end constructor establishing Gnome's village
 	
+	public void run() { // run method for gnomes
+		
+	}
 	
 	//methods
 	

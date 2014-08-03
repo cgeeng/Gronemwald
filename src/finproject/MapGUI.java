@@ -10,6 +10,7 @@ import java.util.Random;
 
 import finproject.Exceptions.GraphEmptyException;
 import finproject.Exceptions.NotFoundException;
+import finproject.Exceptions.VillageEmptyException;
 import finproject.Exceptions.*;
 
 public class MapGUI implements ActionListener {
@@ -379,7 +380,7 @@ public class MapGUI implements ActionListener {
 			} catch (VillageEmptyException e) { // should go back to first screen to choose another village
 				JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "VillageEmptyException", JOptionPane.ERROR_MESSAGE);
 			}
-	} // end of moveGnome()
+	} // end of moveGnomeSim()
 	
 	public void addRoad() { 
 		try {
@@ -432,7 +433,57 @@ public class MapGUI implements ActionListener {
 	
 	public void moveGnomeExt() {
 		// moves gnome using shortest path and top sort
-	}
+		try {
+			Object [] villOptions = villageList();
+			
+			String start = (String) JOptionPane.showInputDialog(mapFrame,
+			            "From which village would you like to move a gnome?",
+			            "Moving a gnome", JOptionPane.PLAIN_MESSAGE, null, villOptions, villOptions[0]);
+			if (start == null) {return;}
+			
+			Village startVillage = graph.find(Integer.parseInt(start));
+			if (startVillage.outdegree == 0) {
+				JOptionPane.showMessageDialog(mapFrame, "Village " + startVillage.getName() + " has no outgoing roads." + 
+						"\nYou should build one!", "Moving a gnome", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+			Object [] gnomeOptions = gnomeList(startVillage);
+			
+			String gnomeID = (String) JOptionPane.showInputDialog(mapFrame,
+			        "Choose a gnome from village " + start + " to remove.",
+			        "Moving a gnome", JOptionPane.PLAIN_MESSAGE, null, gnomeOptions, gnomeOptions[0]);
+			if (gnomeID == null) {return;}
+			
+			Gnome gnome = startVillage.find(Integer.parseInt(gnomeID));
+			
+			Object [] lessOptions = new Object [villOptions.length-1];
+			int nextIndex2 = 0;
+			for (int i=0; i<villOptions.length; i++) {
+				if (! villOptions[i].equals(start)) {lessOptions[nextIndex2] = villOptions[i]; nextIndex2++;}}
+			
+			String strEnd = (String) JOptionPane.showInputDialog(mapFrame,
+			            "Please choose the village to which the gnome will travel",
+			            "Moving a gnome", JOptionPane.PLAIN_MESSAGE, null, lessOptions, lessOptions[0]);
+			if (strEnd == null) {return;}
+
+		} catch (HeadlessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (GraphEmptyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (VillageEmptyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	} // end of moveGnomeExt()
 	
 	public void delRoad() { // deletes a road
 		try {
@@ -546,6 +597,7 @@ public class MapGUI implements ActionListener {
 				y = (int) Math.round(mapHeight/2 + 7*r*Math.sin(angle));
 				
 				DrawVillage dv = new DrawVillage(current, x, y);
+				
 				addToArray(dv);
 				mapPanel.add(dv);
 				dv.setBounds(dv.x-dv.r, dv.y-dv.r, dv.r*2, dv.r*2);
@@ -553,6 +605,14 @@ public class MapGUI implements ActionListener {
 				angle += step;
 				current = current.getNext();
 			}
+			
+//			DrawVillage newVillage
+			
+//			for(DrawVillage dv : villCircles) {
+//				x = (int) Math.round(mapWidth/2 + 7*r*Math.cos(angle));
+//				y = (int) Math.round(mapHeight/2 + 7*r*Math.sin(angle));
+//				
+//			}
 		}
 	} // end of drawVillages()
 	
@@ -607,9 +667,9 @@ public class MapGUI implements ActionListener {
 	} // end of main()
 	
 	public class DrawVillage extends JPanel {
-		Village village;
-		Dimension preferredSize = new Dimension(GUIConstants.radius*2, GUIConstants.radius*2);
-		int x, y, r=GUIConstants.radius;
+		private Village village;
+		private Dimension preferredSize = new Dimension(GUIConstants.radius*2, GUIConstants.radius*2);
+		private int x, y, r=GUIConstants.radius;
 		
 		public DrawVillage(Village v) {	
 			this(v, 0, 0);
@@ -617,7 +677,7 @@ public class MapGUI implements ActionListener {
 		
 		public DrawVillage(Village v, int x, int y) {
 			setPreferredSize(new Dimension(GUIConstants.radius*2, GUIConstants.radius*2));
-			setBackground(Color.WHITE);
+			setBackground(Color.RED);
 			setOpaque(true);
 			
 			this.village = v;
@@ -625,14 +685,20 @@ public class MapGUI implements ActionListener {
 			this.y = y;
 		}
 		
+		public void setLocation(int x, int y) {
+			this.x= x;
+			this.y= y;
+		}
+		
 		@Override
 		public Dimension getPreferredSize() {return preferredSize;}
 		
 		@Override
 		protected void paintComponent(Graphics g) {
-			g.setColor(getBackground());
-			super.paintComponent(g);
-			g.drawOval(x-r,y-r,r*2,r*2);
+			Graphics2D g2= (Graphics2D) g;
+			Ellipse2D.Double circle= new Ellipse2D.Double(this.x, this.y, this.r, this.r);
+			g2.setColor(Color.BLACK);
+			g2.fill(circle);
 		}
 		
 	} // end of drawVillage

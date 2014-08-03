@@ -3,7 +3,7 @@ package finproject;
 import finproject.Exceptions.*;
 import java.util.Random;
 
-public class Village {
+public class Village implements Runnable {
 	static int totalVillage = 0;
 	
 	private int name;
@@ -21,6 +21,10 @@ public class Village {
 	public void setPrev(Village p) {this.previous = p;}
 	public boolean isEmpty() {return this.populationSize == 0;}
 	public boolean isFull() {return this.populationSize == 10;}
+	
+	public void run() { // run method
+		
+	}
 	
 	public Village() throws VillageFullException {
 		this(0);
