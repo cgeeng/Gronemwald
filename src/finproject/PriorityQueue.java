@@ -1,7 +1,5 @@
 package finproject;
 
-import finproject.Exceptions.GraphEmptyException;
-import finproject.Exceptions.NotFoundException;
 import finproject.Exceptions.*;
 
 public class PriorityQueue {
@@ -41,6 +39,19 @@ public class PriorityQueue {
 		length++;
 	}//end insert
 	
-	public void removeMin() {}
+	public void removeMin() {
+		
+	}
+	
+	public Village find(int name) throws NotFoundException, GraphEmptyException {
+		// exceptions caught by MapGUI so pop-up error message can be generated
+		if (! isEmpty()) {
+			Village current = this.firstVillage;
+			while (current != null) {					
+				if (current.getName() == name) {return current;}
+				current = current.getNext();
+			} throw new NotFoundException();
+		} else {throw new GraphEmptyException();}
+	}
 	
 }//end class

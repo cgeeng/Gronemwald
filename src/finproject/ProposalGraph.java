@@ -6,13 +6,10 @@ import finproject.Exceptions.RoadAlreadyExistsException;
 import finproject.Exceptions.SameVillageException;
 
 public class ProposalGraph {
-	//DEEP copy of object Graph, STRIPPEd DOWN
-	//will NOT be updated if Graph is updated
-	//should probably deleted after proposals all made
-	//I don't think indegrees out degrees are necessary for this
 	
 	public Road[] toBuild; //contains acceptable roads to be built after minimum spanning tree found
-	
+	public ConnectedGraph connected = new ConnectedGraph();
+	public PriorityQueue pq = new PriorityQueue();
 	public int length = 0;
 	Village firstVillage;
 	Village lastVillage;
@@ -24,7 +21,8 @@ public class ProposalGraph {
 	}
 	
 	//methods
-
+	
+	//This is method is sorta useless unless we want to destroy existing roads......oops
 	public void deepCopy(Graph original) throws SameVillageException, RoadAlreadyExistsException, NotFoundException, GraphEmptyException {
 		//Recreate villages first
 		//Then create roads
@@ -60,32 +58,20 @@ public class ProposalGraph {
 		
 	}//end deep copy
 	
-	
-	public void addProposal() {
-		//Assumes a village with no roads out of it has been created in the Graph
-		
+	public void findMinSpanTree() {
+		//Assumes input is connected graph
+		//for now just adds roads to be built
+		//Adds to list of roads to be made
+		while ( length != connected.length) {}
 	}
 	
-	public void findMinSpanTree() {
-		//uses priority queue
-		//returns a Graph?
-		//Adds to list of roads to be made
-		//straight up COPY of textbook pseudocode for REFERENCE
-		
-		/*
-		 * takes in list of EDGES, number of VERTICES
-		 * new GRAPH
-		 * PriorityQueue pq
-		 * Graph gr
-		 * 
-		 * while graph.length() != numberVertices - 1 
-		 * 
-		 * road r = pq.deleteMin();
-		 * Village u = get road home
-		 * VIllage v = get road destination
-		 * 
-		 * if (u != v) { gr.add( r ); union stuff???
-		 */
+	public void addProposal (Village a, Village b, int cost) throws SameVillageException, RoadAlreadyExistsException, GraphEmptyException {
+		find(a.getName()).connect( cost, find(b.getName()) );
+	}
+	
+	public boolean findCycle (Road road) {
+		if ( connected.find(road.end.getName()) == null ) return true;
+		else return false;
 	}
 	
 	//generic methods
@@ -105,14 +91,17 @@ public class ProposalGraph {
 		length++;
 	}
 	
-	public Village find(int name) throws NotFoundException, GraphEmptyException {
+	public Village find(int name) throws GraphEmptyException {
 		// exceptions caught by MapGUI so pop-up error message can be generated
 		if (! isEmpty()) {
 			Village current = this.firstVillage;
 			while (current != null) {					
 				if (current.getName() == name) {return current;}
 				current = current.getNext();
-			} throw new NotFoundException();
+			} 
+			Village newVillage = new Village (true, name);
+			insert( newVillage );
+			return newVillage;
 		} else {throw new GraphEmptyException();}
 	}
 	
@@ -130,4 +119,61 @@ public class ProposalGraph {
 			}
 		} else {System.out.println("This graph is empty.");}
 	} // end of printGraph()
+	
+	
+	public class ConnectedGraph {
+		private int length = 0;
+		Village firstVillage;
+		Village lastVillage;
+		ProposalGraph proposal;
+		
+		//constructor
+		public ConnectedGraph() {
+			firstVillage = null;
+			lastVillage = null;
+		} 
+		
+		public boolean isEmpty() {return length == 0;}
+		public int getLength() {return length;}
+		public Village getFirst() {return this.firstVillage;}
+		public Village getLast() {return this.lastVillage;}
+		
+		public void insert ( Village newVillage ) {
+			if (isEmpty()) {
+				firstVillage = newVillage;
+				lastVillage = newVillage;
+			}
+			else {
+				lastVillage.setNext(newVillage);
+				newVillage.setPrev(lastVillage);
+				lastVillage = newVillage;
+			}
+			length++;
+		}
+		
+		public Village find(int name) {
+			if (! isEmpty()) {
+				Village current = this.firstVillage;
+				while (current != null) {					
+					if (current.getName() == name) {return current;}
+					current = current.getNext();
+				} 
+			} else return null;
+		}//end find
+			
+	}//end proposalgraph
+		
+	public class pRoad {
+		pRoad next, previous;
+		int cost;
+		Village starting, end;
+		
+		public pRoad(Village starting, Village end, int cost) {
+			this.starting = starting;
+			this.end = end;
+			this.cost = cost;
+		}
+	}
+		
+	
 }

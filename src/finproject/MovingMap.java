@@ -28,6 +28,7 @@ public class MovingMap {
 		printMap( Gr );
 		
 		Gr.createProposal();
+		Gr.proposal.find(15);
 		printProposalMap(Gr.proposal);
 
 		//testGnomes[0].travelRandom();

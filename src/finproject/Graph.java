@@ -95,12 +95,14 @@ public class Graph {
 		} else {throw new GraphEmptyException();}
 	}
 
+	//Just.....forget this method.............creates deep copy of this graph
 	public void createProposal() throws SameVillageException, RoadAlreadyExistsException, NotFoundException, GraphEmptyException {
 		//create proposal instance; WILL NOT BE UPDATED IF ROADS ARE BUILT INTO ACTUAL GRAPH
 		proposal = new ProposalGraph(this);
 	}
 	
-	public void addProposal(Village a, Village b, int cost) throws NotFoundException, GraphEmptyException, SameVillageException, RoadAlreadyExistsException {
+	//To be used with deep copy....don't use this
+	public void addOopsProposal(Village a, Village b, int cost) throws NotFoundException, GraphEmptyException, SameVillageException, RoadAlreadyExistsException {
 		//Assumes a village with no roads out of it has been created in the Graph
 		Village proposalA = proposal.find(a.getName());
 		Village proposalB = proposal.find(b.getName());
