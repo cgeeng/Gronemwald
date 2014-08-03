@@ -6,7 +6,10 @@ import java.awt.geom.*;
 
 import javax.swing.*;
 
+import finproject.Exceptions.GraphEmptyException;
 import finproject.Exceptions.NotFoundException;
+import finproject.Exceptions.RoadAlreadyExistsException;
+import finproject.Exceptions.SameVillageException;
 import finproject.Exceptions.*;
 
 public class MapGUI implements ActionListener {
@@ -161,16 +164,47 @@ public class MapGUI implements ActionListener {
     } // end of actionPerformed() 
 	
 	public void addVillage() {
-		Village newVill = new Village();
-		graph.insert(newVill); // default to zero gnomes
-		
-		JOptionPane.showMessageDialog(mapFrame,
-        		"Village " + newVill.getName() + " has been created with a population of zero gnomes.",
-        		"Adding a village", JOptionPane.PLAIN_MESSAGE);
-		
-		drawVillages();
-		update();
-	}
+		try {
+			Object [] options = villageList();
+			
+			Village newVill = new Village();
+			graph.insert(newVill); // default to zero gnomes
+			
+			String strVill = (String) JOptionPane.showInputDialog(mapFrame,
+			        "Village " + newVill.getName() + " has been created with a population of zero gnomes." + 
+			        		"\nThere should be a road leading to this village." +
+			        		"\nWhich village would you like the new road to start from?",
+			        "Adding a village", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+			if (strVill == null) {return;}
+			
+			Village startVill = graph.find(Integer.parseInt(strVill));
+			
+			String cost = (String) JOptionPane.showInputDialog(mapFrame,
+					"This road will lead from village " + startVill.getName() + " to village " + newVill.getName()
+					+ "\nPlease enter an integer for the toll of the new road.",
+					"Adding a village", JOptionPane.PLAIN_MESSAGE);
+			
+			Road newRoad = startVill.connect(Integer.parseInt(cost), newVill);
+			
+			JOptionPane.showMessageDialog(mapFrame,
+					"A new road has been created from village " + newRoad.start.getName() + 
+						" to village " + newRoad.end.getName() + " at cost " + newRoad.cost,
+					"Adding a village", JOptionPane.PLAIN_MESSAGE);
+			
+			drawVillages(); drawRoads();
+			update();
+		} catch (NumberFormatException e) {
+			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Please try again.", "NumberFormatException", JOptionPane.PLAIN_MESSAGE);
+		} catch (NotFoundException e) {
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "NotFoundException", JOptionPane.PLAIN_MESSAGE);
+		} catch (GraphEmptyException e) {
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "GraphEmptyException", JOptionPane.PLAIN_MESSAGE);
+		} catch (SameVillageException e) { // theoretically not possible
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "SameVillageException", JOptionPane.PLAIN_MESSAGE);
+		} catch (RoadAlreadyExistsException e) { // theoretically not possible
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "RoadAlreadyExistsException", JOptionPane.PLAIN_MESSAGE);
+		}
+	} // end of addVillage()
 	
 	public void delVillage() {
 		try {

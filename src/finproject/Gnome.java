@@ -93,11 +93,10 @@ public class Gnome {
 		RoadIterator b;
 		queueZero(q);
 		String pathToTake = "";
-		System.out.println("is it emtpy? "+q.isEmpty());
+		System.out.println("is it empty? "+q.isEmpty());
 		while(!q.isEmpty()){
 			a = q.remove().getVillage();
 			System.out.println("a has been removed from q. q length is now "+q.length());
-			//System.out.println("hello?");
 			pathToTake += a.getName() + " ";
 			System.out.println("a.name is "+pathToTake+" and adjacent length is "+a.outgoing.length);
 			// for each adjacent village to village a, decrease each indegree and if it equals 0, add to queue

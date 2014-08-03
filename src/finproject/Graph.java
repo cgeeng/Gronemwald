@@ -54,34 +54,6 @@ public class Graph {
 				found.getNext().setPrev(found.getPrev());
 			}}
 		this.length--;
-		
-		// roads are going to be handled in the GUI (user's choice)
-		/*
-		if (isEmpty()) {throw new GraphEmptyException();}
-		Village villToDelete = find(villageName); 
-		if(villToDelete.outdegree > 0){
-			RoadIterator ri = villToDelete.adjacent.firstRoad;
-			while(ri != null){
-				ri.endVillage().indegree--;
-				ri = ri.next;
-			}
-		}
-		Village villLeadingTo = firstVillage;
-		
-		
-		while(villLeadingTo != null){
-			if(villLeadingTo.outdegree > 0){
-				RoadIterator ri = villLeadingTo.adjacent.firstRoad;
-				while(ri != null){
-					if(ri.endVillage() == villToDelete){
-						//remove(ri); // MAKE METHOD TO REMOVE A ROADITERATOR
-					}
-					ri = ri.next;
-				}
-			}
-			villLeadingTo = villLeadingTo.getNext();
-		}
-		*/
 	} // end of delete method
 	
 	public Village find(int name) throws NotFoundException, GraphEmptyException {
