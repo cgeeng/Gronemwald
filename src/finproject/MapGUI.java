@@ -6,10 +6,8 @@ import java.awt.geom.*;
 
 import javax.swing.*;
 
-import finproject.Exceptions.GraphEmptyException;
-import finproject.Exceptions.NotFoundException;
-import finproject.Exceptions.RoadAlreadyExistsException;
-import finproject.Exceptions.SameVillageException;
+import java.util.Random;
+
 import finproject.Exceptions.*;
 
 public class MapGUI implements ActionListener {
@@ -59,7 +57,6 @@ public class MapGUI implements ActionListener {
 			optionsPanel.setBackground(Color.BLUE);
 			
 			addTitle();
-			if (graph == null) {createGraph();}
 			drawGraph();
 			addOptions();
 			
@@ -93,7 +90,7 @@ public class MapGUI implements ActionListener {
 		titlePanel.add(title);
 	} // end of addTitle()
 	
-	public void createGraph() { // used for testing, will change to user input
+	public void createPreGraph() { // used for testing and option for user
 		try {
 		if (graph == null) { // creates new graph with 5 villages of population 5
 			graph = new Graph();
@@ -203,6 +200,8 @@ public class MapGUI implements ActionListener {
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "SameVillageException", JOptionPane.PLAIN_MESSAGE);
 		} catch (RoadAlreadyExistsException e) { // theoretically not possible
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "RoadAlreadyExistsException", JOptionPane.PLAIN_MESSAGE);
+		} catch (VillageFullException e) { // theoretically not possible
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "VillageFullException", JOptionPane.PLAIN_MESSAGE);
 		}
 	} // end of addVillage()
 	
@@ -216,19 +215,35 @@ public class MapGUI implements ActionListener {
 			
 			Village village = graph.find(Integer.parseInt(strVillage));
 			
-			// deletes all associated roads (could be moved into village)
-			RoadIterator current = village.outgoing.firstRoad;
-			while (current != null) {
-				village.deleteOutRoad(current.getData()); current = current.getNext();
-			}
-			RoadIterator current2 = village.incoming.firstRoad;
-			while (current2 != null) {
-				village.deleteInRoad(current2.getData()); current2 = current2.getNext();
+			String [] delOptions = {"Delete all associated roads", "Reroute existing roads manually", "Find minimum spanning tree"};
+			// last option could lead to WARNING message - "could lead to existing roads being deleted"
+			
+			String ans = (String) JOptionPane.showInputDialog(mapFrame,
+			        "Please choose an option for how to deal with the existing road structure.",
+			        "Deleting a village", JOptionPane.PLAIN_MESSAGE, null, delOptions, delOptions[0]);
+			
+			if (ans.equals(delOptions[0])) {
+				// deletes all associated roads (could be moved into village)
+				RoadIterator current = village.outgoing.firstRoad;
+				while (current != null) {
+					village.deleteOutRoad(current.getData()); current = current.getNext();
+				}
+				RoadIterator current2 = village.incoming.firstRoad;
+				while (current2 != null) {
+					village.deleteInRoad(current2.getData()); current2 = current2.getNext();
+				}
+				JOptionPane.showMessageDialog(mapFrame, "All associated roads have been deleted.", 
+						"Deleting a village", JOptionPane.PLAIN_MESSAGE);
+			} else if (ans.equals(delOptions[1])) {
+				// reroute existing roads
+			} else {
+				// minimum spanning tree
 			}
 			
 			graph.delete(village.getName());
 			graph.printGraph();
 			
+			drawVillages(); drawRoads();
 			update();
 			
 		} catch (NumberFormatException e) {
@@ -238,7 +253,7 @@ public class MapGUI implements ActionListener {
 		} catch (GraphEmptyException e) {
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "GraphEmptyException", JOptionPane.ERROR_MESSAGE);
 		}
-	} 
+	} // end of delVillage()
 	
 	public void placeGnome() {
 		try {
@@ -283,6 +298,11 @@ public class MapGUI implements ActionListener {
 			if (start == null) {return;}
 			
 			Village startVillage = graph.find(Integer.parseInt(start));
+			if (startVillage.outdegree == 0) {
+				JOptionPane.showMessageDialog(mapFrame, "Village " + startVillage.getName() + " has no outgoing roads." + 
+						"\nYou should build one!", "Moving a gnome", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
 			
 			Object [] gnomeOptions = gnomeList(startVillage);
 			
@@ -293,24 +313,43 @@ public class MapGUI implements ActionListener {
 			
 			Gnome gnome = startVillage.find(Integer.parseInt(gnomeID));
 			
+			/*
 			// takes away choice of starting village
 			Object [] lessOptions = new Object [villOptions.length-1];
 			int nextIndex2 = 0;
 			for (int i=0; i<villOptions.length; i++) {
 				if (! villOptions[i].equals(start)) {lessOptions[nextIndex2] = villOptions[i]; nextIndex2++;}}
+			*/
 			
-			String end = (String) JOptionPane.showInputDialog(mapFrame,
+			String [] moveOptions = {"Choose adjacent village", "Move randomly to adjacent village"};
+			
+			String ans = (String) JOptionPane.showInputDialog(mapFrame,
 		            "Gnome " + gnome.getID() + " has been chosen." + 
-		            	"\nAnd to which village would you like to move the gnome?",
-		            "Moving a gnome", JOptionPane.PLAIN_MESSAGE, null, lessOptions, lessOptions[0]);
-			if (end == null) {return;}
-
-			Village endVillage = graph.find(Integer.parseInt(end));
+		            	"\nHow would you like to move the gnome?",
+		            "Moving a gnome", JOptionPane.PLAIN_MESSAGE, null, moveOptions, moveOptions[0]);
+			if (ans == null) {return;}
 			
-			JOptionPane.showMessageDialog(mapFrame,
-            		"The shortest path from village " + startVillage.getName() + " to village " + 
-            			endVillage.getName() + " is by paths ",
-            		"Moving a gnome", JOptionPane.PLAIN_MESSAGE);
+			Object [] adjVill = new Object [startVillage.outdegree];
+			if (! startVillage.outgoing.isEmpty()) {
+				RoadIterator current = startVillage.outgoing.getFirst();
+				for (int i=0; i<adjVill.length; i++) {
+					adjVill[i] = Integer.toString(current.getData().end.getName());
+					current = current.getNext();
+				}
+			}
+			
+			String strEnd;
+			if (ans.equals(moveOptions[0])) {
+				strEnd = (String) JOptionPane.showInputDialog(mapFrame,
+			            "Please choose an adjacent village to which the gnome will travel",
+			            "Moving a gnome", JOptionPane.PLAIN_MESSAGE, null, adjVill, adjVill[0]);
+				if (strEnd == null) {return;}
+			} else {
+				Random rand = new Random();
+				strEnd = (String) adjVill[rand.nextInt(adjVill.length)];
+			}
+
+			Village endVillage = graph.find(Integer.parseInt(strEnd));
 			
 			startVillage.removeGnome(gnome);
 			endVillage.insertGnome(gnome);
@@ -391,9 +430,33 @@ public class MapGUI implements ActionListener {
 	} // end of addCountry()
 	
 	public void welcomeButton() {	
-		welcomePanel.setVisible(false);
-		state = GUIConstants.STATE_ACTIVE;
-		controller();
+		try {
+			Object [] options = {"Use premade map", "Create my own map"};
+			
+			String ans = (String) JOptionPane.showInputDialog(mapFrame, "Would you like to use a premade map " + 
+					" or create your own map?", "Building map", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+			
+			if (ans.equals(options[0])) {createPreGraph();}
+			else {
+				String strVill = (String) JOptionPane.showInputDialog(mapFrame, "How many villages would you like to start with?" +
+						" (as an integer).", "Building map", JOptionPane.PLAIN_MESSAGE);
+				
+				int numVill = Integer.parseInt(strVill);
+				graph = new Graph();
+				for (int i=0; i<numVill; i++) {graph.insert(new Village());};
+				
+				JOptionPane.showMessageDialog(mapFrame, "A new map has been created with " + numVill + " villages." + 
+							"\nNext, you should add some roads to your map (see options on right).", "Building map", JOptionPane.PLAIN_MESSAGE);
+			}
+			
+			welcomePanel.setVisible(false);
+			state = GUIConstants.STATE_ACTIVE;
+			controller();
+		} catch (NumberFormatException e) {
+			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Please try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
+		} catch (VillageFullException e) { // theoretically not possible
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "VillageFullException", JOptionPane.ERROR_MESSAGE);
+		}
 	} // end of welcomeButton()
 	
 	public Object [] villageList() { // returns the villages in the graph as an array of their names

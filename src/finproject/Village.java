@@ -1,14 +1,15 @@
 package finproject;
 
 import finproject.Exceptions.*;
+import java.util.Random;
 
 public class Village {
 	static int totalVillage = 0;
 	
 	private int name;
 	AdjList incoming, outgoing;
-	Gnome [] population = new Gnome[10]; // limit of 10 gnomes
-	int populationSize;
+	int populationSize, populationLimit=10; // limit varies, default is 10
+	Gnome [] population = new Gnome[populationLimit]; // limit varies
 	int indegree, outdegree;
 	private Village next, previous;
 	boolean forProposal = false;
@@ -21,12 +22,8 @@ public class Village {
 	public boolean isEmpty() {return this.populationSize == 0;}
 	public boolean isFull() {return this.populationSize == 10;}
 	
-	public Village() {
-		this.name = ++totalVillage;
-		outgoing = new AdjList(); incoming = new AdjList();
-		outdegree = 0;
-		indegree = 0;
-		
+	public Village() throws VillageFullException {
+		this(0);
 	}//end Constructor
 	
 	public Village(boolean forProposal, int name) {
@@ -45,6 +42,8 @@ public class Village {
 		outdegree = 0;
 		indegree = 0;
 		
+		Random rand = new Random();
+		this.populationLimit = 5+rand.nextInt(10); // random between 5 and 15
 		for (int i=0; i<population; i++) {this.insertGnome(new Gnome());}
 	}
 	
