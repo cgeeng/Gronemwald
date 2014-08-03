@@ -1,6 +1,23 @@
 package finproject;
 
 public class Exceptions {
+	public static class NoOutgoingRoadsException extends Exception {
+		public NoOutgoingRoadsException(String message) {
+			super(message);
+		}
+		public NoOutgoingRoadsException(){
+			super("Cannot leave this village. There are no outgoing roads.");
+		}
+	} // end NoOutgoingRoadsException
+	
+	public static class NoIncomingRoadsException extends Exception {
+		public NoIncomingRoadsException(String message) {
+			super(message);
+		}
+		public NoIncomingRoadsException(){
+			super("Cannot enter this village. There are no incoming roads.");
+		}
+	} // end NoIncomingRoadsException
 	public static class NotFoundException extends Exception {
 		public NotFoundException(String message) {
 			super(message);
@@ -50,9 +67,23 @@ public class Exceptions {
 	}//end VillageNotFoundException
 	
 	public static class FileNotFoundException extends Exception {
-		public FileNotFoundException () {
+		public FileNotFoundException() {
 			super("The image file could not be found (check the path).");
 		}
 	}//end FileNotFoundException
+	
+<<<<<<< HEAD
+	public static class UnconnectedGraphException extends Exception {
+		public UnconnectedGraphException() {
+			super("Your graph is not connected!");
+		}
+	}
+=======
+	public static class RoadProposalException extends Exception {
+		public RoadProposalException() {
+			super("A new road is being proposed.");
+		}
+	} // end of RoadProposalException
+>>>>>>> origin/master
 	
 }

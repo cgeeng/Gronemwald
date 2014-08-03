@@ -18,9 +18,10 @@ public class MapGUI implements ActionListener {
 		JFrame mapFrame;
 		JPanel welcomePanel, titlePanel, mapPanel, optionsPanel;
 		JButton addVillage, delVillage, placeGnome, moveGnomeSim, addRoad, welcomeButton, addCountry,
-				moveGnomeExt, delRoad;
+				moveGnomeExt, delRoad, startThreads;
 		DrawVillage [] villCircles = new DrawVillage[20]; int arrLength=0;// used for building roads
-		Graph graph;
+		Graph graph; Thread g;
+		Graph graph2; Thread g2;
 	
 	public MapGUI() { // builds the main window/frame
 		mapFrame = new JFrame("Gnomenwald");
@@ -98,7 +99,7 @@ public class MapGUI implements ActionListener {
 		try {
 		if (graph == null) { // creates new graph with 5 villages of population 5
 			graph = new Graph();
-			for (int i=0; i<5; i++) {graph.insert(new Village(5));}
+			for (int i=0; i<5; i++) {graph.insert(new Village(2));} // 5 villages with 2 gnomes each
 		}
 		
 		graph.find(1).connect(2, graph.find(2));
@@ -132,6 +133,7 @@ public class MapGUI implements ActionListener {
 		addRoad = new JButton("Add road");
 		delRoad = new JButton("Delete road");
 		addCountry = new JButton("Add country");
+		startThreads = new JButton("Start threads");
 		
 		optionsPanel.add(Box.createRigidArea(new Dimension(0,10)));
 		JLabel optionsLabel = new JLabel("OPTIONS");
@@ -150,7 +152,9 @@ public class MapGUI implements ActionListener {
 		addOptionsButton(addRoad);      optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
 		addOptionsButton(delRoad);      optionsPanel.add(Box.createRigidArea(new Dimension(0,20)));
 		// country group
-		addOptionsButton(addCountry);   optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
+		addOptionsButton(addCountry);   optionsPanel.add(Box.createRigidArea(new Dimension(0,20)));
+		// thread group
+		addOptionsButton(startThreads);
 	} // end of addOptions()
 	
 	public void addOptionsButton(JButton button) {
@@ -178,11 +182,21 @@ public class MapGUI implements ActionListener {
         	delRoad();
         } else if (e.getSource() == addCountry) {
         	addCountry();
+        } else if (e.getSource() == startThreads) {
+        	startThreads();
         }
     } // end of actionPerformed() 
 	
-	public void addVillage() {
+	public void startThreads() { // starts threads for simulation (villages and gnomes)
+		g = new Thread(graph);
+		g.start();
+		drawGraph();
+	}
+	
+	public synchronized void addVillage() {
 		try {
+		boolean isAlive=false;
+		if (g!=null) {wait(); isAlive=true;}
 			Object [] options = villageList();
 			
 			Village newVill = new Village();
@@ -210,6 +224,7 @@ public class MapGUI implements ActionListener {
 					"Adding a village", JOptionPane.PLAIN_MESSAGE);
 			
 			drawGraph();
+			if (isAlive) {notifyAll();}
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Please try again.", "NumberFormatException", JOptionPane.PLAIN_MESSAGE);
 		} catch (NotFoundException e) {
@@ -222,6 +237,8 @@ public class MapGUI implements ActionListener {
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "RoadAlreadyExistsException", JOptionPane.PLAIN_MESSAGE);
 		} catch (VillageFullException e) { // theoretically not possible
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "VillageFullException", JOptionPane.PLAIN_MESSAGE);
+		} catch (InterruptedException e) {
+			System.out.println("The system was interrupted.");
 		}
 	} // end of addVillage()
 	
@@ -235,7 +252,7 @@ public class MapGUI implements ActionListener {
 			
 			Village village = graph.find(Integer.parseInt(strVillage));
 			
-			String [] delOptions = {"Delete all associated roads", "Reroute existing roads manually", "Find minimum spanning tree"};
+			String [] delOptions = {"Delete all associated roads", "Reroute existing roads manually"};
 			// last option could lead to WARNING message - "could lead to existing roads being deleted"
 			
 			String ans = (String) JOptionPane.showInputDialog(mapFrame,
@@ -254,10 +271,11 @@ public class MapGUI implements ActionListener {
 				}
 				JOptionPane.showMessageDialog(mapFrame, "All associated roads have been deleted.", 
 						"Deleting a village", JOptionPane.PLAIN_MESSAGE);
-			} else if (ans.equals(delOptions[1])) {
-				// reroute existing roads
 			} else {
-				// minimum spanning tree
+				// reroute existing roads
+				for (int i=0; i<village.indegree; i++) {
+					
+				}
 			}
 			
 			graph.delete(village.getName());
@@ -466,22 +484,14 @@ public class MapGUI implements ActionListener {
 			            "Please choose the village to which the gnome will travel",
 			            "Moving a gnome", JOptionPane.PLAIN_MESSAGE, null, lessOptions, lessOptions[0]);
 			if (strEnd == null) {return;}
-
-		} catch (HeadlessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer.  Please try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
 		} catch (NotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "NotFoundException", JOptionPane.ERROR_MESSAGE);
 		} catch (GraphEmptyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "GraphEmptyException", JOptionPane.ERROR_MESSAGE);
 		} catch (VillageEmptyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "VillageEmptyException", JOptionPane.ERROR_MESSAGE);
 		}
 	} // end of moveGnomeExt()
 	
@@ -526,9 +536,9 @@ public class MapGUI implements ActionListener {
 	
 	public void addCountry() {
 		System.out.println("Adding a country");
-		Graph graph2 = new Graph();
+		graph2 = new Graph();
 		
-		update();
+		// update();
 	} // end of addCountry()
 	
 	public void welcomeButton() {	

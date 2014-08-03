@@ -3,15 +3,17 @@ package finproject;
 import java.util.*;
 import java.io.*;
 
+import java.util.Random;
+
 import finproject.Exceptions.*;
 
 public class Gnome implements Runnable {
 	public BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	public static int totalGnome = 0;
-	public String name = "no name";
+	public String name;
 	private int ID;
 	public Village current;
-	static int counter;
+	private int sleepTime; // sleep times offset a little
 	
 	public int getID() {return this.ID;}
 	public void setVillage(Village v) {this.current = v;}
@@ -20,10 +22,12 @@ public class Gnome implements Runnable {
 	public Gnome (String name) {
 		this.name = name;
 		ID = ++totalGnome;
+		Random rand = new Random();
+		this.sleepTime = 2000+rand.nextInt(5000); // between 2 and 7 seconds
 	}
 	
 	public Gnome () {
-		ID = ++totalGnome;		
+		this("no name");	
 	}//end default constructor
 	
 	public Gnome(Village starting) {
@@ -34,34 +38,43 @@ public class Gnome implements Runnable {
 	}//end constructor establishing Gnome's village
 	
 	public void run() { // run method for gnomes
-		
+		try {
+			while(true) {
+			Thread.sleep(sleepTime);
+			travelRandom();
+			}
+		} catch (InterruptedException e) {
+			System.out.println("The program was interrupted.");
+		}
 	}
 	
 	//methods
 	
-	public void travelRandom () {
+	public synchronized void travelRandom () {
 		try {
 			//Limited to gnomes that are in a village already
 			if (current == null) throw new NotInVillageException();
-			if (current.outgoing.length == 0) throw new NoAdjacentVillagesException(current.getName());
+			if (current.outgoing.length == 0) {return;} // simply doesn't move if there are no outgoing paths
+			
+				// throw new NoAdjacentVillagesException(current.getName());
 			
 			Random generate = new Random();
 			int randomTraverse = 1 + generate.nextInt(current.outgoing.length);
-			System.out.println("Random number is " + randomTraverse);
 			
 			//Iterate across AdjList of gnome's current village to find random road
 			RoadIterator temp = current.outgoing.firstRoad;
 			for (int i = 1; i < randomTraverse; i++) {
-				System.out.println("i is " + i);
 				temp = temp.getNext();
 			}
 			//Assign destination village
 			Village oldVillage = this.current;
 			Village destination = temp.endVillage();
+			if (destination.isFull()) {return;} // simply doesn't move if destination village is full
+			
 			destination.insertGnome(this);			
-			System.out.println("Gnome " + ID + " has moved from Village " + oldVillage.getName() + " to Village " + current.getName());
+			System.out.println("Gnome " + ID + " has moved from village " + oldVillage.getName() + " to village " + current.getName());
 		} catch (NotInVillageException e) {System.out.println(e.getMessage()); 
-		} catch (NoAdjacentVillagesException e) {System.out.println(e.getMessage());
+		// } catch (NoAdjacentVillagesException e) {System.out.println(e.getMessage());
 		} catch (VillageFullException e) {System.out.println(e.getMessage());}
 	}//end travelRandom
 	

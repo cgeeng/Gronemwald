@@ -5,6 +5,8 @@ package finproject;
 import java.io.*;
 
 import finproject.Exceptions.SameVillageException;
+import finproject.Exceptions.UnconnectedGraphException;
+import finproject.Exceptions.VillageFullException;
 import finproject.Exceptions.*;
 
 public class MovingMap {
@@ -16,7 +18,8 @@ public class MovingMap {
 	
 
 	public static void main(String[] args) throws NumberFormatException, IOException, RoadAlreadyExistsException, SameVillageException, 
-	NotFoundException, GraphEmptyException {
+
+	NotFoundException, GraphEmptyException, VillageFullException, UnconnectedGraphException {
 
 		
 		Gr.insert( new Village());
@@ -25,26 +28,13 @@ public class MovingMap {
 		Gr.insert( new Village());
 		
 		Gr.find(1).connect(2, Gr.find(3));
-		Gr.find(1).connect(2, Gr.find(2));
-		//printMap( Gr );
-		
-		Gr.createProposal();
-		//Gr.proposal.addProposal(Gr.find(1), Gr.find(3), 5);
-		Gr.proposal.addProposal(Gr.find(1), Gr.find(4), 6);
-		//Gr.proposal.addProposal(Gr.find(2), Gr.find(3), 10);
-		Gr.proposal.addProposal(Gr.find(4), Gr.find(3), 2);
-		Gr.proposal.addProposal(Gr.find(4), Gr.find(1), 3);
-		
+		Gr.find(1).connect(3, Gr.find(2));
+		Gr.find(2).connect(7, Gr.find(3));
+		Gr.find(4).connect(1, Gr.find(2));
+		//Gr.find(4).connect(5, Gr.find(1));
+		Gr.proposal = new ProposalGraph(Gr); 
+
 		Gr.proposal.findMinSpanTree();
-		
-		Gr.proposal.printToBuild();
-		//printProposalMap(Gr.proposal);
-		//remember to clear proposal after use!
- 
-		//testGnomes[0].travelRandom();
-		//testGnomes[0].travelPick();
-		 
-		 
 
 		
 	}
