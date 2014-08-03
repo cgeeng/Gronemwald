@@ -189,6 +189,7 @@ public class MapGUI implements ActionListener {
 	public void startThreads() { // starts threads for simulation (villages and gnomes)
 		Thread g = new Thread(graph);
 		g.start();
+		drawGraph();
 	}
 	
 	public void addVillage() {
