@@ -16,7 +16,7 @@ public class MovingMap {
 	
 
 	public static void main(String[] args) throws NumberFormatException, IOException, RoadAlreadyExistsException, SameVillageException, 
-	NotFoundException, GraphEmptyException {
+	NotFoundException, GraphEmptyException, VillageFullException {
 
 		
 		Gr.insert( new Village());

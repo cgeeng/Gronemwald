@@ -31,13 +31,13 @@ public class Graph implements Runnable {
 				for (int i=0; i<length; i++) {
 					if (count != v) {count++; vill = vill.getNext();}
 				}
-				System.out.println("Village " + vill.getName());
+				System.out.println("start village " + vill.getName());
 				
 				Village vill2 = getFirst();
 				for (int i=0; i<length; i++) {
 					if (count != v) {count++; vill2 = vill2.getNext();}
 				}
-				System.out.println("Village 2 is " + vill2.getName());
+				System.out.println("end village is " + vill2.getName());
 				
 				try {
 					vill.connect(1, vill2);
