@@ -55,16 +55,22 @@ public class MapGUI implements ActionListener {
 			
 			addTitle();
 			addOptions();
-			if (graph == null) {createGraph();}
-			drawGraph();
 			
 			mapFrame.getContentPane().add(titlePanel, BorderLayout.NORTH);
 			mapFrame.getContentPane().add(mapPanel, BorderLayout.CENTER);
 			mapFrame.getContentPane().add(optionsPanel, BorderLayout.EAST);
 			mapFrame.pack();
 			mapFrame.setVisible(true);
+			
+			if (graph == null) {createGraph();}
+			drawGraph();
 		}
 	} // end of controller()
+	
+	public void update() {
+		mapPanel.repaint();
+		mapFrame.pack();
+	}
 	
 	public void addWelcome() {
 		JLabel welcomeLabel = new JLabel("Welcome to Gnomenwald!", SwingConstants.CENTER);
@@ -85,7 +91,7 @@ public class MapGUI implements ActionListener {
 		try {
 		if (graph == null) { // creates new graph with 5 villages of population 5
 			graph = new Graph();
-			for (int i=0; i<5; i++) {graph.insert(new Village(5));}
+			for (int i=0; i<4; i++) {graph.insert(new Village(5));}
 		}
 		
 		// trying known values for now for testing
@@ -93,9 +99,9 @@ public class MapGUI implements ActionListener {
 			graph.find(1).connect(4, graph.find(3));
 			graph.find(2).connect(5, graph.find(4));
 			graph.find(2).connect(1, graph.find(3));
-			graph.find(4).connect(1, graph.find(5)); // two-way road
-			graph.find(5).connect(1, graph.find(4)); // two-way road
-			graph.find(5).connect(3, graph.find(3));
+			// graph.find(4).connect(1, graph.find(5)); // two-way road
+			// graph.find(5).connect(1, graph.find(4)); // two-way road
+			// graph.find(5).connect(3, graph.find(3));
 		} catch (RoadAlreadyExistsException e) {System.out.println(e.getMessage());
 		} catch (GraphEmptyException e) {System.out.println(e.getMessage());
 		} catch (NotFoundException e) {System.out.println(e.getMessage());
@@ -106,12 +112,14 @@ public class MapGUI implements ActionListener {
 	} // end of addGraph()
 	
 	public void drawGraph() {
-		
+		drawVillages();
+
+		/*
 		if (! graph.isEmpty()) {
 			Village currentVill = graph.getFirst();
 			while (currentVill != null) {
 				DrawVillage temp = new DrawVillage(currentVill);
-				/*
+				
 				if (! currentVill.outgoing.isEmpty()) {
 					RoadIterator currentRoad = currentVill.outgoing.getFirst();
 					while (currentRoad != null) {
@@ -119,10 +127,10 @@ public class MapGUI implements ActionListener {
 						mapPanel.add(newRoad);
 						currentRoad = currentRoad.getNext();
 					}
-				}*/
+				}
 				mapPanel.add(temp);
 				currentVill = currentVill.getNext();
-			}}
+			}}*/
 		
 	} // end of drawGraph()
 	
@@ -178,7 +186,7 @@ public class MapGUI implements ActionListener {
         		"Village " + newVill.getName() + " has been created with a population of zero gnomes.",
         		"Adding a village", JOptionPane.PLAIN_MESSAGE);
 		
-		mapPanel.repaint();
+		update();
 	}
 	
 	public void delVillage() {
@@ -388,6 +396,23 @@ public class MapGUI implements ActionListener {
 		return options;
 	}
 	
+	public void drawVillages() { // draws all villages currently in graph
+		if (! graph.isEmpty()) {
+			int r = GUIConstants.radius;
+			double angle = 0, step = (2*Math.PI)/graph.getLength();
+			int mapWidth = 650, mapHeight = 450; // mapPanel.getWidth(), mapHeight = mapPanel.getHeight();
+			Village current = graph.getFirst();
+			while (current != null) {
+				int x = (int) Math.round(mapWidth/2 + 2*r*Math.cos(angle));
+				int y = (int) Math.round(mapHeight/2 + 2*r*Math.sin(angle));
+				DrawVillage newVill = new DrawVillage(current, x, y);
+				mapPanel.add(newVill);
+				angle += step;
+				current = current.getNext();
+			}
+		}
+	} // end of drawVillages()
+	
 	public static void createAndShowGUI() {
 		JFrame.setDefaultLookAndFeelDecorated(true);
 		MapGUI map = new MapGUI();
@@ -401,23 +426,26 @@ public class MapGUI implements ActionListener {
 	
 	public class DrawVillage extends JPanel {
 		Village village;
-		Dimension preferredSize = new Dimension(40,40);
+		Dimension preferredSize = new Dimension(GUIConstants.radius, GUIConstants.radius);
+		int x, y, d=GUIConstants.radius;
 		
 		public DrawVillage(Village v) {	
+			this(v, 0, 0);
+		}
+		
+		public DrawVillage(Village v, int x, int y) {
 			setBackground(Color.WHITE);
 			setOpaque(true);
 			
 			this.village = v;
+			this.x = x;
+			this.y = y;
 		}
 		
-		public Dimension getPreferredSize() {
-			return preferredSize;
-		}
+		public Dimension getPreferredSize() {return preferredSize;}
 		
 		protected void paintComponent(Graphics g) {
 			g.setColor(getBackground());
-			
-			int x = 100,y = 50, d=40;
 			g.fillOval(x,y,d,d);
 		}
 		
@@ -433,7 +461,6 @@ public class MapGUI implements ActionListener {
 		
 		protected void paintComponent(Graphics g) {
 			g.setColor(getForeground());
-			g.drawLine(50, 50, 200, 200);
 			
 			
 			
