@@ -7,7 +7,7 @@ import finproject.Exceptions.SameVillageException;
 
 public class ProposalGraph {
 	
-	public Road[] toBuild; //contains acceptable roads to be built after minimum spanning tree found
+	public Road[] toBuild = new Road[20]; //contains acceptable roads to be built after minimum spanning tree found
 	public ConnectedGraph connected = new ConnectedGraph();
 	public PriorityQueue pq = new PriorityQueue();
 	public int length = 0;
@@ -62,18 +62,17 @@ public class ProposalGraph {
 	}//end deep copy
 	
 	public void findMinSpanTree() throws GraphEmptyException {
-		//Assumes input is connected graph
+		//Assumes input is CONNECTED graph
 		int i = 0;
 		while ( length != connected.length) {
-			System.out.println(i);
 			Road temp = pq.removeMin();
-			if ( !findCycle(temp) ) {
+			//if ( !findCycle(temp) ) {
 				toBuild[i] = temp;
 				if (connected.isEmpty()) connected.insert(temp.starting);
 				connected.insert(temp.end);
 				//if(connected.find(temp.end.getName()) == null) connected.insert(temp.end);
 				//if(connected.find(temp.starting.getName()) == null) connected.insert(temp.starting);
-			}
+			//}
 			i++;
 			
 		}//end while
@@ -86,8 +85,10 @@ public class ProposalGraph {
 	}
 	
 	public boolean findCycle (Road road) {
-		if ( connected.find(road.end.getName()) == null || connected.find(road.starting.getName()) == null) return true;
-		else return false;
+		//if ( connected.find(road.end.getName()) == null || connected.find(road.starting.getName()) == null) return true;
+		//so wrong
+		//djikstras?
+		return false;
 	}
 	
 	public Road proposeRoad( Village a, int cost, Village b) {
@@ -144,17 +145,16 @@ public class ProposalGraph {
 	} // end of printGraph()
 	
 	public void printToBuild() {
-		System.out.println("Geronimo");
 		int i = 0;
 		while (toBuild[i] != null) {
-			System.out.println("Road from Village " + toBuild[i].starting + " to " + toBuild[i].end);
+			System.out.println("Road from Village " + toBuild[i].starting.getName() + " to " + toBuild[i].end.getName()+ " cost " + toBuild[i].cost);
 			i++;
 		}
 	}
 	
 	public class ConnectedGraph {
 		int length = 0;
-		Village firstVillage;
+		Village firstVillage; 
 		Village lastVillage;
 		ProposalGraph proposal;
 		
@@ -246,7 +246,6 @@ public class ProposalGraph {
 		public Road removeMin() throws GraphEmptyException {
 			setMin();
 			Road temp = min;
-			System.out.println(lastRoad.end);
 			
 			if (length == 1) {
 				firstRoad = null;

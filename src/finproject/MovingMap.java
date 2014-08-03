@@ -38,7 +38,7 @@ public class MovingMap {
 		
 		Gr.proposal.printToBuild();
 		//printProposalMap(Gr.proposal);
-
+ 
 		//testGnomes[0].travelRandom();
 		//testGnomes[0].travelPick();
 		 
