@@ -66,13 +66,14 @@ public class ProposalGraph {
 		int i = 0;
 		while ( length != connected.length) {
 			Road temp = pq.removeMin();
-			//if ( !findCycle(temp) ) {
+			if ( !findCycle(temp) ) {
 				toBuild[i] = temp;
 				if (connected.isEmpty()) connected.insert(temp.starting);
 				connected.insert(temp.end);
+				//System.out.println("Road from Village " + toBuild[i].starting.getName() + " to " + toBuild[i].end.getName()+ " cost " + toBuild[i].cost);
 				//if(connected.find(temp.end.getName()) == null) connected.insert(temp.end);
 				//if(connected.find(temp.starting.getName()) == null) connected.insert(temp.starting);
-			//}
+			}
 			i++;
 			
 		}//end while
@@ -85,7 +86,7 @@ public class ProposalGraph {
 	}
 	
 	public boolean findCycle (Road road) {
-		//if ( connected.find(road.end.getName()) == null || connected.find(road.starting.getName()) == null) return true;
+		if ( connected.find(road.end.getName()) != null && connected.find(road.starting.getName()) != null) return true;
 		//so wrong
 		//djikstras?
 		return false;
@@ -93,6 +94,7 @@ public class ProposalGraph {
 	
 	public Road proposeRoad( Village a, int cost, Village b) {
 		Road newRoad = new Road(a, b, 100*cost);
+		
 		pq.insert(newRoad);
 		return newRoad;
 	}
