@@ -132,17 +132,22 @@ public class MapGUI implements ActionListener {
 		delRoad = new JButton("Delete road");
 		addCountry = new JButton("Add country");
 		
-		optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
+		optionsPanel.add(Box.createRigidArea(new Dimension(0,10)));
+		JLabel optionsLabel = new JLabel("OPTIONS");
+		optionsLabel.setForeground(Color.WHITE);
+		optionsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		optionsPanel.add(optionsLabel);
+		optionsPanel.add(Box.createRigidArea(new Dimension(0,30)));
 		// village group
 		addOptionsButton(addVillage);   optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
-		addOptionsButton(delVillage);   optionsPanel.add(Box.createRigidArea(new Dimension(0,10)));
+		addOptionsButton(delVillage);   optionsPanel.add(Box.createRigidArea(new Dimension(0,20)));
 		// gnome group
 		addOptionsButton(placeGnome);   optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
 		addOptionsButton(moveGnomeSim); optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
-		addOptionsButton(moveGnomeExt); optionsPanel.add(Box.createRigidArea(new Dimension(0,10)));
+		addOptionsButton(moveGnomeExt); optionsPanel.add(Box.createRigidArea(new Dimension(0,20)));
 		// road group
 		addOptionsButton(addRoad);      optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
-		addOptionsButton(delRoad);      optionsPanel.add(Box.createRigidArea(new Dimension(0,10)));
+		addOptionsButton(delRoad);      optionsPanel.add(Box.createRigidArea(new Dimension(0,20)));
 		// country group
 		addOptionsButton(addCountry);   optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
 	} // end of addOptions()
