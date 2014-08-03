@@ -157,6 +157,123 @@ public class Graph implements Runnable {
 		
 	}
 	
+	public void travelMinExpPath(Village starting, Node end, Node contain) throws NoIncomingRoadsException, NoOutgoingRoadsException, SameVillageException {
+		boolean done = false;
+		PriorityQ pq = new PriorityQ();
+		if(starting.getName() == end.getVillage().getName()){
+			throw new SameVillageException();
+		}else if(starting.outgoing.length == 0){
+			throw new NoOutgoingRoadsException();
+		}else if(end.getVillage().incoming.length == 0){
+			throw new NoIncomingRoadsException();
+		} else{
+			pq.insert(new Node(starting,0,null));
+			while(!done && !pq.isEmpty()){
+				Node frontEntry = pq.remove();
+				Village frontVertex = frontEntry.getVillage();
+				//System.out.println("pq.frontEntry is "+frontEntry.getVillage().getName()+" and frontVertex is "+frontVertex.getName());
+				if(!frontVertex.visited){
+					//System.out.println("not visited");
+					frontVertex.visited = true;
+					
+					if(frontEntry.getVillage()==starting){
+					//	System.out.println(frontEntry.getVillage().prior==null);
+						frontEntry.pathCost = 0;
+						frontVertex.prior = null;
+						frontVertex.priorCost = 0;
+					} else{
+						frontVertex.prior = frontEntry.predecessor;
+						frontVertex.priorCost = frontEntry.pathCost;
+						//System.out.println("frontVertex.priorCost is "+frontVertex.priorCost +" and frontVertex.prior is "+frontVertex.prior.getName()+" and "+(frontVertex.prior).prior.getName());
+					}
+					System.out.println(frontVertex.prior==null);
+					if(frontVertex == end.getVillage()){
+						//System.out.println(frontEntry.getVillage().prior==null);
+						done = true;
+					//	System.out.println("done");
+					}
+					else{
+						//System.out.println(frontEntry.getVillage().prior==null);
+						RoadIterator nextNeighbor = frontVertex.outgoing.firstRoad;
+						if(nextNeighbor!=null){
+							while(nextNeighbor!=null){
+							//	System.out.println(frontEntry.getVillage().prior==null);
+								//System.out.println("looking at nextNeighbor"+nextNeighbor.endVillage().getName()+" and "+(frontVertex.prior).prior.getName());
+								int weightOfEdgeToNeighbor = nextNeighbor.getCost();
+								if(!nextNeighbor.endVillage().visited){
+									int nextCost = weightOfEdgeToNeighbor + frontEntry.pathCost;
+									pq.insert(new Node(nextNeighbor.endVillage(),nextCost,frontEntry.getVillage()));
+									System.out.println("inserted");
+								}
+								nextNeighbor=nextNeighbor.getNext();
+							}
+						}
+					}
+				}
+			}
+		}
+		Queue path = new Queue();
+		if(end.getVillage().prior!=null) // for if they don't connect even though they both have ins and outs
+			path.insertLikeStack(end);
+		Village toAdd = end.getVillage().prior;
+		while(toAdd!=null){
+			System.out.println("inserted "+toAdd.getName());
+			path.insertLikeStack(new Node(toAdd));
+			toAdd = toAdd.prior;
+		}
+		path.printGraph();
+	} // end of travelMinExpPath method
+	
+	public Queue travelTopSort() throws NotFoundException, GraphEmptyException{ // need to check for cycles?
+		Queue q = new Queue();
+		Village a;
+		RoadIterator b;
+		queueZero(q,0); // adds villages with incoming roads of 0
+		Queue pathToTake = new Queue();
+		int[][] checkCycle = new int[this.length+1][this.length+1];
+		System.out.println("is it empty? "+q.isEmpty());
+		while(!q.isEmpty()){
+			a = q.remove().getVillage();
+			checkCycle[a.getName()][a.getName()] = a.getName();
+			System.out.println("a has been removed from q. q length is now "+q.length());
+			//System.out.println("hello?");
+			pathToTake.insert(new Node(a)); //+= a.getName() + " ";
+			System.out.println("a.name is "+pathToTake.getFirst().getVillage().getName()+" and adjacent length is "+a.outgoing.length);
+			// for each adjacent village to village a, decrease each indegree and if it equals 0, add to queue
+			if(a.outgoing.length != 0){
+				b = a.outgoing.firstRoad;
+				while(b != null){
+					System.out.println("b's indegree is "+b.endVillage().indegree);
+					b.endVillage().indegree--;
+					System.out.println("b's indegree is nowww "+b.endVillage().indegree);
+					if( b.endVillage().indegree  == 0 ){
+						System.out.println("about to insert...");
+						q.insert(new Node(b.endVillage()));
+						System.out.println("added to the q is village "+b.endVillage().getName() +" with indegree "+b.endVillage().indegree);
+					}
+					b = b.getNext();
+				} // end of while
+			} // end of if
+		} // end of while
+		System.out.println(pathToTake+"hi ");
+		pathToTake.printGraph();
+		return pathToTake;
+		
+	} // end of travelTopSort method
+	
+	public Queue queueZero(Queue someQ, int num) throws NotFoundException, GraphEmptyException{
+		Village vill = firstVillage;
+		while(vill != null){
+			if(vill.incoming.length == num){
+				someQ.insert(new Node(vill));
+			}
+			vill = vill.getNext();
+		}
+		System.out.println("someQ length is"+ someQ.length());
+		return someQ;
+	}	// end of queueZero method
+
+	
 	public void printGraph() { // string representation of graph, used for testing
 		if (! isEmpty()) {
 			Village current = this.firstVillage;
