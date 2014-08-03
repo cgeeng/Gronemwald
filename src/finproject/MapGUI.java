@@ -21,6 +21,7 @@ public class MapGUI implements ActionListener {
 				moveGnomeExt, delRoad, startThreads;
 		DrawVillage [] villCircles = new DrawVillage[20]; int arrLength=0;// used for building roads
 		Graph graph;
+		Thread g;
 	
 	public MapGUI() { // builds the main window/frame
 		mapFrame = new JFrame("Gnomenwald");
@@ -187,13 +188,15 @@ public class MapGUI implements ActionListener {
     } // end of actionPerformed() 
 	
 	public void startThreads() { // starts threads for simulation (villages and gnomes)
-		Thread g = new Thread(graph);
+		g = new Thread(graph);
 		g.start();
 		drawGraph();
 	}
 	
-	public void addVillage() {
+	public synchronized void addVillage() {
 		try {
+		boolean isAlive=false;
+		if (g!=null) {wait(); isAlive=true;}
 			Object [] options = villageList();
 			
 			Village newVill = new Village();
@@ -221,6 +224,7 @@ public class MapGUI implements ActionListener {
 					"Adding a village", JOptionPane.PLAIN_MESSAGE);
 			
 			drawGraph();
+			if (isAlive) {notifyAll();}
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Please try again.", "NumberFormatException", JOptionPane.PLAIN_MESSAGE);
 		} catch (NotFoundException e) {
@@ -233,6 +237,8 @@ public class MapGUI implements ActionListener {
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "RoadAlreadyExistsException", JOptionPane.PLAIN_MESSAGE);
 		} catch (VillageFullException e) { // theoretically not possible
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "VillageFullException", JOptionPane.PLAIN_MESSAGE);
+		} catch (InterruptedException e) {
+			System.out.println("The system was interrupted.");
 		}
 	} // end of addVillage()
 	
