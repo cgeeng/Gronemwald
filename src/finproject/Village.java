@@ -13,6 +13,10 @@ public class Village implements Runnable {
 	int indegree, outdegree;
 	private Village next, previous;
 	boolean forProposal = false;
+	boolean visited = false;
+	Village prior;
+	int visitIn;
+	int priorCost;
 	
 	public int getName() {return this.name;}	
 	public Village getNext() {return this.next;}

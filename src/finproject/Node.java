@@ -29,6 +29,8 @@ public class Node {
 	private Village village;
 	private Node next;
 	private Node previous;
+	Village predecessor;
+	int pathCost;
 	
 	public Village getVillage() {return this.village;}
 	public void setNext(Node n) {this.next = n;}
@@ -40,5 +42,10 @@ public class Node {
 		 this.village = someVill;
 	}
 	
+	public Node(Village vill, int cost, Village predecessor){ // constructor for minExpPath
+		this.pathCost = cost;
+		this.predecessor = predecessor;
+		this.village = vill;
+	}
 	
 }//end Node class

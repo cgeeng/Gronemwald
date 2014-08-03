@@ -27,6 +27,18 @@ public class Queue {
 		} else {throw new GraphEmptyException();}
 	} // end of method find()
 	
+	public void insertLikeStack(Node n){
+		if(isEmpty()){
+			firstNode = n;
+			lastNode = n;
+		} else {
+			n.setNext(firstNode);
+			firstNode.setPrev(n);
+			firstNode = n;
+		}
+		length++;
+	}
+	
 	public void insert(Node nodeWithVillage){
 		if(isEmpty()){
 			firstNode = nodeWithVillage;
