@@ -1,12 +1,9 @@
 package finproject;
 
-import finproject.Exceptions.GraphEmptyException;
-import finproject.Exceptions.NotFoundException;
-import finproject.Exceptions.RoadAlreadyExistsException;
-import finproject.Exceptions.SameVillageException;
 import finproject.Exceptions.*;
+import java.util.Random;
 
-public class Graph {
+public class Graph implements Runnable {
 	private int length = 0;
 	Village firstVillage;
 	Village lastVillage;
@@ -22,6 +19,26 @@ public class Graph {
 	public int getLength() {return length;}
 	public Village getFirst() {return this.firstVillage;}
 	public Village getLast() {return this.lastVillage;}
+	
+	public void run() { // run method for Graph
+		if (! isEmpty()) {
+			try {
+			while(true) {
+				Random rand = new Random();
+				int v = rand.nextInt(length-1), count=0;
+				Village vill = getFirst();
+				for (int i=0; i<length; i++) {
+					if (count != v) {count++; vill = vill.getNext();}
+				}
+				System.out.println("Village " + vill.getName());
+				Thread.sleep(100);
+			}
+			} catch (InterruptedException e) {
+				System.out.println("The program was interrupted.");
+			}
+		}
+		
+	}
 	
 	public void insert (Village newVillage) {
 		if (isEmpty()) {

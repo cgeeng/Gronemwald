@@ -23,7 +23,7 @@ public class Village implements Runnable {
 	public boolean isFull() {return this.populationSize == 10;}
 	
 	public void run() { // run method
-		
+		proposeRoad();
 	}
 	
 	public Village() throws VillageFullException {

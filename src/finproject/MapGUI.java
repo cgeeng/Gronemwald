@@ -18,7 +18,7 @@ public class MapGUI implements ActionListener {
 		JFrame mapFrame;
 		JPanel welcomePanel, titlePanel, mapPanel, optionsPanel;
 		JButton addVillage, delVillage, placeGnome, moveGnomeSim, addRoad, welcomeButton, addCountry,
-				moveGnomeExt, delRoad;
+				moveGnomeExt, delRoad, startThreads;
 		DrawVillage [] villCircles = new DrawVillage[20]; int arrLength=0;// used for building roads
 		Graph graph;
 	
@@ -132,6 +132,7 @@ public class MapGUI implements ActionListener {
 		addRoad = new JButton("Add road");
 		delRoad = new JButton("Delete road");
 		addCountry = new JButton("Add country");
+		startThreads = new JButton("Start threads");
 		
 		optionsPanel.add(Box.createRigidArea(new Dimension(0,10)));
 		JLabel optionsLabel = new JLabel("OPTIONS");
@@ -150,7 +151,9 @@ public class MapGUI implements ActionListener {
 		addOptionsButton(addRoad);      optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
 		addOptionsButton(delRoad);      optionsPanel.add(Box.createRigidArea(new Dimension(0,20)));
 		// country group
-		addOptionsButton(addCountry);   optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
+		addOptionsButton(addCountry);   optionsPanel.add(Box.createRigidArea(new Dimension(0,20)));
+		// thread group
+		addOptionsButton(startThreads);
 	} // end of addOptions()
 	
 	public void addOptionsButton(JButton button) {
@@ -178,8 +181,15 @@ public class MapGUI implements ActionListener {
         	delRoad();
         } else if (e.getSource() == addCountry) {
         	addCountry();
+        } else if (e.getSource() == startThreads) {
+        	startThreads();
         }
     } // end of actionPerformed() 
+	
+	public void startThreads() { // starts threads for simulation (villages and gnomes)
+		Thread g = new Thread(graph);
+		g.start();
+	}
 	
 	public void addVillage() {
 		try {
@@ -466,22 +476,14 @@ public class MapGUI implements ActionListener {
 			            "Please choose the village to which the gnome will travel",
 			            "Moving a gnome", JOptionPane.PLAIN_MESSAGE, null, lessOptions, lessOptions[0]);
 			if (strEnd == null) {return;}
-
-		} catch (HeadlessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer.  Please try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
 		} catch (NotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "NotFoundException", JOptionPane.ERROR_MESSAGE);
 		} catch (GraphEmptyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "GraphEmptyException", JOptionPane.ERROR_MESSAGE);
 		} catch (VillageEmptyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "VillageEmptyException", JOptionPane.ERROR_MESSAGE);
 		}
 	} // end of moveGnomeExt()
 	

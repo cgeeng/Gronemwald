@@ -34,7 +34,7 @@ public class Gnome implements Runnable {
 	}//end constructor establishing Gnome's village
 	
 	public void run() { // run method for gnomes
-		
+		proposeMove();
 	}
 	
 	//methods
