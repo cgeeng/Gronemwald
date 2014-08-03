@@ -13,13 +13,14 @@ public class MapGUI implements ActionListener {
 		JFrame mapFrame;
 		JPanel welcomePanel, titlePanel, mapPanel, optionsPanel;
 		JButton addVillage, delVillage, placeGnome, moveGnome, addRoad, welcomeButton, addCountry;
+		DrawVillage [] villCircles = new DrawVillage[10]; // used for building roads
 		Graph graph;
 	
 	public MapGUI() { // builds the main window/frame
 		mapFrame = new JFrame("Gnomenwald");
 		mapFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		mapFrame.setSize(600, 400);			
-		mapFrame.setMinimumSize(new Dimension(800, 500));
+		mapFrame.setPreferredSize(GUIConstants.frameSize);			
+		mapFrame.setMinimumSize(GUIConstants.frameSize);
 			
 		mapFrame.getContentPane().repaint();
 		controller();
@@ -28,7 +29,7 @@ public class MapGUI implements ActionListener {
 	public void controller () { // does the heavy lifting, handles state changes
 		if (state == GUIConstants.STATE_WELCOME) {
 			welcomePanel = new JPanel();
-			welcomePanel.setPreferredSize(new Dimension (600,400));
+			welcomePanel.setPreferredSize(GUIConstants.frameSize);
 			welcomePanel.setBackground(Color.GRAY);
 			welcomePanel.setLayout(new BorderLayout());
 		
@@ -46,7 +47,7 @@ public class MapGUI implements ActionListener {
 			mapPanel = new JPanel();
 			mapPanel.setPreferredSize(new Dimension(650, 450));
 			mapPanel.setBackground(Color.RED);
-			mapPanel.setLayout(new GridLayout(4,3));
+			mapPanel.setLayout(null);
 			
 			optionsPanel = new JPanel();
 			optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
@@ -54,6 +55,8 @@ public class MapGUI implements ActionListener {
 			optionsPanel.setBackground(Color.BLUE);
 			
 			addTitle();
+			if (graph == null) {createGraph();}
+			drawGraph();
 			addOptions();
 			
 			mapFrame.getContentPane().add(titlePanel, BorderLayout.NORTH);
@@ -61,9 +64,6 @@ public class MapGUI implements ActionListener {
 			mapFrame.getContentPane().add(optionsPanel, BorderLayout.EAST);
 			mapFrame.pack();
 			mapFrame.setVisible(true);
-			
-			if (graph == null) {createGraph();}
-			drawGraph();
 		}
 	} // end of controller()
 	
@@ -91,7 +91,7 @@ public class MapGUI implements ActionListener {
 		try {
 		if (graph == null) { // creates new graph with 5 villages of population 5
 			graph = new Graph();
-			for (int i=0; i<4; i++) {graph.insert(new Village(5));}
+			for (int i=0; i<5; i++) {graph.insert(new Village(5));}
 		}
 		
 		// trying known values for now for testing
@@ -99,9 +99,9 @@ public class MapGUI implements ActionListener {
 			graph.find(1).connect(4, graph.find(3));
 			graph.find(2).connect(5, graph.find(4));
 			graph.find(2).connect(1, graph.find(3));
-			// graph.find(4).connect(1, graph.find(5)); // two-way road
-			// graph.find(5).connect(1, graph.find(4)); // two-way road
-			// graph.find(5).connect(3, graph.find(3));
+			graph.find(4).connect(1, graph.find(5));
+			graph.find(5).connect(1, graph.find(4));
+			graph.find(5).connect(3, graph.find(3));
 		} catch (RoadAlreadyExistsException e) {System.out.println(e.getMessage());
 		} catch (GraphEmptyException e) {System.out.println(e.getMessage());
 		} catch (NotFoundException e) {System.out.println(e.getMessage());
@@ -113,6 +113,7 @@ public class MapGUI implements ActionListener {
 	
 	public void drawGraph() {
 		drawVillages();
+		drawRoads();
 
 		/*
 		if (! graph.isEmpty()) {
@@ -398,13 +399,13 @@ public class MapGUI implements ActionListener {
 	
 	public void drawVillages() { // draws all villages currently in graph
 		if (! graph.isEmpty()) {
-			int r = GUIConstants.radius;
+			int r = GUIConstants.radius, x, y;
 			double angle = 0, step = (2*Math.PI)/graph.getLength();
 			int mapWidth = 650, mapHeight = 450; // mapPanel.getWidth(), mapHeight = mapPanel.getHeight();
 			Village current = graph.getFirst();
 			while (current != null) {
-				int x = (int) Math.round(mapWidth/2 + 2*r*Math.cos(angle));
-				int y = (int) Math.round(mapHeight/2 + 2*r*Math.sin(angle));
+				x = (int) Math.round(mapWidth/2 + 10*r*Math.cos(angle));
+				y = (int) Math.round(mapHeight/2 + 10*r*Math.sin(angle));
 				DrawVillage newVill = new DrawVillage(current, x, y);
 				mapPanel.add(newVill);
 				angle += step;
@@ -412,6 +413,15 @@ public class MapGUI implements ActionListener {
 			}
 		}
 	} // end of drawVillages()
+	
+	public void drawRoads() { // draws all roads currently in graph
+		if (! graph.isEmpty()) {
+			Village current = graph.getFirst();
+			while (current != null) {
+				
+			}
+		}
+	}
 	
 	public static void createAndShowGUI() {
 		JFrame.setDefaultLookAndFeelDecorated(true);
@@ -426,8 +436,8 @@ public class MapGUI implements ActionListener {
 	
 	public class DrawVillage extends JPanel {
 		Village village;
-		Dimension preferredSize = new Dimension(GUIConstants.radius, GUIConstants.radius);
-		int x, y, d=GUIConstants.radius;
+		Dimension preferredSize = new Dimension(GUIConstants.radius*2, GUIConstants.radius*2);
+		int x, y, d=GUIConstants.radius*2;
 		
 		public DrawVillage(Village v) {	
 			this(v, 0, 0);
@@ -453,18 +463,24 @@ public class MapGUI implements ActionListener {
 	
 	public class DrawRoad extends JPanel {
 		RoadIterator ri;
+		int x1, y1, x2, y2;
 		
 		public DrawRoad(RoadIterator ri) {
-			setForeground(Color.WHITE);
+			this(ri,0,0,0,0);
+		}
+		
+		public DrawRoad(RoadIterator ri, int x1, int y1, int x2, int y2) {
+			setForeground(Color.GRAY);
 			this.ri = ri;
+			this.x1 = x1;
+			this.y1 = y1;
+			this.x2 = x2;
+			this.y2 = y2;
 		}
 		
 		protected void paintComponent(Graphics g) {
 			g.setColor(getForeground());
-			
-			
-			
-			// g2D.drawLine(x1, y1, x2, y2);
+			g.drawLine(x1, y1, x2, y2);
 		}
 	} // end of DrawRoad
 	
