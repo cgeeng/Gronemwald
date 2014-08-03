@@ -71,19 +71,17 @@ public class Exceptions {
 			super("The image file could not be found (check the path).");
 		}
 	}//end FileNotFoundException
-	
-<<<<<<< HEAD
+
 	public static class UnconnectedGraphException extends Exception {
 		public UnconnectedGraphException() {
 			super("Your graph is not connected!");
 		}
 	}
-=======
+
 	public static class RoadProposalException extends Exception {
 		public RoadProposalException() {
 			super("A new road is being proposed.");
 		}
 	} // end of RoadProposalException
->>>>>>> origin/master
-	
+
 }
