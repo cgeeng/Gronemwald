@@ -65,20 +65,23 @@ public class ProposalGraph {
 		//Assumes input is connected graph
 		while ( length != connected.length) {
 			int i = 0;
+			System.out.println(i);
 			Road temp = pq.removeMin();
 			if ( !findCycle(temp) ) {
 				toBuild[i] = temp;
 				if (connected.isEmpty()) connected.insert(temp.starting);
-				
-				if(connected.find(temp.end.getName()) == null) connected.insert(temp.end);
-				if(connected.find(temp.starting.getName()) == null) connected.insert(temp.starting);
-				i++;
+				connected.insert(temp.end);
+				//if(connected.find(temp.end.getName()) == null) connected.insert(temp.end);
+				//if(connected.find(temp.starting.getName()) == null) connected.insert(temp.starting);
 			}
-		}
+			i++;
+			
+		}//end while
 		//toBuild should now contain all vertices
 	}//end findMinSpanTree
 	
 	public void addProposal (Village a, Village b, int cost) throws SameVillageException, RoadAlreadyExistsException, GraphEmptyException {
+		//only add roads connected to a village that has no roads in the real graph
 		proposeRoad ( find(a.getName()), cost, find(b.getName()) ); //creates villages if they don't exist in proposal graph
 	}
 	
@@ -118,10 +121,11 @@ public class ProposalGraph {
 				if (current.getName() == name) {return current;}
 				current = current.getNext();
 			} 
+		}
 			Village newVillage = new Village (true, name);
 			insert( newVillage );
 			return newVillage;
-		} else {throw new GraphEmptyException();}
+
 	}
 	
 	public boolean isEmpty() { return length == 0; }
@@ -149,7 +153,7 @@ public class ProposalGraph {
 	}
 	
 	public class ConnectedGraph {
-		private int length = 0;
+		int length = 0;
 		Village firstVillage;
 		Village lastVillage;
 		ProposalGraph proposal;
@@ -204,7 +208,7 @@ public class ProposalGraph {
 	}//end Road class
 
 	public class PriorityQueue {
-		private int length;
+		int length;
 		Road firstRoad;
 		Road lastRoad;
 		Road min;
@@ -233,6 +237,7 @@ public class ProposalGraph {
 			}
 			else{
 				lastRoad.next = RoadWithVillage;
+				RoadWithVillage.previous = lastRoad;
 				lastRoad = RoadWithVillage;
 			}
 			length++;
@@ -241,6 +246,8 @@ public class ProposalGraph {
 		public Road removeMin() throws GraphEmptyException {
 			setMin();
 			Road temp = min;
+			System.out.println(lastRoad.end);
+			length--;
 			if (temp == lastRoad) temp.previous.next = null;
 			else temp.next.previous = temp.previous;
 			if (temp != firstRoad)	temp.previous.next = temp.next;
@@ -249,9 +256,10 @@ public class ProposalGraph {
 		
 		public void setMin() throws GraphEmptyException {
 			min = firstRoad;
+			
 			//check if queue is empty
 			if (isEmpty()) throw new GraphEmptyException();
-			for (int i = 0; i < length; i++) {
+			for (int i = 1; i < length; i++) {
 				if (min.next.cost < min.cost) min = min.next;
 			}
 		}
