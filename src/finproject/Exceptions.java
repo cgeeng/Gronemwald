@@ -50,9 +50,15 @@ public class Exceptions {
 	}//end VillageNotFoundException
 	
 	public static class FileNotFoundException extends Exception {
-		public FileNotFoundException () {
+		public FileNotFoundException() {
 			super("The image file could not be found (check the path).");
 		}
 	}//end FileNotFoundException
+	
+	public static class RoadProposalException extends Exception {
+		public RoadProposalException() {
+			super("A new road is being proposed.");
+		}
+	} // end of RoadProposalException
 	
 }

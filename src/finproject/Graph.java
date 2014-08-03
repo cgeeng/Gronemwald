@@ -1,6 +1,9 @@
 package finproject;
 
+import finproject.Exceptions.RoadAlreadyExistsException;
+import finproject.Exceptions.SameVillageException;
 import finproject.Exceptions.*;
+
 import java.util.Random;
 
 public class Graph implements Runnable {
@@ -21,9 +24,7 @@ public class Graph implements Runnable {
 	public Village getLast() {return this.lastVillage;}
 	
 	public void run() { // run method for Graph
-		if (! isEmpty()) {
-			try {
-			while(true) {
+		if (! isEmpty()) { // chooses random village within graph
 				Random rand = new Random();
 				int v = rand.nextInt(length-1), count=0;
 				Village vill = getFirst();
@@ -31,14 +32,40 @@ public class Graph implements Runnable {
 					if (count != v) {count++; vill = vill.getNext();}
 				}
 				System.out.println("Village " + vill.getName());
-				Thread.sleep(100);
-			}
-			} catch (InterruptedException e) {
-				System.out.println("The program was interrupted.");
-			}
+				
+				Village vill2 = getFirst();
+				for (int i=0; i<length; i++) {
+					if (count != v) {count++; vill2 = vill2.getNext();}
+				}
+				System.out.println("Village 2 is " + vill2.getName());
+				
+				try {
+					vill.connect(1, vill2);
+					System.out.println("New road between village " + vill.getName() + " and village " + vill2.getName());
+				} catch (SameVillageException e) {
+					System.out.println(e.getMessage());
+				} catch (RoadAlreadyExistsException e) {
+					System.out.println(e.getMessage());
+				}
+				
+//			 	Thread.sleep(100);
+//			} catch (InterruptedException e) {
+//				System.out.println("The program was interrupted.");
+//			}
 		}
-		
-	}
+	} // end of run()
+			
+//	public boolean roadExists(Village v1, Village v2) {
+//		// checks if road already exists between two villages
+//		boolean roadExists = false;
+//		if (!v1.outgoing.isEmpty()) {
+//			RoadIterator current = v1.outgoing.getFirst();
+//			while (current!=null) {
+//				if (current.getData().end.equals(v2)) {roadExists = true;}
+//			}
+//		}
+//		return roadExists;
+//	}
 	
 	public void insert (Village newVillage) {
 		if (isEmpty()) {
