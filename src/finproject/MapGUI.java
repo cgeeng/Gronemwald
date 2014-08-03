@@ -69,9 +69,9 @@ public class MapGUI implements ActionListener {
 	} // end of controller()
 	
 	public void update() {
-		mapPanel.removeAll();
-		mapPanel.validate();
+		mapFrame.invalidate();
 		mapPanel.repaint();
+		mapFrame.validate();
 		mapFrame.pack();
 	}
 	
@@ -164,12 +164,11 @@ public class MapGUI implements ActionListener {
 		Village newVill = new Village();
 		graph.insert(newVill); // default to zero gnomes
 		
-		drawVillages();
-		
 		JOptionPane.showMessageDialog(mapFrame,
         		"Village " + newVill.getName() + " has been created with a population of zero gnomes.",
         		"Adding a village", JOptionPane.PLAIN_MESSAGE);
 		
+		drawVillages();
 		update();
 	}
 	
@@ -468,7 +467,7 @@ public class MapGUI implements ActionListener {
 		
 		public DrawVillage(Village v, int x, int y) {
 			setPreferredSize(new Dimension(GUIConstants.radius*2, GUIConstants.radius*2));
-			setBackground(mapPanel.getBackground());
+			setBackground(Color.WHITE);
 			setOpaque(true);
 			
 			this.village = v;
@@ -481,7 +480,7 @@ public class MapGUI implements ActionListener {
 		
 		@Override
 		protected void paintComponent(Graphics g) {
-			g.setColor(Color.WHITE);
+			g.setColor(getBackground());
 			super.paintComponent(g);
 			g.drawOval(x-r,y-r,r*2,r*2);
 		}
