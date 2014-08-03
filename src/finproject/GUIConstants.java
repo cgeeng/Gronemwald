@@ -9,7 +9,7 @@ public class GUIConstants {
 	final static int STATE_ACTIVE = 1;
 	
 	// map frame size
-	final static Dimension frameSize = new Dimension(800,500);
+	final static Dimension frameSize = new Dimension(850,500);
 	
 	// village icon size
 	final static int radius = 25;

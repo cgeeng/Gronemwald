@@ -23,7 +23,7 @@ public class Graph {
 	public Village getFirst() {return this.firstVillage;}
 	public Village getLast() {return this.lastVillage;}
 	
-	public void insert ( Village newVillage ) {
+	public void insert (Village newVillage) {
 		if (isEmpty()) {
 			firstVillage = newVillage;
 			lastVillage = newVillage;

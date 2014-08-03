@@ -8,13 +8,16 @@ import javax.swing.*;
 
 import java.util.Random;
 
+import finproject.Exceptions.GraphEmptyException;
+import finproject.Exceptions.NotFoundException;
 import finproject.Exceptions.*;
 
 public class MapGUI implements ActionListener {
 		int state = 0; // holds state of application
 		JFrame mapFrame;
 		JPanel welcomePanel, titlePanel, mapPanel, optionsPanel;
-		JButton addVillage, delVillage, placeGnome, moveGnome, addRoad, welcomeButton, addCountry;
+		JButton addVillage, delVillage, placeGnome, moveGnomeSim, addRoad, welcomeButton, addCountry,
+				moveGnomeExt, delRoad;
 		DrawVillage [] villCircles = new DrawVillage[20]; int arrLength=0;// used for building roads
 		Graph graph;
 	
@@ -53,7 +56,7 @@ public class MapGUI implements ActionListener {
 			
 			optionsPanel = new JPanel();
 			optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
-			optionsPanel.setPreferredSize(new Dimension(150, 450));
+			optionsPanel.setPreferredSize(new Dimension(200, 450));
 			optionsPanel.setBackground(Color.BLUE);
 			
 			addTitle();
@@ -97,21 +100,20 @@ public class MapGUI implements ActionListener {
 			for (int i=0; i<5; i++) {graph.insert(new Village(5));}
 		}
 		
-		// trying known values for now for testing
-			graph.find(1).connect(2, graph.find(2));
-			graph.find(1).connect(4, graph.find(3));
-			graph.find(2).connect(5, graph.find(4));
-			graph.find(2).connect(1, graph.find(3));
-			graph.find(4).connect(1, graph.find(5));
-			graph.find(5).connect(1, graph.find(4));
-			graph.find(5).connect(3, graph.find(3));
+		graph.find(1).connect(2, graph.find(2));
+		graph.find(1).connect(4, graph.find(3));
+		graph.find(2).connect(5, graph.find(4));
+		graph.find(2).connect(1, graph.find(3));
+		graph.find(4).connect(1, graph.find(5));
+		graph.find(5).connect(1, graph.find(4));
+		graph.find(5).connect(3, graph.find(3));
 		} catch (RoadAlreadyExistsException e) {System.out.println(e.getMessage());
 		} catch (GraphEmptyException e) {System.out.println(e.getMessage());
 		} catch (NotFoundException e) {System.out.println(e.getMessage());
 		} catch (SameVillageException e) {System.out.println(e.getMessage());
 		} catch (VillageFullException e) {System.out.println(e.getMessage());} 
 		
-		// graph.printGraph();
+		graph.printGraph();
 	} // end of addGraph()
 	
 	public void drawGraph() {
@@ -124,17 +126,25 @@ public class MapGUI implements ActionListener {
 		addVillage = new JButton("Add village");
 		delVillage = new JButton("Delete village");
 		placeGnome = new JButton("Place new gnome");
-		moveGnome = new JButton("Move gnome");
+		moveGnomeSim = new JButton("Move gnome (simple)");
+		moveGnomeExt = new JButton("Move gnome (extended)");
 		addRoad = new JButton("Add road");
+		delRoad = new JButton("Delete road");
 		addCountry = new JButton("Add country");
 		
 		optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
-		addOptionsButton(addVillage); optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
-		addOptionsButton(delVillage); optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
-		addOptionsButton(placeGnome); optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
-		addOptionsButton(moveGnome);  optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
-		addOptionsButton(addRoad);    optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
-		addOptionsButton(addCountry); optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
+		// village group
+		addOptionsButton(addVillage);   optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
+		addOptionsButton(delVillage);   optionsPanel.add(Box.createRigidArea(new Dimension(0,10)));
+		// gnome group
+		addOptionsButton(placeGnome);   optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
+		addOptionsButton(moveGnomeSim); optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
+		addOptionsButton(moveGnomeExt); optionsPanel.add(Box.createRigidArea(new Dimension(0,10)));
+		// road group
+		addOptionsButton(addRoad);      optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
+		addOptionsButton(delRoad);      optionsPanel.add(Box.createRigidArea(new Dimension(0,10)));
+		// country group
+		addOptionsButton(addCountry);   optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
 	} // end of addOptions()
 	
 	public void addOptionsButton(JButton button) {
@@ -152,10 +162,14 @@ public class MapGUI implements ActionListener {
         	delVillage();
         } else if (e.getSource() == placeGnome) {
         	placeGnome();
-        } else if (e.getSource() == moveGnome) {
-        	moveGnome();
+        } else if (e.getSource() == moveGnomeSim) {
+        	moveGnomeSim();
+        } else if (e.getSource() == moveGnomeExt) {
+        	moveGnomeExt();
         } else if (e.getSource() == addRoad) {
         	addRoad();
+        } else if (e.getSource() == delRoad) {
+        	delRoad();
         } else if (e.getSource() == addCountry) {
         	addCountry();
         }
@@ -284,7 +298,7 @@ public class MapGUI implements ActionListener {
 			}
 	} // end of placeGnome()
 	
-	public void moveGnome() {
+	public void moveGnomeSim() {
 		try {
 			if (graph.isEmpty()) {throw new GraphEmptyException();}
 
@@ -410,6 +424,49 @@ public class MapGUI implements ActionListener {
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "SameVillageException", JOptionPane.ERROR_MESSAGE);
 		}
 	} // end of addRoad()
+	
+	public void moveGnomeExt() {
+		// moves gnome using shortest path and top sort
+	}
+	
+	public void delRoad() { // deletes a road
+		try {
+			Object [] options = villageList();
+			
+			String start = (String) JOptionPane.showInputDialog(mapFrame,
+			        "Choose the starting village of the road you would like to delete.",
+			        "Deleting a road", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+			if (start == null) {return;}
+
+			// takes away choice of starting village
+			Object [] lessOptions = new Object [options.length-1];
+			int nextIndex2 = 0;
+			for (int i=0; i<options.length; i++) {
+				if (! options[i].equals(start)) {lessOptions[nextIndex2] = options[i]; nextIndex2++;}}
+
+			String end = (String) JOptionPane.showInputDialog(mapFrame,
+			    	"Village " + start + " was chosen as the starting village."
+			    		+ "\nNow please choose the end village of the road.",
+			    	"Deleting a road", JOptionPane.PLAIN_MESSAGE, null, lessOptions, lessOptions[0]);
+			if (end == null) {return;}
+			
+			Village startVill = graph.find(Integer.parseInt(start));
+			Village endVill = graph.find(Integer.parseInt(end));
+			
+			Road toDelete = startVill.outgoing.findRoad(endVill);
+			startVill.deleteOutRoad(toDelete);
+			endVill.deleteInRoad(toDelete);
+			
+			JOptionPane.showMessageDialog(mapFrame, "Road from village " + start + " to village " + end + " has been deleted.");
+			drawGraph();
+		} catch (NumberFormatException e) {
+			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Please try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
+		} catch (NotFoundException e) {
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "NotFoundException", JOptionPane.ERROR_MESSAGE);
+		} catch (GraphEmptyException e) {
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "GraphEmptyException", JOptionPane.ERROR_MESSAGE);
+		}
+	}
 	
 	public void addCountry() {
 		System.out.println("Adding a country");

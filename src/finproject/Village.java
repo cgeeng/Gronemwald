@@ -71,8 +71,6 @@ public class Village {
 		return newRoad;
 	}//end connect
 	
-	
-	
 	public void deleteOutRoad(Road r) throws NotFoundException {
 		outgoing.delete(r);
 		this.outdegree--;
@@ -194,6 +192,17 @@ public class Village {
 				current = current.getNext();
 			} throw new NotFoundException();
 		} // end of find()
+		
+		public Road findRoad(Village v) throws NotFoundException {
+			// finds road leads to or from given village
+			if (! isEmpty()) {
+				RoadIterator current = getFirst();
+				while(current != null) {
+					if (v.equals(current.getData().start) || v.equals(current.getData().end)) {return current.getData();}
+					current = current.getNext();
+				}
+			} throw new NotFoundException();
+		} // end of findRoad()
 	} // end of AdjList
 	
 	
