@@ -15,8 +15,7 @@ public class MovingMap {
 	static Graph Gr = new Graph();
 	
 
-	public static void main(String[] args) throws NumberFormatException, IOException, RoadAlreadyExistsException, SameVillageException, 
-	NotFoundException, GraphEmptyException {
+	public static void main(String[] args) throws Exception {
 
 		
 		Gr.insert( new Village());
@@ -24,18 +23,17 @@ public class MovingMap {
 		Gr.insert( new Village());
 		Gr.insert( new Village());
 		
-		Gr.find(1).connect(2, Gr.find(3));
-		Gr.find(1).connect(2, Gr.find(2));
+		Gr.find(1).connect(1, Gr.find(2));
+		Gr.find(1).connect(8, Gr.find(3));
+		Gr.find(1).connect(5, Gr.find(4));
+		Gr.find(2).connect(9, Gr.find(4));
+		Gr.find(2).connect(7, Gr.find(3));
+		Gr.find(3).connect(6, Gr.find(4));
 		//printMap( Gr );
 		
-		Gr.createProposal();
-		//Gr.proposal.addProposal(Gr.find(1), Gr.find(3), 5);
-		Gr.proposal.addProposal(Gr.find(1), Gr.find(4), 6);
-		//Gr.proposal.addProposal(Gr.find(2), Gr.find(3), 10);
-		Gr.proposal.addProposal(Gr.find(4), Gr.find(3), 2);
-		Gr.proposal.addProposal(Gr.find(4), Gr.find(1), 3);
 		
-		Gr.proposal.findMinSpanTree();
+		
+		Gr.findMinSpanTree();
 		
 		Gr.proposal.printToBuild();
 		//printProposalMap(Gr.proposal);

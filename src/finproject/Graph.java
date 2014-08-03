@@ -11,6 +11,7 @@ public class Graph {
 	Village firstVillage;
 	Village lastVillage;
 	ProposalGraph proposal;
+	PRoad[] toBuild;
 	
 	//constructor
 	public Graph() {
@@ -71,6 +72,13 @@ public class Graph {
 	public void createProposal() throws SameVillageException, RoadAlreadyExistsException, NotFoundException, GraphEmptyException {
 		//create proposal instance; WILL NOT BE UPDATED IF ROADS ARE BUILT INTO ACTUAL GRAPH
 		proposal = new ProposalGraph();
+	}
+	
+	public PRoad[] findMinSpanTree() throws Exception {
+		proposal = new ProposalGraph(this);
+		proposal.findMinSpanTree();
+		
+		return proposal.toBuild;
 	}
 	
 	public void clearProposal() {
