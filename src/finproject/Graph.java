@@ -67,7 +67,7 @@ public class Graph implements Runnable {
 //		return roadExists;
 //	}
 	
-	public void insert (Village newVillage) {
+	public synchronized void insert (Village newVillage) {
 		if (isEmpty()) {
 			firstVillage = newVillage;
 			lastVillage = newVillage;
@@ -80,7 +80,7 @@ public class Graph implements Runnable {
 		length++;
 	}
 	
-	public void delete(int name) throws GraphEmptyException, NotFoundException {
+	public synchronized void delete(int name) throws GraphEmptyException, NotFoundException {
 		if (isEmpty()) {throw new GraphEmptyException();}
 		else if (getLength() == 1) {
 			this.firstVillage = null;

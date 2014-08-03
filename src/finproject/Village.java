@@ -53,7 +53,7 @@ public class Village implements Runnable {
 	
 	//methods
 	
-	public Road connect (int cost, Village newNeighbor) throws SameVillageException, RoadAlreadyExistsException {
+	public synchronized Road connect (int cost, Village newNeighbor) throws SameVillageException, RoadAlreadyExistsException {
 		// exceptions caught by MapGUI so pop-up error message can be generated
 		if (this.equals(newNeighbor)) {throw new SameVillageException();}			
 		if (! outgoing.isEmpty()) {
@@ -75,21 +75,21 @@ public class Village implements Runnable {
 		return newRoad;
 	}//end connect
 	
-	public void deleteOutRoad(Road r) throws NotFoundException {
+	public synchronized void deleteOutRoad(Road r) throws NotFoundException {
 		outgoing.delete(r);
 		this.outdegree--;
 		r.end.incoming.delete(r);
 		r.end.indegree--;
 	}
 	
-	public void deleteInRoad(Road r) throws NotFoundException {
+	public synchronized void deleteInRoad(Road r) throws NotFoundException {
 		incoming.delete(r);
 		this.indegree--;
 		r.start.outgoing.delete(r);
 		r.start.outdegree++;
 	}
 	
-	public Gnome removeGnome(Gnome g) throws VillageEmptyException {
+	public synchronized Gnome removeGnome(Gnome g) throws VillageEmptyException {
 		if (isEmpty()) {throw new VillageEmptyException();}
 		else {
 			int gIndex=10;
@@ -104,7 +104,7 @@ public class Village implements Runnable {
 		}
 	} // end of removeGnome()
 	
-	public void insertGnome(Gnome g) throws VillageFullException {
+	public synchronized void insertGnome(Gnome g) throws VillageFullException {
 		if (isFull()) {throw new VillageFullException();}
 		else {
 			int nextIndex=0; // next open index
@@ -156,7 +156,7 @@ public class Village implements Runnable {
 		public RoadIterator getFirst() {return this.firstRoad;}
 		public RoadIterator getLast() {return this.lastRoad;}
 		
-		public void insert(Road r){
+		public synchronized void insert(Road r){
 			RoadIterator ri = new RoadIterator(r);
 			if (isEmpty()) {
 				firstRoad = ri;
@@ -170,7 +170,7 @@ public class Village implements Runnable {
 			length++;
 		} // end of insert()
 		
-		public void delete(Road r) throws NotFoundException {
+		public synchronized void delete(Road r) throws NotFoundException {
 			if (length <= 1) {
 				this.firstRoad = null;
 				this.lastRoad = null;}

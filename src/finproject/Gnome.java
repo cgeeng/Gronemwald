@@ -34,12 +34,17 @@ public class Gnome implements Runnable {
 	}//end constructor establishing Gnome's village
 	
 	public void run() { // run method for gnomes
-		
+		try {
+			travelRandom();
+			Thread.sleep(200);
+		} catch(InterruptedException e) {
+			System.out.println("The thread was interrupted");
+		}
 	}
 	
 	//methods
 	
-	public void travelRandom () {
+	public synchronized void travelRandom () {
 		try {
 			//Limited to gnomes that are in a village already
 			if (current == null) throw new NotInVillageException();
