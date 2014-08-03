@@ -117,6 +117,7 @@ public class MapGUI implements ActionListener {
 	public void drawGraph() {
 		drawVillages();
 		drawRoads();
+		update();
 	} // end of drawGraph()
 	
 	public void addOptions() {
@@ -188,8 +189,7 @@ public class MapGUI implements ActionListener {
 						" to village " + newRoad.end.getName() + " at cost " + newRoad.cost,
 					"Adding a village", JOptionPane.PLAIN_MESSAGE);
 			
-			drawVillages(); drawRoads();
-			update();
+			drawGraph();
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Please try again.", "NumberFormatException", JOptionPane.PLAIN_MESSAGE);
 		} catch (NotFoundException e) {
@@ -243,9 +243,7 @@ public class MapGUI implements ActionListener {
 			graph.delete(village.getName());
 			graph.printGraph();
 			
-			drawVillages(); drawRoads();
-			update();
-			
+			drawGraph();
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
 		} catch (NotFoundException e) {
@@ -312,14 +310,6 @@ public class MapGUI implements ActionListener {
 			if (gnomeID == null) {return;}
 			
 			Gnome gnome = startVillage.find(Integer.parseInt(gnomeID));
-			
-			/*
-			// takes away choice of starting village
-			Object [] lessOptions = new Object [villOptions.length-1];
-			int nextIndex2 = 0;
-			for (int i=0; i<villOptions.length; i++) {
-				if (! villOptions[i].equals(start)) {lessOptions[nextIndex2] = villOptions[i]; nextIndex2++;}}
-			*/
 			
 			String [] moveOptions = {"Choose adjacent village", "Move randomly to adjacent village"};
 			
@@ -407,8 +397,7 @@ public class MapGUI implements ActionListener {
 		graph.find(intStart).connect(intCost, graph.find(intEnd));
 		graph.printGraph();
 		
-		update();
-		
+		drawGraph();
 		} catch (RoadAlreadyExistsException e) {
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "RoadAlreadyExistsException", JOptionPane.ERROR_MESSAGE);
 		} catch (NumberFormatException e) {
@@ -435,11 +424,13 @@ public class MapGUI implements ActionListener {
 			
 			String ans = (String) JOptionPane.showInputDialog(mapFrame, "Would you like to use a premade map " + 
 					" or create your own map?", "Building map", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+			if (ans == null) {return;}
 			
 			if (ans.equals(options[0])) {createPreGraph();}
 			else {
 				String strVill = (String) JOptionPane.showInputDialog(mapFrame, "How many villages would you like to start with?" +
 						" (as an integer).", "Building map", JOptionPane.PLAIN_MESSAGE);
+				if (strVill == null) {return;}
 				
 				int numVill = Integer.parseInt(strVill);
 				graph = new Graph();
@@ -489,7 +480,7 @@ public class MapGUI implements ActionListener {
 			int mapWidth = 650, mapHeight = 450; // mapPanel.getWidth(), mapHeight = mapPanel.getHeight();
 			Village current = graph.getFirst();
 			while (current != null) {
-				x = (int) Math.round(mapWidth/2 + 7*r*Math.cos(angle)); // TODO make more exact
+				x = (int) Math.round(mapWidth/2 + 7*r*Math.cos(angle));
 				y = (int) Math.round(mapHeight/2 + 7*r*Math.sin(angle));
 				
 				DrawVillage dv = new DrawVillage(current, x, y);

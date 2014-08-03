@@ -12,5 +12,5 @@ public class GUIConstants {
 	final static Dimension frameSize = new Dimension(800,500);
 	
 	// village icon size
-	final static int radius = 20;
+	final static int radius = 25;
 }
