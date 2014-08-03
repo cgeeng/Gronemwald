@@ -6,6 +6,7 @@ import java.awt.geom.*;
 
 import javax.swing.*;
 
+import finproject.Exceptions.NotFoundException;
 import finproject.Exceptions.*;
 
 public class MapGUI implements ActionListener {
@@ -13,7 +14,7 @@ public class MapGUI implements ActionListener {
 		JFrame mapFrame;
 		JPanel welcomePanel, titlePanel, mapPanel, optionsPanel;
 		JButton addVillage, delVillage, placeGnome, moveGnome, addRoad, welcomeButton, addCountry;
-		DrawVillage [] villCircles = new DrawVillage[10]; // used for building roads
+		DrawVillage [] villCircles = new DrawVillage[20]; int arrLength=0;// used for building roads
 		Graph graph;
 	
 	public MapGUI() { // builds the main window/frame
@@ -114,25 +115,6 @@ public class MapGUI implements ActionListener {
 	public void drawGraph() {
 		drawVillages();
 		drawRoads();
-
-		/*
-		if (! graph.isEmpty()) {
-			Village currentVill = graph.getFirst();
-			while (currentVill != null) {
-				DrawVillage temp = new DrawVillage(currentVill);
-				
-				if (! currentVill.outgoing.isEmpty()) {
-					RoadIterator currentRoad = currentVill.outgoing.getFirst();
-					while (currentRoad != null) {
-						DrawRoad newRoad = new DrawRoad(currentRoad);
-						mapPanel.add(newRoad);
-						currentRoad = currentRoad.getNext();
-					}
-				}
-				mapPanel.add(temp);
-				currentVill = currentVill.getNext();
-			}}*/
-		
 	} // end of drawGraph()
 	
 	public void addOptions() {
@@ -406,22 +388,53 @@ public class MapGUI implements ActionListener {
 			while (current != null) {
 				x = (int) Math.round(mapWidth/2 + 10*r*Math.cos(angle));
 				y = (int) Math.round(mapHeight/2 + 10*r*Math.sin(angle));
-				DrawVillage newVill = new DrawVillage(current, x, y);
-				mapPanel.add(newVill);
+				System.out.println("x is: " + x + "  y is: " + y);
+				DrawVillage dv = new DrawVillage(current, x, y);
+				addToArray(dv);
+				mapPanel.add(dv);
 				angle += step;
 				current = current.getNext();
 			}
 		}
 	} // end of drawVillages()
 	
+	public void addToArray(DrawVillage dv) {
+		if (arrLength<20) {
+			villCircles[arrLength] = dv;
+			arrLength++;
+		}
+	} // end of addToArray()
+	
 	public void drawRoads() { // draws all roads currently in graph
 		if (! graph.isEmpty()) {
-			Village current = graph.getFirst();
-			while (current != null) {
-				
+			int x1, y1, x2, y2;
+			for (int i=0; i<arrLength; i++) {
+				DrawVillage dv = villCircles[i];
+				RoadIterator current = dv.village.outgoing.getFirst();
+				while (current != null) {
+					x1 = dv.x;
+					y1 = dv.y;
+					x2 = findCircle(current.getData().end).x;
+					y2 = findCircle(current.getData().end).y;
+					DrawRoad dr = new DrawRoad(current,x1,y1,x2,y2);
+					mapPanel.add(dr);
+					current = current.getNext();
+				}
 			}
 		}
-	}
+	} // end of drawRoads()
+	
+	public DrawVillage findCircle(Village v) { // helper for drawRoads, finds DrawVillage instance
+										       // of village (end village of road)
+		try {
+			for (int i=0; i<arrLength; i++) {
+				if (v.equals(villCircles[i].village)) {return villCircles[i];}
+			} throw new NotFoundException();
+		} catch (NotFoundException e) {
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "NotFoundException", JOptionPane.ERROR_MESSAGE);
+			return null;
+		}
+	} // end of findCircle()
 	
 	public static void createAndShowGUI() {
 		JFrame.setDefaultLookAndFeelDecorated(true);
@@ -437,7 +450,7 @@ public class MapGUI implements ActionListener {
 	public class DrawVillage extends JPanel {
 		Village village;
 		Dimension preferredSize = new Dimension(GUIConstants.radius*2, GUIConstants.radius*2);
-		int x, y, d=GUIConstants.radius*2;
+		int x, y, r=GUIConstants.radius;
 		
 		public DrawVillage(Village v) {	
 			this(v, 0, 0);
@@ -456,7 +469,7 @@ public class MapGUI implements ActionListener {
 		
 		protected void paintComponent(Graphics g) {
 			g.setColor(getBackground());
-			g.fillOval(x,y,d,d);
+			g.fillOval(x,y,r*2,r*2);
 		}
 		
 	} // end of drawVillage
