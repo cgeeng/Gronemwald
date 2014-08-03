@@ -34,12 +34,7 @@ public class Gnome implements Runnable {
 	}//end constructor establishing Gnome's village
 	
 	public void run() { // run method for gnomes
-		try {
 			travelRandom();
-			Thread.sleep(200);
-		} catch(InterruptedException e) {
-			System.out.println("The thread was interrupted");
-		}
 	}
 	
 	//methods
@@ -52,19 +47,17 @@ public class Gnome implements Runnable {
 			
 			Random generate = new Random();
 			int randomTraverse = 1 + generate.nextInt(current.outgoing.length);
-			System.out.println("Random number is " + randomTraverse);
 			
 			//Iterate across AdjList of gnome's current village to find random road
 			RoadIterator temp = current.outgoing.firstRoad;
 			for (int i = 1; i < randomTraverse; i++) {
-				System.out.println("i is " + i);
 				temp = temp.getNext();
 			}
 			//Assign destination village
 			Village oldVillage = this.current;
 			Village destination = temp.endVillage();
 			destination.insertGnome(this);			
-			System.out.println("Gnome " + ID + " has moved from Village " + oldVillage.getName() + " to Village " + current.getName());
+			System.out.println("Gnome " + ID + " has moved from village " + oldVillage.getName() + " to village " + current.getName());
 		} catch (NotInVillageException e) {System.out.println(e.getMessage()); 
 		} catch (NoAdjacentVillagesException e) {System.out.println(e.getMessage());
 		} catch (VillageFullException e) {System.out.println(e.getMessage());}

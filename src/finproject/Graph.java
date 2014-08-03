@@ -24,9 +24,10 @@ public class Graph implements Runnable {
 	public Village getLast() {return this.lastVillage;}
 	
 	public void run() { // run method for Graph
-		if (! isEmpty()) { // chooses random village within graph
+		int villCount=0;
+		while (! isEmpty() && villCount < 3) { // chooses random village within graph
 				Random rand = new Random();
-				int v = rand.nextInt(length-1), count=0;
+				int v = rand.nextInt(length), count=0;
 				Village vill = getFirst();
 				for (int i=0; i<length; i++) {
 					if (count != v) {count++; vill = vill.getNext();}
@@ -40,12 +41,12 @@ public class Graph implements Runnable {
 				System.out.println("end village is " + vill2.getName());
 				
 				try {
-					vill.connect(1, vill2);
-					System.out.println("New road between village " + vill.getName() + " and village " + vill2.getName());
-				} catch (SameVillageException e) {
-					System.out.println(e.getMessage());
-				} catch (RoadAlreadyExistsException e) {
-					System.out.println(e.getMessage());
+					System.out.println("New road proposed between village " + vill.getName() + " and village " + vill2.getName());
+					roadProposal(vill, vill2);
+					villCount++;
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					System.out.println("The system was interrupted.");
 				}
 				
 //			 	Thread.sleep(100);
@@ -66,6 +67,20 @@ public class Graph implements Runnable {
 //		}
 //		return roadExists;
 //	}
+	
+	public synchronized void roadProposal (Village v1, Village v2) {
+		try {
+			Random rand = new Random(); int newToll = 1+rand.nextInt(5);
+			System.out.println("The new toll for this road would be: " + newToll);
+			System.out.println("Which means total building cost would be: " + newToll*100);
+			System.out.println("The government has elected to build the road.");
+			v1.connect(1, v2);
+		} catch (SameVillageException e) {
+			System.out.println("The government says, " + e.getMessage());
+		} catch (RoadAlreadyExistsException e) {
+			System.out.println("The government says, " + e.getMessage());
+		}
+	}
 	
 	public synchronized void insert (Village newVillage) {
 		if (isEmpty()) {
