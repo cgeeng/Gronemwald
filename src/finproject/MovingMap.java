@@ -22,14 +22,21 @@ public class MovingMap {
 		Gr.insert( new Village());
 		Gr.insert( new Village());
 		Gr.insert( new Village());
+		Gr.insert( new Village());
 		
 		Gr.find(1).connect(2, Gr.find(3));
 		Gr.find(1).connect(2, Gr.find(2));
-		printMap( Gr );
+		//printMap( Gr );
 		
 		Gr.createProposal();
-		Gr.proposal.find(15);
-		printProposalMap(Gr.proposal);
+		Gr.proposal.addProposal(Gr.find(1), Gr.find(3), 5);
+		Gr.proposal.addProposal(Gr.find(1), Gr.find(4), 6);
+		Gr.proposal.addProposal(Gr.find(2), Gr.find(3), 10);
+		Gr.proposal.addProposal(Gr.find(4), Gr.find(3), 2);
+		
+		Gr.proposal.findMinSpanTree();
+		Gr.proposal.printToBuild();
+		//printProposalMap(Gr.proposal);
 
 		//testGnomes[0].travelRandom();
 		//testGnomes[0].travelPick();

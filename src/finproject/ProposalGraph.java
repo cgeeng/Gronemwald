@@ -19,6 +19,9 @@ public class ProposalGraph {
 	public ProposalGraph (Graph original) throws SameVillageException, RoadAlreadyExistsException, NotFoundException, GraphEmptyException {
 		deepCopy(original);
 	}
+	public ProposalGraph() {
+
+	}
 	
 	//methods
 	
@@ -58,20 +61,36 @@ public class ProposalGraph {
 		
 	}//end deep copy
 	
-	public void findMinSpanTree() {
+	public void findMinSpanTree() throws GraphEmptyException {
 		//Assumes input is connected graph
-		//for now just adds roads to be built
-		//Adds to list of roads to be made
-		while ( length != connected.length) {}
-	}
+		while ( length != connected.length) {
+			int i = 0;
+			Road temp = pq.removeMin();
+			if ( !findCycle(temp) ) {
+				toBuild[i] = temp;
+				if (connected.isEmpty()) connected.insert(temp.starting);
+				
+				if(connected.find(temp.end.getName()) == null) connected.insert(temp.end);
+				if(connected.find(temp.starting.getName()) == null) connected.insert(temp.starting);
+				i++;
+			}
+		}
+		//toBuild should now contain all vertices
+	}//end findMinSpanTree
 	
 	public void addProposal (Village a, Village b, int cost) throws SameVillageException, RoadAlreadyExistsException, GraphEmptyException {
-		find(a.getName()).connect( cost, find(b.getName()) );
+		proposeRoad ( find(a.getName()), cost, find(b.getName()) ); //creates villages if they don't exist in proposal graph
 	}
 	
 	public boolean findCycle (Road road) {
-		if ( connected.find(road.end.getName()) == null ) return true;
+		if ( connected.find(road.end.getName()) == null || connected.find(road.starting.getName()) == null) return true;
 		else return false;
+	}
+	
+	public Road proposeRoad( Village a, int cost, Village b) {
+		Road newRoad = new Road(a, b, 100*cost);
+		pq.insert(newRoad);
+		return newRoad;
 	}
 	
 	//generic methods
@@ -120,6 +139,14 @@ public class ProposalGraph {
 		} else {System.out.println("This graph is empty.");}
 	} // end of printGraph()
 	
+	public void printToBuild() {
+		System.out.println("Geronimo");
+		int i = 0;
+		while (toBuild[i] != null) {
+			System.out.println("Road from Village " + toBuild[i].starting + " to " + toBuild[i].end);
+			i++;
+		}
+	}
 	
 	public class ConnectedGraph {
 		private int length = 0;
@@ -158,22 +185,77 @@ public class ProposalGraph {
 					if (current.getName() == name) {return current;}
 					current = current.getNext();
 				} 
-			} else return null;
+			}
+			return null;
 		}//end find
 			
 	}//end proposalgraph
 		
-	public class pRoad {
-		pRoad next, previous;
+	public class Road {
+		Road next, previous;
 		int cost;
 		Village starting, end;
 		
-		public pRoad(Village starting, Village end, int cost) {
+		public Road(Village starting, Village end, int cost) {
 			this.starting = starting;
 			this.end = end;
 			this.cost = cost;
 		}
-	}
+	}//end Road class
+
+	public class PriorityQueue {
+		private int length;
+		Road firstRoad;
+		Road lastRoad;
+		Road min;
 		
-	
+		public PriorityQueue(){ // constructor
+			this.length = 0;
+		}
+		
+		public int length() {return this.length;}
+		public Road getFirst() {return this.firstRoad;}
+		public Road getLast() {return this.lastRoad;}
+		public boolean isEmpty() {return length==0;}
+		
+		public Road find(Road r) throws NotFoundException {
+			Road current = this.firstRoad;
+			while (current != null) {					
+				if (current.equals(r)) {return current;}
+				current = current.next;
+			} throw new NotFoundException();
+		} // end of find()
+		
+		public void insert(Road RoadWithVillage){
+			if(isEmpty()){
+				firstRoad = RoadWithVillage;
+				lastRoad = firstRoad;
+			}
+			else{
+				lastRoad.next = RoadWithVillage;
+				lastRoad = RoadWithVillage;
+			}
+			length++;
+		}//end insert
+		
+		public Road removeMin() throws GraphEmptyException {
+			setMin();
+			Road temp = min;
+			if (temp == lastRoad) temp.previous.next = null;
+			else temp.next.previous = temp.previous;
+			if (temp != firstRoad)	temp.previous.next = temp.next;
+			return temp;
+		}
+		
+		public void setMin() throws GraphEmptyException {
+			min = firstRoad;
+			//check if queue is empty
+			if (isEmpty()) throw new GraphEmptyException();
+			for (int i = 0; i < length; i++) {
+				if (min.next.cost < min.cost) min = min.next;
+			}
+		}
+				
+	}//end PriorityQueue
+		
 }

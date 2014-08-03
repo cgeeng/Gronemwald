@@ -72,6 +72,8 @@ public class Village {
 		return newRoad;
 	}//end connect
 	
+	
+	
 	public void deleteOutRoad(Road r) throws NotFoundException {
 		outgoing.delete(r);
 		this.outdegree--;
