@@ -1,5 +1,7 @@
 package finproject;
 
+import finproject.Exceptions.GraphEmptyException;
+import finproject.Exceptions.NotFoundException;
 import finproject.Exceptions.RoadAlreadyExistsException;
 import finproject.Exceptions.SameVillageException;
 import finproject.Exceptions.*;
@@ -418,6 +420,9 @@ public class Graph implements Runnable {
 		} else {System.out.println("This graph is empty."); return "";}
 	} // end of printGraph()
 	
-
+	public Road[] createProposal() throws NotFoundException, GraphEmptyException, SameVillageException, RoadAlreadyExistsException {
+		Proposal toBuild = new Proposal(this);
+		return toBuild.getProposal();
+	}
 	
 }//end VillageList class

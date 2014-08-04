@@ -12,6 +12,9 @@ public class TestClass {
 		// testGraphThread();
 		// testTopologicalSort();
 		
+		//createProposal returns array of Roads. 
+		Graph.createProposal();
+		
 		testRoadProposal();
 
 	}
@@ -88,5 +91,6 @@ public class TestClass {
 				System.out.println(e.getMessage());
 			} 
 	} // end of testRoadProposal()
+	
 	
 } // end of TestClass

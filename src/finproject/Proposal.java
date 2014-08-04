@@ -6,16 +6,19 @@ import finproject.Exceptions.RoadAlreadyExistsException;
 import finproject.Exceptions.SameVillageException;
 
 public class Proposal {
-	int[] villages = new int[20]; //VILLAGES START AT INDEX 1
-	Edge[] roads = new Edge[50];
-	int p=0; //number of villages;
-	int q=0; //number of roads
-	Edge[] toBuild;
-	int toBuildLength = 0;
-	int[] rank;
+	private int[] villages = new int[20]; //VILLAGES START AT INDEX 1
+	private Edge[] roads = new Edge[50];
+	private Edge[] toBuild;
+	private int[] rank;
+	
+	private int p=0; //number of villages;
+	private int q=0; //number of roads
+	private int toBuildLength = 0;
+	Graph original;
 	
 	public Proposal(Graph original) throws SameVillageException, RoadAlreadyExistsException, NotFoundException, GraphEmptyException {
 		//Takes existing graph structures and translates them into two arrays
+		this.original = original;
 		deepCopy(original);
 	}
 	
@@ -51,8 +54,7 @@ public class Proposal {
 		int root2 = find(v);
 		if (root1 == root2) return false;
 		
-		//check if rank of root1 is smaller
-		
+		//check if rank of root1 is smaller		
 		if ( rank[root1] > rank[root2] ) { 
 			int t = root1;
 			root1 = root2;
@@ -63,20 +65,25 @@ public class Proposal {
 		
 		villages[root1] = root2;
 		return true;
-	}
+	}//end union
 	
 	public int find (int u) { 
-		if ( villages[u] != villages[villages[u]]) villages[u] = find( villages[u]);
+		//If village is not rooted at itself, find and return root
+		if ( villages[u] != villages[villages[u]]) {
+			villages[u] = find( villages[u]);
+		}
 		return villages[u];
-	}
+	}//end find
 	
 	public void kruskal() {
+		//Set up arrays
 		toBuild = new Edge[p-1]; 
 		rank = new int[p+1];
 		for( int i = 1; i <= p; i++) villages[i] = i; //INDEX ZERO LEFT EMPTY
 		for( int i = 1; i <= p; i++) rank[i] = 1; //initialize rank array
 		sortEdges(); //sort roads by cost, lowest first
 		
+		//Go through roads while roads to be built don't exceed needed for minimum
 		for (int i = 0; i < q && toBuildLength != q - 1; i++) {
 			if( union( roads[i].u, roads[i].v ) ) {
 				//no cycle, add road to be built
@@ -84,10 +91,11 @@ public class Proposal {
 				toBuildLength++;
 			}
 		}//end for loop
-	}
+	}//end kruskal
 	
 	public void sortEdges() {
 		boolean swapped = true;
+		//if nothing was swapped during iteration, then everything sorted
 		while (swapped) {
 			swapped = false;
 			for (int i = 0; i < q-1; i++) {
@@ -100,25 +108,32 @@ public class Proposal {
 				}//end if
 			}
 		}//end while
-	}
-	
-	//public Road[] returnProposal(){
-		//creates array of Roads using data in toBuilt array
-	//}
+	}//end sort edges
 	
 	public void printRoads() {
+		//to test
 		System.out.println("There are "+q+" roads.");
 		for (int i = 0; i < q; i++) {
 			System.out.println(roads[i].u+" to "+ roads[i].v+" cost "+roads[i].cost);
 		}
-	}
+	}//end printRoads
 	public void printToBuild() {
+		//to test
 		System.out.println("To build "+toBuildLength+" roads.");
 		for (int i = 0; i < toBuildLength; i++) {
 			System.out.println(toBuild[i].u+" to "+ toBuild[i].v+" cost "+toBuild[i].cost);
 		}
-	}
-
+	}//end printToBuild
+	
+	public Road[] getProposal() throws NotFoundException, GraphEmptyException {
+		kruskal();
+		Road[] transfer = new Road[toBuildLength];
+		//create roads to be returned
+		for (int i = 0; i < toBuildLength; i++) {
+			transfer[i] = new Road( original.find(toBuild[i].u), original.find(toBuild[i].v), toBuild[i].cost);
+		}
+		return transfer;
+	}//end getProposal
 	
 	//edge class
 	public class Edge {
@@ -129,6 +144,6 @@ public class Proposal {
 			this.v = v;
 			this.cost = cost;
 		}
-		//needs comparator
-	}
+	}//end Edge class
+	
 }//end Proposal class
