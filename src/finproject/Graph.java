@@ -1,5 +1,7 @@
 package finproject;
 
+import finproject.Exceptions.RoadAlreadyExistsException;
+import finproject.Exceptions.SameVillageException;
 import finproject.Exceptions.*;
 
 import java.util.Random;
@@ -85,32 +87,44 @@ public class Graph implements Runnable {
 			// end road has no incoming roads or
 			// there is more than one intermediary village between the villages
 			Random rand = new Random(); int newToll = 1+rand.nextInt(5);
-			System.out.println("New road proposed between village " + v1.getName() + " and village " + v2.getName());
-			System.out.println("The total building cost would be: " + newToll*100);
+			System.out.println("\nNew road proposed between village " + v1.getName() + " and village " + v2.getName());
+			System.out.println("The total building cost would be: " + newToll*100);			
 			
 			boolean noOutgoing = (v1.outdegree == 0);
 			boolean noIncoming = (v2.indegree == 0);
 			boolean manyIntermediates = false;
 			
-			String shortestPath = travelMinExpPath(v1, v2);
-			if () {manyIntermediates = true;}
+			int count = 0; // counts number of spaces in travelMinExpPath string, 
+						   // where 2 is a direct path, 3 is one intermediate village
+			String minusStart = travelMinExpPath(v1, v2);
+			int startLength = minusStart.length();
+			for (int i=0; i<startLength; i++) {
+				int spaceInd = minusStart.indexOf(" ");
+				minusStart = minusStart.substring(spaceInd+1);
+			}
 			
 			if (noOutgoing || noIncoming || manyIntermediates) {
-				System.out.println("The government has elected to build the road.");
+				System.out.println("The government has elected to build the road.\n");
 				v1.connect(1, v2);
 			} else {
-				System.out.println("Due to budget constraints, the government has elected not to build the road");
+				System.out.println("Due to budget constraints, the government has elected not to build the road.\n");
 			}
-		} catch (SameVillageException e) {
-			System.out.println("The government says, " + e.getMessage());
-		} catch (RoadAlreadyExistsException e) {
-			System.out.println("The government says, " + e.getMessage());
+		} catch (SameVillageException | RoadAlreadyExistsException e) {
+			System.out.println("The government says, " + e.getMessage() + "\n");
 		} catch (NoIncomingRoadsException e) {
-			System.out.println("The government has elected to build the road.");
-			v1.connect(1, v2);
+			try {
+				System.out.println("The government has elected to build the road.\n");
+				v1.connect(1, v2);
+			} catch (SameVillageException | RoadAlreadyExistsException e1) { // theoretically not possible
+				System.out.println("The government says, " + e.getMessage() + "\n");
+			}
 		} catch (NoOutgoingRoadsException e) {
-			System.out.println("The government has elected to build the road.");
-			v1.connect(1, v2);
+			try {
+				System.out.println("The government has elected to build the road.\n");
+				v1.connect(1, v2);
+			} catch (SameVillageException | RoadAlreadyExistsException e1) { // theoretically not possible
+				System.out.println("The government says, " + e.getMessage());
+			}
 		}
 	} // end of roadProposal()
 	

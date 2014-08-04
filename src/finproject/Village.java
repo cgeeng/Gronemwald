@@ -69,7 +69,7 @@ public class Village implements Runnable {
 			RoadIterator currentRoad = outgoing.firstRoad;
 			while (currentRoad != null) { // first check if road exists already
 				if (currentRoad.endVillage() == newNeighbor) {
-					throw new RoadAlreadyExistsException(currentRoad.getCost(), this.name, newNeighbor.name);
+					throw new RoadAlreadyExistsException(this, newNeighbor);
 				} currentRoad = currentRoad.getNext();
 			}
 		}

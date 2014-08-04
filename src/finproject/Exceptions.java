@@ -37,8 +37,11 @@ public class Exceptions {
 	} // end GraphEmptyException
 	
 	public static class RoadAlreadyExistsException extends Exception {
-		public RoadAlreadyExistsException(int cost, int start, int end) {
-			super("A road cost " + cost + " already connects villages " + start + " and " + end + ".");
+		public RoadAlreadyExistsException(Village start, Village end) {
+			super("A road already goes from village " + start.getName() + " to village " + end.getName() + ".");
+		}
+		public RoadAlreadyExistsException() {
+			super("A road already goes between these two villages.");
 		}
 	} //end RoadAlreadyExistsException
 	
