@@ -57,7 +57,6 @@ public class Graph implements Runnable {
 				System.out.println("end village is " + vill2.getName());
 				
 				try {
-					System.out.println("New road proposed between village " + vill.getName() + " and village " + vill2.getName());
 					roadProposal(vill, vill2);
 					Thread.sleep(4000);
 				} catch (InterruptedException e) {
@@ -82,17 +81,38 @@ public class Graph implements Runnable {
 	
 	public synchronized void roadProposal (Village v1, Village v2) {
 		try {
+			// govt builds road if start road has no outgoing roads or 
+			// end road has no incoming roads or
+			// there is more than one intermediary village between the villages
 			Random rand = new Random(); int newToll = 1+rand.nextInt(5);
 			System.out.println("New road proposed between village " + v1.getName() + " and village " + v2.getName());
 			System.out.println("The total building cost would be: " + newToll*100);
-			System.out.println("The government has elected to build the road.");
-			v1.connect(1, v2);
+			
+			boolean noOutgoing = (v1.outdegree == 0);
+			boolean noIncoming = (v2.indegree == 0);
+			boolean manyIntermediates = false;
+			
+			String shortestPath = travelMinExpPath(v1, v2);
+			if () {manyIntermediates = true;}
+			
+			if (noOutgoing || noIncoming || manyIntermediates) {
+				System.out.println("The government has elected to build the road.");
+				v1.connect(1, v2);
+			} else {
+				System.out.println("Due to budget constraints, the government has elected not to build the road");
+			}
 		} catch (SameVillageException e) {
 			System.out.println("The government says, " + e.getMessage());
 		} catch (RoadAlreadyExistsException e) {
 			System.out.println("The government says, " + e.getMessage());
+		} catch (NoIncomingRoadsException e) {
+			System.out.println("The government has elected to build the road.");
+			v1.connect(1, v2);
+		} catch (NoOutgoingRoadsException e) {
+			System.out.println("The government has elected to build the road.");
+			v1.connect(1, v2);
 		}
-	}
+	} // end of roadProposal()
 	
 	public synchronized void insert (Village newVillage) {
 		if (isEmpty()) {
@@ -137,29 +157,6 @@ public class Graph implements Runnable {
 			} throw new NotFoundException();
 		} else {throw new GraphEmptyException();}
 	}
-
-	/*
-	//Just.....forget this method.............creates deep copy of this graph
-	public void createProposal() throws SameVillageException, RoadAlreadyExistsException, NotFoundException, GraphEmptyException {
-		//create proposal instance; WILL NOT BE UPDATED IF ROADS ARE BUILT INTO ACTUAL GRAPH
-		proposal = new ProposalGraph();
-	}
-	
-	public void clearProposal() {
-		//essentially same as createProposal, but here for clarity
-		//Use after finishing finding min tree for existing proposal
-		proposal = new ProposalGraph();
-	}
-	
-	//To be used with deep copy....don't use this
-	public void addOopsProposal(Village a, Village b, int cost) throws NotFoundException, GraphEmptyException, SameVillageException, RoadAlreadyExistsException {
-		//Assumes a village with no roads out of it has been created in the Graph
-		Village proposalA = proposal.find(a.getName());
-		Village proposalB = proposal.find(b.getName());
-		Road newRoad = proposalA.connect(cost,  proposalB);
-		newRoad.built = false;
-		
-	}*/
 	
 	public String travelMinExpPath(Village starting, Village end) throws NoIncomingRoadsException, NoOutgoingRoadsException, SameVillageException {
 		if (starting.getName() == end.getName()) {throw new SameVillageException();}

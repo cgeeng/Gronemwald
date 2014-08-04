@@ -125,11 +125,14 @@ public class MapGUI implements ActionListener {
 			for (int i=0; i<5; i++) {graph2.insert(new Village(5));} // 5 villages with 5 gnomes each
 		}
 		
-		graph2.find(1).connect(3, graph2.find(2));
-		graph2.find(2).connect(2, graph2.find(3));
-		graph2.find(2).connect(1, graph2.find(5));
-		graph2.find(3).connect(4, graph2.find(4));
-		graph2.find(5).connect(1, graph2.find(4));
+		int start = graph2.getFirst().getName();
+		System.out.println("start is: " + start);
+		
+		graph2.find(start).connect(3, graph2.find(start+1));
+		graph2.find(start+1).connect(2, graph2.find(start+2));
+		graph2.find(start+1).connect(1, graph2.find(start+4));
+		graph2.find(start+2).connect(4, graph2.find(start+3));
+		graph2.find(start+4).connect(1, graph2.find(start+3));
 		
 		graph2.printGraph();
 		} catch (RoadAlreadyExistsException | GraphEmptyException | NotFoundException |
@@ -578,8 +581,6 @@ public class MapGUI implements ActionListener {
 			if (strEnd == null) {return;}
 			
 			Village endVillage = graph.find(Integer.parseInt(strEnd));
-			System.out.println("Based on topological sort, this gnome must have visited village " +
-					" " + " before visiting village " );
 			
 			graph.travelMinExpPath(startVillage, endVillage);
 			
