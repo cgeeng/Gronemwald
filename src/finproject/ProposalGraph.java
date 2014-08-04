@@ -9,7 +9,7 @@ import finproject.Exceptions.UnconnectedGraphException;
 public class ProposalGraph {
 	
 	public PRoad[] toBuild = new PRoad[20]; //contains acceptable roads to be built after minimum spanning tree found
-	
+	int toBuildLength = 0;
 	public PriorityQueue pq = new PriorityQueue();
 	public int length = 0;
 	Node firstVillage;
@@ -25,19 +25,23 @@ public class ProposalGraph {
 	}
 	/*
 	 * 		
+		
 		Gr.insert( new Village());
 		Gr.insert( new Village());
 		Gr.insert( new Village());
-		Gr.insert( new Village());
+		//Gr.insert( new Village());
+		//Gr.insert( new Village());
 		
 		Gr.find(1).connect(2, Gr.find(3));
-		Gr.find(1).connect(3, Gr.find(2));
-		Gr.find(2).connect(7, Gr.find(3));
-		Gr.find(4).connect(1, Gr.find(2));
-		//Gr.find(4).connect(5, Gr.find(1));
-		Gr.proposal = new ProposalGraph(Gr); 
+		Gr.find(1).connect(7, Gr.find(2));
+		Gr.find(2).connect(4, Gr.find(3));
+		
+		//Gr.find(4).connect(8, Gr.find(2));
+		//Gr.find(4).connect(9, Gr.find(1));
+		//Gr.find(4).connect(10, Gr.find(3));
+		ProposalGraph proposal = new ProposalGraph(Gr); 
 
-		Gr.proposal.findMinSpanTree();
+		proposal.findMinSpanTree();
 	 */
 	
 	//methods
@@ -87,7 +91,7 @@ public class ProposalGraph {
 		//Assumes input is CONNECTED graph
 		int i = 0;
 		printGraph();
-		while ( !pq.isEmpty() ) {
+		while ( toBuildLength < length ) {
 
 			PRoad temp = pq.removeMin();
 			
@@ -108,6 +112,7 @@ public class ProposalGraph {
 			}
 			else {	
 				toBuild[i] = temp;
+				toBuildLength++;
 				i++;
 			}//end if	
 			System.out.println("One find cycle passed");
