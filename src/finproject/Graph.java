@@ -69,7 +69,7 @@ public class Graph implements Runnable {
 		// finds and deletes one road that is not in the minimum spanning tree
 		try {
 			if (! isEmpty()) {
-				Road [] minSpanTree = this.createProposal();
+				Road [] minSpanTree = this.getMinSpanTree();
 				Road [] allRoads = this.getAllRoads();
 				Road toDelete = null;
 				

@@ -15,10 +15,6 @@ import javax.swing.border.EmptyBorder;
 
 import java.util.Random;
 
-import finproject.Exceptions.GraphEmptyException;
-import finproject.Exceptions.NotFoundException;
-import finproject.Exceptions.RoadAlreadyExistsException;
-import finproject.Exceptions.SameVillageException;
 import finproject.Exceptions.*;
 
 public class MapGUI implements ActionListener {
@@ -715,7 +711,7 @@ public class MapGUI implements ActionListener {
 	
 	public void findMin() {
 		try {
-			Road [] minSpanTree = graph.createProposal();
+			Road [] minSpanTree = graph.getMinSpanTree();
 			
 			String strMinSpanTree = "";
 			for (int i=0; i<minSpanTree.length; i++) {

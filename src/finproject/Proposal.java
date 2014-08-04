@@ -84,20 +84,24 @@ public class Proposal {
 	}//end find
 	
 	public void kruskal() {
-		//Set up arrays
-		toBuild = new Edge[p-1]; 
-		rank = new int[p+1];
-		for( int i = 1; i <= p; i++) rank[i] = 1; //initialize rank array
-		sortEdges(); //sort roads by cost, lowest first
-		
-		//Go through roads while roads to be built don't exceed needed for minimum
-		for (int i = 0; i < q && toBuildLength != q - 1; i++) {
-			if( union( roads[i].u, roads[i].v ) ) {
-				//no cycle, add road to be built
-				toBuild[toBuildLength] = roads[i];
-				toBuildLength++;
-			}
-		}//end for loop
+		try {
+			//Set up arrays
+			toBuild = new Edge[p-1]; 
+			rank = new int[p+1];
+			for( int i = 1; i <= p; i++) rank[i] = 1; //initialize rank array
+			sortEdges(); //sort roads by cost, lowest first
+			
+			//Go through roads while roads to be built don't exceed needed for minimum
+			for (int i = 0; i < q && toBuildLength != q - 1; i++) {
+				if( union( roads[i].u, roads[i].v ) ) {
+					//no cycle, add road to be built
+					toBuild[toBuildLength] = roads[i];
+					toBuildLength++;
+				}
+			}//end for loop
+		} catch (VillageNotFoundException e) {
+			System.out.println(e.getMessage());
+		}
 	}//end kruskal
 	
 	public void sortEdges() {
