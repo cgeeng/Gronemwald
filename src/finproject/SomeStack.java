@@ -42,7 +42,7 @@ public class SomeStack {
 			
 			if (!temp.outgoing.isEmpty()) {
 				RoadIterator adj = temp.outgoing.firstRoad;
-
+				
 				while (i <= temp.outgoing.length) {
 					
 					insert(adj.endVillage());

@@ -88,10 +88,12 @@ public class ProposalGraph {
 		int i = 0;
 		printGraph();
 		while ( !pq.isEmpty() ) {
-			
+
 			PRoad temp = pq.removeMin();
 			System.out.println("pq length now "+pq.length+". min cost "+temp.cost);
 			Village tempStart = find( temp.starting.getName() );
+			System.out.println(tempStart);
+			
 			Road newRoad = tempStart.connect( temp.cost, find( temp.end.getName() ));
 			
 			
@@ -100,15 +102,17 @@ public class ProposalGraph {
 			
 			if (findCycle(tempStart)) {
 				find( temp.starting.getName() ).deleteInRoad(newRoad);
+
 			}
 			else {	
 				toBuild[i] = temp;
 				i++;
 			}//end if	
 			System.out.println("One find cycle passed");
-			printToBuild();
-			pq.print();
-
+			//printToBuild();
+			//pq.print();
+			System.out.println("CHRISTINE LOOK HERE");
+			printGraph();
 		}//end while
 		printToBuild();
 		System.out.println("finding min tree done.");
@@ -190,11 +194,13 @@ public class ProposalGraph {
 	public void printGraph() { // string representation of graph, used for testing
 		System.out.println("Proposal graph representation! Length "+length);
 		if (! isEmpty()) {
-			Village current = this.firstVillage;
-			while (current != null) {
-				System.out.println("(Proposal) Village " + current.getName() + ". PGraph length is " + length);
+			Village currentPG = this.firstVillage;
+			int i = 1;
+			while (i <= length) {
+				System.out.println("(Proposal) Village " + currentPG.getName() + ". PGraph length is " + length);
 				//System.out.println("   It leads to " + current.getAdjList());
-				current = current.getNext();
+				currentPG = currentPG.getNext();
+				i++;
 			}
 		} else {System.out.println("This graph is empty.");}
 	} // end of printGraph()

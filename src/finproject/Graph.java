@@ -1,7 +1,5 @@
 package finproject;
 
-import finproject.Exceptions.RoadAlreadyExistsException;
-import finproject.Exceptions.SameVillageException;
 import finproject.Exceptions.*;
 
 import java.util.Random;
@@ -10,12 +8,18 @@ public class Graph implements Runnable {
 	private int length = 0;
 	Village firstVillage;
 	Village lastVillage;
-	ProposalGraph proposal;
+	String name;
 	
 	//constructor
 	public Graph() {
 		firstVillage = null;
 		lastVillage = null;
+	} 
+	
+	public Graph(String name) {
+		firstVillage = null;
+		lastVillage = null;
+		this.name = name;
 	} 
 	
 	public boolean isEmpty() {return length == 0;}
@@ -272,7 +276,7 @@ public class Graph implements Runnable {
 	
 	public String printGraph() { // returns string representation of graph
 		if (! isEmpty()) {
-			String strGraph = "<html>";
+			String strGraph = "<html>" + this.name + "<br>";
 			Village current = this.firstVillage;
 			while (current != null) {
 				String gnStr = "";

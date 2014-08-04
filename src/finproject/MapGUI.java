@@ -9,7 +9,6 @@ import javax.swing.border.EmptyBorder;
 
 import java.util.Random;
 
-import finproject.Exceptions.VillageFullException;
 import finproject.Exceptions.*;
 
 public class MapGUI implements ActionListener {
@@ -54,7 +53,7 @@ public class MapGUI implements ActionListener {
 			mapPanel = new JPanel(null);
 			mapPanel.setPreferredSize(new Dimension(650, 450));
 			mapPanel.setLayout(new BorderLayout());
-			mapPanel.setBackground(Color.GRAY);
+			mapPanel.setBackground(Color.DARK_GRAY);
 			
 			optionsPanel = new JPanel();
 			optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
@@ -91,7 +90,7 @@ public class MapGUI implements ActionListener {
 	public void createPreGraph() { // used for testing and option for user
 		try {
 		if (graph == null) { // creates new graph with 5 villages of population 5
-			graph = new Graph();
+			graph = new Graph("GNOMENWALD");
 			for (int i=0; i<5; i++) {graph.insert(new Village(5));} // 5 villages with 5 gnomes each
 		}
 		
@@ -114,7 +113,7 @@ public class MapGUI implements ActionListener {
 	public void createPreGraph2() { // used for testing and option for user
 		try {
 		if (graph2 == null) { // creates new graph with 5 villages of population 5
-			graph2 = new Graph();
+			graph2 = new Graph("ZNRGENSTEIN");
 			for (int i=0; i<5; i++) {graph2.insert(new Village(5));} // 5 villages with 5 gnomes each
 		}
 		
@@ -132,7 +131,10 @@ public class MapGUI implements ActionListener {
 	} // end of addGraph()
 	
 	public void drawGraph() {
-		JLabel graphLabel = new JLabel(graph.printGraph());
+		String graphText = graph.printGraph();
+		if (graph2 != null) {graphText += graph2.printGraph();}
+		JLabel graphLabel = new JLabel(graphText);
+		graphLabel.setForeground(Color.WHITE);
 		graphLabel.setBorder(new EmptyBorder(20,20,20,20));
 		mapPanel.add(graphLabel, BorderLayout.CENTER);
 //		drawVillages(graph);
@@ -205,8 +207,13 @@ public class MapGUI implements ActionListener {
 	public void startThreads() { // starts threads for simulation (villages and gnomes)
 		g = new Thread(graph);
 		g.start();
-		drawGraph();
-	}
+		while (g.isAlive()) {
+			mapPanel.removeAll();
+			drawGraph();
+			mapFrame.pack();
+		}
+
+	} // end of startThreads()
 	
 	public synchronized void addVillage() {
 		try {
@@ -632,7 +639,7 @@ public class MapGUI implements ActionListener {
 				if (strVill == null) {return;}
 				
 				int numVill = Integer.parseInt(strVill);
-				graph2 = new Graph();
+				graph2 = new Graph("ZNRGENSTEIN");
 				for (int i=0; i<numVill; i++) {graph2.insert(new Village(2));};
 				
 				JOptionPane.showMessageDialog(mapFrame, "A new map has been created with " + numVill + " villages." + 
@@ -665,7 +672,7 @@ public class MapGUI implements ActionListener {
 				if (strVill == null) {return;}
 				
 				int numVill = Integer.parseInt(strVill);
-				graph = new Graph();
+				graph = new Graph("GNOMENWALD");
 				for (int i=0; i<numVill; i++) {graph.insert(new Village());};
 				
 				JOptionPane.showMessageDialog(mapFrame, "A new map has been created with " + numVill + " villages." + 

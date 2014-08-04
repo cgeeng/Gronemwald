@@ -80,6 +80,21 @@ public class Village implements Runnable {
 		return newRoad;
 	}//end connect
 	
+	public synchronized Road proposalConnect (int cost, Village newNeighbor) throws SameVillageException {
+		// exceptions caught by MapGUI so pop-up error message can be generated
+		if (this.equals(newNeighbor)) {throw new SameVillageException();}			
+
+		Road newRoad = new Road(this, newNeighbor, cost);
+					
+		this.outgoing.insert(newRoad);	
+		newNeighbor.incoming.insert(newRoad);
+		
+		this.outdegree++;
+		newNeighbor.indegree++;
+		
+		return newRoad;
+	}//end connect
+	
 	public synchronized void deleteOutRoad(Road r) throws NotFoundException {
 		outgoing.delete(r);
 		this.outdegree--;
