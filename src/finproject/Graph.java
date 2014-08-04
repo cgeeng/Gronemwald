@@ -482,7 +482,7 @@ public class Graph implements Runnable {
 			while (current != null) {
 				String gnStr = "";
 				for (int i=0; i<current.populationSize; i++) {
-					gnStr += current.population[i].getID() + " ";
+					gnStr += "g" + current.population[i].getID() + "  ";
 				}
 				strGraph += "<br>VILLAGE " + current.getName() + " currently holds " + current.populationSize + " gnomes ( " +
 						gnStr + ")";
