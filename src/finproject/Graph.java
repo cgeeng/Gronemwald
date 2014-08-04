@@ -331,12 +331,14 @@ public class Graph implements Runnable {
 		if(cycles){
 			Node lookAt = black.getFirst();
 			while(lookAt!=null){
-				System.out.println("hi");
+				System.out.println("hi. createdCycle is "+createdCycle.getName());
 				if(lookAt.getVillage() == createdCycle){ // if createdCycle
 					while(lookAt.getVillage()!=createdCycle.predecess){
-						path += lookAt.getVillage() + ",";
+						path += lookAt.getVillage().getName() + ",";
+						lookAt = lookAt.getNext();
 					}
-					lookAt = lookAt.getNext();
+					path += lookAt.getVillage().getName()+" ";
+					//lookAt = lookAt.getNext();
 				} else{ // not the thing that caused the cycle
 					path += lookAt.getVillage().getName() + " ";
 				}

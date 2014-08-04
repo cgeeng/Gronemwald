@@ -1,9 +1,14 @@
 package finproject;
 
+import finproject.Exceptions.GraphEmptyException;
+import finproject.Exceptions.NotFoundException;
+import finproject.Exceptions.RoadAlreadyExistsException;
+import finproject.Exceptions.SameVillageException;
+import finproject.Exceptions.VillageFullException;
 import finproject.Exceptions.*;
 
 public class TestClass {
-	public static void main (String [] args) {
+	public static void main (String [] args) throws VillageFullException, SameVillageException, RoadAlreadyExistsException, NotFoundException, GraphEmptyException {
 		//testGraphThread();
 		Graph graph = new Graph();
 		for(int i = 1; i <= 5; i++){
