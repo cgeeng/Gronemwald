@@ -29,7 +29,7 @@ public class Gnome implements Runnable {
 	}
 	
 	public Gnome () {
-		this("no name");	
+		this("no name");
 	}//end default constructor
 	
 	public Gnome(Village starting) {
@@ -41,10 +41,13 @@ public class Gnome implements Runnable {
 	}//end constructor establishing Gnome's village
 	
 	public void run() { // run method for gnomes
+		// stops after 10 changes
+		int runCount = 0;
 		try {
-			while(true) {
+			while(runCount<10) {
 			Thread.sleep(sleepTime);
 			travelRandom();
+			runCount++;
 			}
 		} catch (InterruptedException e) {
 			System.out.println("The program was interrupted.");

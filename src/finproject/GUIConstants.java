@@ -1,6 +1,7 @@
 package finproject;
 
 import javax.swing.*;
+
 import java.awt.*;
 
 public class GUIConstants {
@@ -13,4 +14,7 @@ public class GUIConstants {
 	
 	// village icon size
 	final static int radius = 50;
+	
+	// option button size
+	final static Dimension buttonSize = new Dimension(175, 30);
 }

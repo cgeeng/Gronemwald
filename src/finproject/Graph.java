@@ -34,18 +34,9 @@ public class Graph implements Runnable {
 	public Village getLast() {return this.lastVillage;}
 	
 	public void run() { // run method for Graph
-		if (! isEmpty()) { // starts all gnome threads
-			Village current = firstVillage;
-			while (current!=null) {
-				for(int i=0; i<current.populationSize; i++) {
-					Thread gnomeThread = new Thread(current.population[i]);
-					gnomeThread.start();
-				}
-				current = current.getNext();
-			}
-		}
-		
-		while (! isEmpty()) {
+		// stops after 10 changes
+		int runCount = 0;
+		while (! isEmpty() && runCount<10) {
 			Random rand2 = new Random(); int nextFunction = rand2.nextInt(4);
 			// 3/4 chance the government will add a new road, 1/4 chance it will restructure graph (delete road not in min span tree)
 			if (nextFunction < 2) {	// chooses random village within graph
@@ -63,12 +54,13 @@ public class Graph implements Runnable {
 				
 				if (! vill.equals(vill2)) {roadProposal(vill, vill2);} // if it happens upon the same village, just waits one cycle
 			} else {restructure();}
-				
-				try {
-					Thread.sleep(4000);
-				} catch (InterruptedException e) {
-					System.out.println("The system was interrupted.");
-				}
+			runCount++;
+			
+			try {
+				Thread.sleep(4000);
+			} catch (InterruptedException e) {
+				System.out.println("The system was interrupted.");
+			}
 				
 		}
 	} // end of run()
@@ -124,6 +116,19 @@ public class Graph implements Runnable {
 		}
 		return allRoads;
 	} // end of getAllRoads()
+	
+	public void startGnomeThreads() { // starts threads of all gnomes in the country
+		if (! isEmpty()) {
+			Village current = firstVillage;
+			while (current != null) {
+				for(int i=0; i<current.populationSize; i++) {
+					Thread gnomeThread = new Thread(current.population[i]);
+					gnomeThread.start();
+				}
+				current = current.getNext();
+			}
+		}
+	} // end of startGnomeThreads()
 			
 	public synchronized boolean roadExists(Village v1, Village v2) {
 		// checks if road already exists between two villages

@@ -198,6 +198,7 @@ public class MapGUI implements ActionListener {
 	
 	public void addOptionsButton(JButton button) {
 		button.addActionListener(this);
+		button.setPreferredSize(GUIConstants.buttonSize);
 		button.setAlignmentX(Component.CENTER_ALIGNMENT);
 		optionsPanel.add(button);
 	} // end of addOptionsButton()
@@ -232,8 +233,12 @@ public class MapGUI implements ActionListener {
 	
 	public void startThreads() { // starts threads for simulation (villages and gnomes)
 		g = new Thread(graph);
+		graph.startGnomeThreads();
 		g.start();
-		if (graph2 != null) {g2 = new Thread(graph2); g2.start();}
+		if (graph2 != null) {
+			g2 = new Thread(graph2); 
+			graph2.startGnomeThreads(); 
+			g2.start();}
 		while (g.isAlive()) {
 			drawGraph();
 		}
