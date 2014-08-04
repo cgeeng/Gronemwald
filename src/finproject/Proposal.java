@@ -4,6 +4,7 @@ import finproject.Exceptions.GraphEmptyException;
 import finproject.Exceptions.NotFoundException;
 import finproject.Exceptions.RoadAlreadyExistsException;
 import finproject.Exceptions.SameVillageException;
+import finproject.Exceptions.VillageNotFoundException;
 
 public class Proposal {
 	private int[] villages = new int[30]; //VILLAGES START AT INDEX 1
@@ -54,7 +55,7 @@ public class Proposal {
 		}//end else
 	}//end deep copy
 
-	public boolean union (int u, int v) {
+	public boolean union (int u, int v) throws VillageNotFoundException {
 		int root1 = find(u);
 		int root2 = find(v);
 		if (root1 == root2) return false;
@@ -72,7 +73,9 @@ public class Proposal {
 		return true;
 	}//end union
 	
-	public int find (int u) { 
+	public int find (int u) throws VillageNotFoundException { 
+		//If village referenced by road doesn't exist, throw
+		if ( villages[u] == 0 ) throw new VillageNotFoundException(u);
 		//If village is not rooted at itself, find and return root
 		if ( villages[u] != villages[villages[u]]) {
 			villages[u] = find( villages[u]);
@@ -84,7 +87,6 @@ public class Proposal {
 		//Set up arrays
 		toBuild = new Edge[p-1]; 
 		rank = new int[p+1];
-		for( int i = 1; i <= p; i++) villages[i] = i; //INDEX ZERO LEFT EMPTY
 		for( int i = 1; i <= p; i++) rank[i] = 1; //initialize rank array
 		sortEdges(); //sort roads by cost, lowest first
 		
@@ -133,7 +135,7 @@ public class Proposal {
 	public void printVillages() {
 		//to test
 		String temp = "";
-		for (int i = 0; i < p; i++) {
+		for (int i = 1; i <= p; i++) {
 			if ( villages[i] != 0 ) temp+= villages[i]+" ";
 		}
 		System.out.println("Villages include: "+ temp);
@@ -151,13 +153,12 @@ public class Proposal {
 	
 	public void initializeVillages( int[] temp ) {
 		//Initialize villages[] by mapping to village names
-		int i = 0;
+		int i = 1;
 		while ( temp[i] != 0 ){
 			villages[ temp[i] ] = temp[i];
 			i++;
 		}
-		printVillages();
-	}
+	}//end initializeVillages
 	
 	//edge class
 	public class Edge {
