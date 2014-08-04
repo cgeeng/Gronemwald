@@ -17,7 +17,7 @@ public class PriorityQ {
 	public Node getLast() {return this.lastNode;}
 	public boolean isEmpty() {return length==0;}
 	
-	public Village find(int name) throws NotFoundException, GraphEmptyException { // TODO create binary search tree?
+	public Village find(int name) throws NotFoundException, GraphEmptyException {
 		// exceptions caught by MapGUI so pop-up error message can be generated
 		if (! isEmpty()) {
 			Node current = this.firstNode;

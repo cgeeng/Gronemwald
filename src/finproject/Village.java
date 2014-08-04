@@ -34,6 +34,7 @@ public class Village implements Runnable {
 		this(0);
 	}//end Constructor
 	
+	
 	public Village(boolean forProposal, int name) {
 		//CONSTRUCTOR FOR PROPOSALGRAPH
 		this.name = name;

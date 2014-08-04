@@ -63,13 +63,25 @@ public class Queue {
 	}
 	
 	
+	public void printQueue() { // prints string representation of queue
+		if (! isEmpty()) {
+			System.out.println("Starting village: " + firstNode.getVillage().getName());
+		
+			Village current = firstNode.getVillage();
+			while (! current.equals(lastNode)) {
+				System.out.println(" to village " + current.getName());
+			}
+			
+			System.out.println("Ending village: " + current.getName());
+		}
+	} // end of printQueue()
+	
 	public void printGraph() { // string representation of graph, used for testing
 		if (! isEmpty()) {
-			Node current = this.firstNode;
+			Village current = firstNode.getVillage();
 			while (current != null) {
-				System.out.println("Village " + current.getVillage().getName() + " holds " + current.getVillage().populationSize + " gnomes.");
-				System.out.println("   It leads to " + current.getVillage().getAdjList());
-				
+				System.out.println("Village " + current.getName() + " holds " + current.populationSize + " gnomes.");
+				System.out.println("   It leads to " + current.getAdjList());
 				current = current.getNext();
 			}
 		} else {System.out.println("This graph is empty.");}

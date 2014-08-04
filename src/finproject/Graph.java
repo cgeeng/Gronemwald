@@ -136,6 +136,7 @@ public class Graph implements Runnable {
 		} else {throw new GraphEmptyException();}
 	}
 
+	/*
 	//Just.....forget this method.............creates deep copy of this graph
 	public void createProposal() throws SameVillageException, RoadAlreadyExistsException, NotFoundException, GraphEmptyException {
 		//create proposal instance; WILL NOT BE UPDATED IF ROADS ARE BUILT INTO ACTUAL GRAPH
@@ -156,73 +157,63 @@ public class Graph implements Runnable {
 		Road newRoad = proposalA.connect(cost,  proposalB);
 		newRoad.built = false;
 		
-	}
+	}*/
 	
-	public void travelMinExpPath(Village starting, Node end, Node contain) throws NoIncomingRoadsException, NoOutgoingRoadsException, SameVillageException {
+	public void travelMinExpPath(Village starting, Node end) throws NoIncomingRoadsException, NoOutgoingRoadsException, SameVillageException {
+		if (starting.getName() == end.getVillage().getName()) {throw new SameVillageException();}
+		if (starting.outgoing.length == 0) {throw new NoOutgoingRoadsException();}
+		if (end.getVillage().incoming.length == 0) {throw new NoIncomingRoadsException();}
+
 		boolean done = false;
 		PriorityQ pq = new PriorityQ();
-		if(starting.getName() == end.getVillage().getName()){
-			throw new SameVillageException();
-		}else if(starting.outgoing.length == 0){
-			throw new NoOutgoingRoadsException();
-		}else if(end.getVillage().incoming.length == 0){
-			throw new NoIncomingRoadsException();
-		} else{
-			pq.insert(new Node(starting,0,null));
-			while(!done && !pq.isEmpty()){
-				Node frontEntry = pq.remove();
-				Village frontVertex = frontEntry.getVillage();
-				//System.out.println("pq.frontEntry is "+frontEntry.getVillage().getName()+" and frontVertex is "+frontVertex.getName());
-				if(!frontVertex.visited){
-					//System.out.println("not visited");
-					frontVertex.visited = true;
-					
-					if(frontEntry.getVillage()==starting){
-					//	System.out.println(frontEntry.getVillage().prior==null);
-						frontEntry.pathCost = 0;
-						frontVertex.prior = null;
-						frontVertex.priorCost = 0;
-					} else{
-						frontVertex.prior = frontEntry.predecessor;
-						frontVertex.priorCost = frontEntry.pathCost;
-						//System.out.println("frontVertex.priorCost is "+frontVertex.priorCost +" and frontVertex.prior is "+frontVertex.prior.getName()+" and "+(frontVertex.prior).prior.getName());
-					}
-					System.out.println(frontVertex.prior==null);
-					if(frontVertex == end.getVillage()){
-						//System.out.println(frontEntry.getVillage().prior==null);
-						done = true;
-					//	System.out.println("done");
-					}
-					else{
-						//System.out.println(frontEntry.getVillage().prior==null);
-						RoadIterator nextNeighbor = frontVertex.outgoing.firstRoad;
-						if(nextNeighbor!=null){
-							while(nextNeighbor!=null){
-							//	System.out.println(frontEntry.getVillage().prior==null);
-								//System.out.println("looking at nextNeighbor"+nextNeighbor.endVillage().getName()+" and "+(frontVertex.prior).prior.getName());
-								int weightOfEdgeToNeighbor = nextNeighbor.getCost();
-								if(!nextNeighbor.endVillage().visited){
-									int nextCost = weightOfEdgeToNeighbor + frontEntry.pathCost;
-									pq.insert(new Node(nextNeighbor.endVillage(),nextCost,frontEntry.getVillage()));
-									System.out.println("inserted");
-								}
-								nextNeighbor=nextNeighbor.getNext();
+			
+		pq.insert(new Node(starting, 0, null));
+		while (!done && !pq.isEmpty()) {
+			Node frontEntry = pq.remove();
+			Village frontVertex = frontEntry.getVillage();
+			if (!frontVertex.visited) {
+				frontVertex.visited = true;
+				
+				if (frontEntry.getVillage() == starting) {
+					frontEntry.pathCost = 0;
+					frontVertex.prior = null;
+					frontVertex.priorCost = 0;
+				} else {
+					frontVertex.prior = frontEntry.predecessor;
+					frontVertex.priorCost = frontEntry.pathCost;
+				}
+				
+				if (frontVertex == end.getVillage()) {
+					done = true;
+				} else {
+					//System.out.println(frontEntry.getVillage().prior==null);
+					RoadIterator nextNeighbor = frontVertex.outgoing.firstRoad;
+					if(nextNeighbor!=null){
+						while(nextNeighbor!=null){
+						//	System.out.println(frontEntry.getVillage().prior==null);
+							//System.out.println("looking at nextNeighbor"+nextNeighbor.endVillage().getName()+" and "+(frontVertex.prior).prior.getName());
+							int weightOfEdgeToNeighbor = nextNeighbor.getCost();
+							if(!nextNeighbor.endVillage().visited){
+								int nextCost = weightOfEdgeToNeighbor + frontEntry.pathCost;
+								pq.insert(new Node(nextNeighbor.endVillage(),nextCost,frontEntry.getVillage()));
+								System.out.println("inserted");
 							}
+							nextNeighbor=nextNeighbor.getNext();
 						}
 					}
 				}
 			}
 		}
+		
 		Queue path = new Queue();
 		if(end.getVillage().prior!=null) // for if they don't connect even though they both have ins and outs
 			path.insertLikeStack(end);
 		Village toAdd = end.getVillage().prior;
-		while(toAdd!=null){
-			System.out.println("inserted "+toAdd.getName());
+		while (toAdd != null) {
 			path.insertLikeStack(new Node(toAdd));
 			toAdd = toAdd.prior;
 		}
-		path.printGraph();
+		path.printQueue();
 	} // end of travelMinExpPath method
 	
 	public Queue travelTopSort() throws NotFoundException, GraphEmptyException{ // need to check for cycles?
@@ -257,7 +248,7 @@ public class Graph implements Runnable {
 			} // end of if
 		} // end of while
 		System.out.println(pathToTake+"hi ");
-		pathToTake.printGraph();
+		pathToTake.printQueue();
 		return pathToTake;
 		
 	} // end of travelTopSort method
