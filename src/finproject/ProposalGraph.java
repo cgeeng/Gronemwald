@@ -69,6 +69,7 @@ public class ProposalGraph {
 					for (int j = 1; j <= originalVillage.outgoing.length; j++ ) {
 						//proposalVillage.connect( oRoad.getCost() , find(oRoad.getData().end.getName()));
 						//For now don't actually connect villages, just add road to queue
+						proposalVillage.connect(oRoad.getCost(), find(oRoad.endVillage().getName()) );
 						proposeRoad( proposalVillage, oRoad.getCost(), find(oRoad.endVillage().getName()) ) ;
 						oRoad = oRoad.getNext();
 										
@@ -138,6 +139,8 @@ public class ProposalGraph {
 	}
 	
 	public boolean findCycle (PRoad road) {
+		SomeStack hasTraversed = new SomeStack();
+		Village current = firstVillage;
 		if ( hasVisited( road.starting )  && hasVisited ( road.end ) ) return true;
 		return false;
 	}
