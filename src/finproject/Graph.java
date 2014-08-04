@@ -81,8 +81,8 @@ public class Graph implements Runnable {
 	public synchronized void roadProposal (Village v1, Village v2) {
 		try {
 			Random rand = new Random(); int newToll = 1+rand.nextInt(5);
-			System.out.println("The proposed toll for this road would be: " + newToll);
-			System.out.println("Which means total building cost would be: " + newToll*100);
+			System.out.println("New road proposed between village " + v1.getName() + " and village " + v2.getName());
+			System.out.println("The total building cost would be: " + newToll*100);
 			System.out.println("The government has elected to build the road.");
 			v1.connect(1, v2);
 		} catch (SameVillageException e) {

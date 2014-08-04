@@ -123,13 +123,11 @@ public class MapGUI implements ActionListener {
 			for (int i=0; i<5; i++) {graph.insert(new Village(2));} // 5 villages with 2 gnomes each
 		}
 		
-		graph.find(1).connect(2, graph.find(2));
-		graph.find(1).connect(4, graph.find(3));
-		graph.find(2).connect(5, graph.find(4));
-		graph.find(2).connect(1, graph.find(3));
-		graph.find(4).connect(1, graph.find(5));
+		graph.find(1).connect(3, graph.find(2));
+		graph.find(2).connect(2, graph.find(3));
+		graph.find(2).connect(1, graph.find(5));
+		graph.find(3).connect(4, graph.find(4));
 		graph.find(5).connect(1, graph.find(4));
-		graph.find(5).connect(3, graph.find(3));
 		} catch (RoadAlreadyExistsException e) {System.out.println(e.getMessage());
 		} catch (GraphEmptyException e) {System.out.println(e.getMessage());
 		} catch (NotFoundException e) {System.out.println(e.getMessage());
