@@ -3,7 +3,7 @@ package finproject;
 import finproject.Exceptions.*;
 import java.util.Random;
 
-public class Village implements Runnable {
+public class Village {
 	static int totalVillage = 0;
 	
 	private int name;
@@ -29,10 +29,6 @@ public class Village implements Runnable {
 	public void setPrev(Village p) {this.previous = p;}
 	public boolean isEmpty() {return this.populationSize == 0;}
 	public boolean isFull() {return this.populationSize == 10;}
-	
-	public void run() { // run method
-		
-	}
 	
 	public Village() throws VillageFullException {
 		this(0);
@@ -74,7 +70,7 @@ public class Village implements Runnable {
 			}
 		}
 		Road newRoad = new Road(this, newNeighbor, cost);
-					
+	
 		this.outgoing.insert(newRoad);	
 		newNeighbor.incoming.insert(newRoad);
 		
@@ -119,7 +115,7 @@ public class Village implements Runnable {
 		incoming.delete(r);
 		this.indegree--;
 		r.start.outgoing.delete(r);
-		r.start.outdegree++;
+		r.start.outdegree--;
 	}
 	
 	public synchronized Gnome removeGnome(Gnome g) throws VillageEmptyException {
@@ -192,16 +188,13 @@ public class Village implements Runnable {
 		public RoadIterator getFirst() {return this.firstRoad;}
 		public RoadIterator getLast() {return this.lastRoad;}
 		
-		public synchronized void insert(Road r){
-			
-
+		public synchronized void insert(Road r) {
 			RoadIterator ri = new RoadIterator(r);
 			if (isEmpty()) {
 				firstRoad = ri;
 				lastRoad = ri;
 			}
 			else {
-				
 				lastRoad.setNext(ri);
 				ri.setPrev(lastRoad);
 				lastRoad = ri;

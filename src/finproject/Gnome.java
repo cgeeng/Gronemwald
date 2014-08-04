@@ -10,12 +10,13 @@ import finproject.Exceptions.*;
 public class Gnome implements Runnable {
 	public BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	public static int totalGnome = 0;
-	public String name;
+	private String name;
 	private int ID;
 	public Village current;
 	private int sleepTime; // sleep times offset a little
 	private Queue visited = new Queue(); // all villages visited - equivalent of "passport stamped"
 	
+	public String getName() {return this.name;}
 	public int getID() {return this.ID;}
 	public void setVillage(Village v) {this.current = v;}
 	public Queue getVisited() {return this.visited;}
@@ -60,7 +61,7 @@ public class Gnome implements Runnable {
 		try {
 			//Limited to gnomes that are in a village already
 			if (current == null) throw new NotInVillageException();
-			if (current.outgoing.length == 0) {return;} // simply doesn't move if there are no outgoing paths
+			if (current.outgoing.length <= 0) {return;} // simply doesn't move if there are no outgoing paths
 			
 				// throw new NoAdjacentVillagesException(current.getName());
 			

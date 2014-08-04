@@ -1,9 +1,5 @@
 package finproject;
 
-import finproject.Exceptions.GraphEmptyException;
-import finproject.Exceptions.NotFoundException;
-import finproject.Exceptions.RoadAlreadyExistsException;
-import finproject.Exceptions.SameVillageException;
 import finproject.Exceptions.*;
 
 import java.util.Random;
@@ -34,9 +30,9 @@ public class Graph implements Runnable {
 	public Village getLast() {return this.lastVillage;}
 	
 	public void run() { // run method for Graph
-		// stops after 10 changes
+		// stops after 5 changes
 		int runCount = 0;
-		while (! isEmpty() && runCount<10) {
+		while (! isEmpty() && runCount<5) {
 			Random rand2 = new Random(); int nextFunction = rand2.nextInt(4);
 			// 3/4 chance the government will add a new road, 1/4 chance it will restructure graph (delete road not in min span tree)
 			if (nextFunction < 2) {	// chooses random village within graph
@@ -90,7 +86,7 @@ public class Graph implements Runnable {
 						toDelete.end.deleteInRoad(toDelete);
 						
 						System.out.println("\nTo cut costs, the government has decided to restructure the road network." +
-						toDelete.printRoad() + " has been deleted.");}
+						toDelete.printRoad() + " has been deleted.\n");}
 			}
 		} catch (NotFoundException | GraphEmptyException | SameVillageException
 				| RoadAlreadyExistsException e) {
@@ -162,6 +158,21 @@ public class Graph implements Runnable {
 			if (roadExists(v1, v2)) {throw new RoadAlreadyExistsException();}
 			if (v1.equals(v2)) {throw new SameVillageException();}
 			
+			boolean noOutgoing = (v1.outdegree == 0);
+			boolean noIncoming = (v2.indegree == 0);
+			
+			if (noOutgoing) {
+				System.out.println("The government has elected to build the road because village " + v1.getName() + " has no outgoing roads.\n");
+				v1.connect(newToll, v2);
+				return;
+			}
+			
+			if (noIncoming) {
+				System.out.println("The government has elected to build the road because village " + v2.getName() + " has no incoming roads.\n");
+				v1.connect(newToll, v2);
+				return;
+			}
+			
 			boolean manyIntermediates = false;
 			
 			int count = 0; // counts number of spaces in travelMinExpPath string, 
@@ -177,27 +188,14 @@ public class Graph implements Runnable {
 			if (manyIntermediates) {
 				System.out.println("The government has elected to build the road because there is" +
 						"\nmore than one intermediate village between the two villages in the existing road structure.");
-				v1.connect(1, v2);
+				v1.connect(newToll, v2);
 			} else {
 				System.out.println("Due to budget constraints, the government has elected not to build the road.\n");
 			}
 		} catch (SameVillageException | RoadAlreadyExistsException e) {
 			System.out.println("The government says, " + e.getMessage() + "\n");
-		} catch (NoIncomingRoadsException e) {
-			try {
-				System.out.println("The government has elected to build the road because village " + v2.getName() + " has no incoming roads.\n");
-				v1.connect(1, v2);
-			} catch (SameVillageException | RoadAlreadyExistsException e1) { // theoretically not possible
-				System.out.println("The government says, " + e.getMessage() + "\n");
-			}
-		} catch (NoOutgoingRoadsException e) {
-			try {
-				System.out.println("The government has elected to build the road because village " + v1.getName() + " has no outgoing roads.\n");
-				v1.connect(1, v2);
-			} catch (SameVillageException | RoadAlreadyExistsException e1) { // theoretically not possible
-				System.out.println("The government says, " + e.getMessage());
-			}
-		}
+		} catch (NoIncomingRoadsException e) {  // not possible with return statement
+		} catch (NoOutgoingRoadsException e) { } // not possible with return statement
 	} // end of roadProposal()
 	
 	public synchronized void insert (Village newVillage) {

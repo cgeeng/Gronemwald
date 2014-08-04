@@ -680,8 +680,6 @@ public class MapGUI implements ActionListener {
 			int n = JOptionPane.showConfirmDialog(mapFrame, "A new map has been created." + 
 					"\nShould I add a road between the two countries?", "Building map", JOptionPane.YES_NO_CANCEL_OPTION);
 			if (n == JOptionPane.CANCEL_OPTION) {return;}
-		
-
 			
 			if (n == JOptionPane.NO_OPTION) {
 				JOptionPane.showMessageDialog(mapFrame, "Okay, we will leave the countries separate.", 
