@@ -72,7 +72,6 @@ public class MapGUI implements ActionListener {
 	} // end of controller()
 	
 	public void update() {
-		mapFrame.invalidate();
 		mapPanel.repaint();
 		mapFrame.validate();
 		mapFrame.pack();
@@ -242,7 +241,7 @@ public class MapGUI implements ActionListener {
 						" to village " + newRoad.end.getName() + " at cost " + newRoad.cost,
 					"Adding a village", JOptionPane.PLAIN_MESSAGE);
 			
-			drawGraph();
+			drawGraph(); update();
 			if (isAlive) {notifyAll();}
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Please try again.", "NumberFormatException", JOptionPane.PLAIN_MESSAGE);
