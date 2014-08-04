@@ -1,1 +1,6 @@
-sdfsdfs
+package finproject;
+
+public class MovingMap {
+  
+  
+}
