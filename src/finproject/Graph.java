@@ -159,7 +159,7 @@ public class Graph implements Runnable {
 		
 	}*/
 	
-	public void travelMinExpPath(Village starting, Village end) throws NoIncomingRoadsException, NoOutgoingRoadsException, SameVillageException {
+	public String travelMinExpPath(Village starting, Village end) throws NoIncomingRoadsException, NoOutgoingRoadsException, SameVillageException {
 		if (starting.getName() == end.getName()) {throw new SameVillageException();}
 		if (starting.outgoing.length == 0) {throw new NoOutgoingRoadsException();}
 		if (end.incoming.length == 0) {throw new NoIncomingRoadsException();}
@@ -204,14 +204,20 @@ public class Graph implements Runnable {
 		}
 		
 		Queue path = new Queue();
-		if(end.prior!=null) // for if they don't connect even though they both have ins and outs
-			path.insertLikeStack(new Node(end));
+		String thePath = "";
+		if(end.prior!=null){ // for if they don't connect even though they both have ins and outs
+			path.insert(new Node(end));
+			thePath += path.getLast().getVillage().getName()+" ";
+		}
 		Village toAdd = end.prior;
 		while (toAdd != null) {
-			path.insertLikeStack(new Node(toAdd));
+			path.insert(new Node(toAdd));
+			thePath += path.getLast().getVillage().getName()+" ";
 			toAdd = toAdd.prior;
 		}
-		path.printQueue();
+		System.out.println(thePath);
+		//path.printQueue();
+		return thePath;
 	} // end of travelMinExpPath method
 	
 	public Queue travelTopSort() throws NotFoundException, GraphEmptyException{ // need to check for cycles?
@@ -245,7 +251,7 @@ public class Graph implements Runnable {
 				} // end of while
 			} // end of if
 		} // end of while
-		System.out.println(pathToTake+"hi ");
+		System.out.println("pathToTake is "+pathToTake);
 		pathToTake.printQueue();
 		return pathToTake;
 		
