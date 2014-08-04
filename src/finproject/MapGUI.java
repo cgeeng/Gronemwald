@@ -6,13 +6,17 @@ import java.awt.geom.*;
 import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
+
 import java.io.IOException;
 import java.io.File;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import java.util.Random;
 
+import finproject.Exceptions.GraphEmptyException;
+import finproject.Exceptions.NotFoundException;
 import finproject.Exceptions.*;
 
 public class MapGUI implements ActionListener {
@@ -21,7 +25,7 @@ public class MapGUI implements ActionListener {
 		ImagePanel welcomePanel, mapPanel;
 		JPanel titlePanel, optionsPanel;
 		JButton addVillage, delVillage, placeGnome, moveGnomeSim, addRoad, welcomeButton, addCountry,
-				moveGnomeExt, delRoad, startThreads;
+				moveGnomeExt, delRoad, startThreads, findMin, topSort;
 		DrawVillage [] villCircles = new DrawVillage[20]; int arrLength=0;// used for building roads
 		Graph graph; Thread g;
 		Graph graph2; Thread g2;
@@ -56,13 +60,13 @@ public class MapGUI implements ActionListener {
 			titlePanel.setBackground(Color.DARK_GRAY);
 			
 			mapPanel = new ImagePanel("/Users/Kate/JavaProjects/Gronemwald/src/resources/gnomenwald2.gif");
-			mapPanel.setPreferredSize(new Dimension(650, 450));
+			mapPanel.setPreferredSize(new Dimension(650, 500));
 			mapPanel.setLayout(new BorderLayout());
 			mapPanel.setBackground(Color.DARK_GRAY);
 			
 			optionsPanel = new JPanel();
 			optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
-			optionsPanel.setPreferredSize(new Dimension(200, 450));
+			optionsPanel.setPreferredSize(new Dimension(200, 500));
 			optionsPanel.setBackground(Color.BLUE);
 			
 			addTitle();
@@ -108,7 +112,6 @@ public class MapGUI implements ActionListener {
 		graph.find(5).connect(3, graph.find(3));
 		
 		graph.printGraph();
-		graph.travelTopSort();
 		} catch (RoadAlreadyExistsException | GraphEmptyException |
 				NotFoundException | SameVillageException | VillageFullException e) 
 		{System.out.println(e.getMessage());
@@ -129,7 +132,6 @@ public class MapGUI implements ActionListener {
 		graph2.find(5).connect(1, graph2.find(4));
 		
 		graph2.printGraph();
-		graph2.topologicalSort();
 		} catch (RoadAlreadyExistsException | GraphEmptyException | NotFoundException |
 				SameVillageException | VillageFullException e)
 			{System.out.println(e.getMessage());} 
@@ -143,7 +145,7 @@ public class MapGUI implements ActionListener {
 		JLabel graphLabel = new JLabel(graphText);
 		graphLabel.setForeground(Color.WHITE);
 		graphLabel.setBorder(new EmptyBorder(20,20,20,20));
-		mapPanel.add(graphLabel, BorderLayout.CENTER);
+		mapPanel.add(graphLabel, BorderLayout.WEST);
 //		drawVillages(graph);
 //		drawRoads(graph);
 	} // end of drawGraph()
@@ -158,6 +160,8 @@ public class MapGUI implements ActionListener {
 		delRoad = new JButton("Delete road");
 		addCountry = new JButton("Add country");
 		startThreads = new JButton("Start threads");
+		findMin = new JButton("Find minimum spanning tree");
+		topSort = new JButton("Topological sort");
 		
 		optionsPanel.add(Box.createRigidArea(new Dimension(0,10)));
 		JLabel optionsLabel = new JLabel("OPTIONS");
@@ -167,16 +171,18 @@ public class MapGUI implements ActionListener {
 		optionsPanel.add(Box.createRigidArea(new Dimension(0,30)));
 		// village group
 		addOptionsButton(addVillage);   optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
-		addOptionsButton(delVillage);   optionsPanel.add(Box.createRigidArea(new Dimension(0,20)));
+		addOptionsButton(delVillage);   optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
+		addOptionsButton(topSort);   optionsPanel.add(Box.createRigidArea(new Dimension(0,15)));
 		// gnome group
 		addOptionsButton(placeGnome);   optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
 		addOptionsButton(moveGnomeSim); optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
-		addOptionsButton(moveGnomeExt); optionsPanel.add(Box.createRigidArea(new Dimension(0,20)));
+		addOptionsButton(moveGnomeExt); optionsPanel.add(Box.createRigidArea(new Dimension(0,15)));
 		// road group
 		addOptionsButton(addRoad);      optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
-		addOptionsButton(delRoad);      optionsPanel.add(Box.createRigidArea(new Dimension(0,20)));
+		addOptionsButton(delRoad);      optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
+		addOptionsButton(findMin);      optionsPanel.add(Box.createRigidArea(new Dimension(0,15)));
 		// country group
-		addOptionsButton(addCountry);   optionsPanel.add(Box.createRigidArea(new Dimension(0,20)));
+		addOptionsButton(addCountry);   optionsPanel.add(Box.createRigidArea(new Dimension(0,15)));
 		// thread group
 		addOptionsButton(startThreads);
 	} // end of addOptions()
@@ -208,24 +214,38 @@ public class MapGUI implements ActionListener {
         	addCountry();
         } else if (e.getSource() == startThreads) {
         	startThreads();
+        } else if (e.getSource() == findMin) {
+        	findMin();
+        } else if (e.getSource() == topSort) {
+        	topSort();
         }
     } // end of actionPerformed() 
 	
 	public void startThreads() { // starts threads for simulation (villages and gnomes)
 		g = new Thread(graph);
 		g.start();
+		if (graph2 != null) {g2 = new Thread(graph2); g2.start();}
 		while (g.isAlive()) {
 			drawGraph();
 		}
-
 	} // end of startThreads()
 	
 	public synchronized void addVillage() {
 		try {
 			Object [] options = villageList();
 			
+			Object [] countryOptions = {graph.getName(), graph2.getName()};
+			Graph country = graph; // default is graph
+			
+			if (graph2 != null) {
+			String countryName = (String) JOptionPane.showInputDialog(mapFrame,
+			        "Which country would you like this village to be built in?",
+			        "Adding a village", JOptionPane.PLAIN_MESSAGE, null, countryOptions, countryOptions[0]);
+			if (countryName == null) {return;}
+			if (countryName.equals(graph2.getName())) {country = graph2;}
+			}
+			
 			Village newVill = new Village();
-			graph.insert(newVill); // default to zero gnomes
 			
 			String strVill = (String) JOptionPane.showInputDialog(mapFrame,
 			        "Village " + newVill.getName() + " has been created with a population of zero gnomes." + 
@@ -234,7 +254,9 @@ public class MapGUI implements ActionListener {
 			        "Adding a village", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 			if (strVill == null) {return;}
 			
-			Village startVill = graph.find(Integer.parseInt(strVill));
+			country.insert(newVill); // default to zero gnomes
+			
+			Village startVill = country.find(Integer.parseInt(strVill));
 			
 			String cost = (String) JOptionPane.showInputDialog(mapFrame,
 					"This road will lead from village " + startVill.getName() + " to village " + newVill.getName()
@@ -649,7 +671,7 @@ public class MapGUI implements ActionListener {
 			}
 			
 			int n = JOptionPane.showConfirmDialog(mapFrame, "A new map has been created." + 
-					"\nShould I add a two-way road between the two countries?", "Building map", JOptionPane.YES_NO_CANCEL_OPTION);
+					"\nShould I add a road between the two countries?", "Building map", JOptionPane.YES_NO_CANCEL_OPTION);
 			if (n == JOptionPane.CANCEL_OPTION) {return;}
 		
 
@@ -662,7 +684,6 @@ public class MapGUI implements ActionListener {
 						"Building map", JOptionPane.PLAIN_MESSAGE);
 				if (!graph2.isEmpty() && !graph.isEmpty()) {
 					graph.getLast().connect(Integer.parseInt(toll),graph2.getFirst());
-					graph2.getFirst().connect(Integer.parseInt(toll),graph.getLast());
 				}
 			}
 			mapPanel.removeAll();
@@ -679,6 +700,28 @@ public class MapGUI implements ActionListener {
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "SameVillageException", JOptionPane.ERROR_MESSAGE);
 		}
 	} // end of addCountry()
+	
+	public void findMin() {
+		int n = JOptionPane.showConfirmDialog(mapFrame, "This function will find the minimum spanning tree of the map \nand delete roads accordingly", 
+				"Finding min span tree", JOptionPane.OK_CANCEL_OPTION);
+		if (n == JOptionPane.CANCEL_OPTION) {return;}
+		else {
+			// find min span tree
+		}
+	} // end of findMin()
+	
+	public void topSort() {
+		try {
+			int n = JOptionPane.showConfirmDialog(mapFrame, "This function will print the topological sort of the map", 
+					"Topological sort", JOptionPane.OK_CANCEL_OPTION);
+			if (n == JOptionPane.CANCEL_OPTION) {return;}
+			else {
+				graph.topologicalSort();
+			}
+		} catch (NotFoundException | GraphEmptyException e) {
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "Exception", JOptionPane.PLAIN_MESSAGE);
+		}
+	} // end of topSort()
 	
 	public void welcomeButton() {	
 		try {
@@ -722,6 +765,21 @@ public class MapGUI implements ActionListener {
 				current = current.getNext();
 				nextIndex++;
 			}
+		}
+		if (graph2 != null) {
+			Object [] options2 = new Object [graph.getLength() + graph2.getLength()];
+			for (int i=0; i<graph.getLength(); i++) {
+				options2[i] = options[i];
+			}
+			Village current2 = graph2.getFirst(); int nextIndex2 = 0;
+			for (int n=0; n<graph2.getLength(); n++) {
+				while (current != null) {
+					options2[nextIndex2] = Integer.toString(current2.getName());
+					current2 = current2.getNext();
+					nextIndex2++;
+				}
+			}
+			return options2;
 		}
 		return options;
 	} // end of villageList()

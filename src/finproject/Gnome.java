@@ -81,51 +81,6 @@ public class Gnome implements Runnable {
 		} catch (VillageFullException e) {System.out.println(e.getMessage());}
 	}//end travelRandom
 
-	/*
-	public String travelTopSort(){ // need to check for cycles?
-		Queue q = new Queue();
-		Village a;
-		RoadIterator b;
-		queueZero(q);
-		String pathToTake = "";
-		System.out.println("is it empty? "+q.isEmpty());
-		while(!q.isEmpty()){
-			a = q.remove().getVillage();
-			System.out.println("a has been removed from q. q length is now "+q.length());
-			pathToTake += a.getName() + " ";
-			System.out.println("a.name is "+pathToTake+" and adjacent length is "+a.outgoing.length);
-			// for each adjacent village to village a, decrease each indegree and if it equals 0, add to queue
-			if(a.outgoing.length!=0){
-				b = a.outgoing.firstRoad;
-				while(b != null){
-					System.out.println("b's indegree is "+b.endVillage().indegree);
-					b.endVillage().indegree--;
-					System.out.println("b's indegree is nowww "+b.endVillage().indegree);
-					if( b.endVillage().indegree  == 0 ){
-						System.out.println("about to insert...");
-						q.insert(new Node(b.endVillage()));
-						System.out.println("added to the q is village "+b.endVillage().getName() +" with indegree "+b.endVillage().indegree);
-					}
-					b = b.getNext();
-				} // end of while
-			} // end of if
-		} // end of while
-		System.out.println(pathToTake+"hi ");
-		return pathToTake;
-		
-	} // end of travelTopSort method
-	*/
-	
-	public Queue queueZero(Queue someQ){
-		for(int i = 1; i < MovingMap.testVillage.length; i++){
-			if(MovingMap.testVillage[i].indegree == 0){
-				someQ.insert(new Node(MovingMap.testVillage[i]));
-			}
-		}
-		System.out.println("someQ length is"+ someQ.length());
-		return someQ;
-	}	
-	
 	//exceptions
 	public class NotInVillageException extends Exception{
 		public NotInVillageException() {

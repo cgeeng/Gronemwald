@@ -8,7 +8,9 @@ public class Graph implements Runnable {
 	private int length = 0;
 	Village firstVillage;
 	Village lastVillage;
-	String name;
+	private String name;
+	
+	public String getName() {return this.name;}
 	
 	//constructor
 	public Graph() {
