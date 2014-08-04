@@ -76,19 +76,54 @@ public class Graph implements Runnable {
 	public void restructure() {
 		// finds and deletes one road that is not in the minimum spanning tree
 		try {
-			Road [] minSpanTree = this.createProposal();
-			Road toDelete;
-			
-			
-			
-			if (toDelete != null) { // will be null if no road is not in minimum spanning tree
-					System.out.println("To cut costs, the government has decided to restructure the road network." +
-					toDelete.printRoad() + " has been deleted.");}
+			if (! isEmpty()) {
+				Road [] minSpanTree = this.createProposal();
+				Road [] allRoads = this.getAllRoads();
+				Road toDelete = null;
+				
+				for (int i=0; i<allRoads.length; i++) {
+					boolean inSpanTree = false;
+					for (int n=0; n<minSpanTree.length; n++) {
+						if (allRoads[i].equals(minSpanTree[i])) {inSpanTree = true;}
+					}
+					if (!inSpanTree) {toDelete = allRoads[i];}
+				}
+				
+				if (toDelete != null) { // will be null if no road is not in minimum spanning tree
+						System.out.println("To cut costs, the government has decided to restructure the road network." +
+						toDelete.printRoad() + " has been deleted.");}
+			}
 		} catch (NotFoundException | GraphEmptyException | SameVillageException
 				| RoadAlreadyExistsException e) {
 			System.out.println(e.getMessage());
 		}
-	}
+	} // end of restructure()
+	
+	public Road [] getAllRoads() { // represents all roads in graph as an array
+		Road [] allRoadsLong = new Road [100];
+		int numRoads = 0;
+		if (! isEmpty()) {
+			Village current = this.firstVillage;
+			while (current != null) {
+				if (!current.outgoing.isEmpty()) {
+					RoadIterator ri = current.outgoing.getFirst();
+					while (ri != null) {
+						allRoadsLong[numRoads] = ri.getData();
+						numRoads++;
+						ri = ri.getNext();
+					}
+				}
+				current = current.getNext();
+			}
+		}
+		
+		// makes new array of correct length
+		Road [] allRoads = new Road [numRoads];
+		for (int i=0; i<allRoads.length; i++) {
+			allRoads[i] = allRoadsLong[i];
+		}
+		return allRoads;
+	} // end of getAllRoads()
 			
 	public boolean roadExists(Village v1, Village v2) {
 		// checks if road already exists between two villages
