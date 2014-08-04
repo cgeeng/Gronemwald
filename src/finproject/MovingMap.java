@@ -22,17 +22,18 @@ public class MovingMap {
 		Gr.insert( new Village());
 		Gr.insert( new Village());
 		Gr.insert( new Village());
-		//Gr.insert( new Village());
+		Gr.insert( new Village());
 		//Gr.insert( new Village());
 		
 		Gr.find(1).connect(2, Gr.find(3));
-		Gr.find(1).connect(3, Gr.find(2));
+		Gr.find(1).connect(4, Gr.find(2));
 		Gr.find(2).connect(7, Gr.find(3));
-		//Gr.find(4).connect(1, Gr.find(2));
-		//Gr.find(4).connect(5, Gr.find(1));
-		Gr.proposal = new ProposalGraph(Gr); 
+		
+		Gr.find(4).connect(8, Gr.find(2));
+		Gr.find(4).connect(9, Gr.find(1));
+		ProposalGraph proposal = new ProposalGraph(Gr); 
 
-		Gr.proposal.findMinSpanTree();
+		proposal.findMinSpanTree();
 
 		
 	}

@@ -140,7 +140,7 @@ public class ProposalGraph {
 		
 
 		//Insert first village into stack
-		traverse.insert(current.getVillage());
+		traverse.insert(new Node (current.getVillage() ) );
 		Node previous = new Node (current.getVillage());
 		int i = 1;
 		while (!traverse.isEmpty()) {			

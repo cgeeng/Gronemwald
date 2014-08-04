@@ -17,8 +17,8 @@ public class SomeStack {
 	public Node getFirst() {return this.firstVillage;}
 	public Node getLast() {return this.lastVillage;}
 	
-	public void insert ( Village newVillage ) {
-		Node newNode = new Node(newVillage);
+	public void insert ( Node newNode ) {
+		//Node newNode = new Node(newVillage);
 		if (isEmpty()) {
 			firstVillage = newNode;
 			lastVillage = newNode;
@@ -40,14 +40,16 @@ public class SomeStack {
 			length--;
 			int i = 1;
 			System.out.println("popped "+temp.getVillage().getName());
-			
+			//If Village has roads built out of it, add the end destination villages to the Stack
+			//Don't add if the village's parent is the same as the road's end destination
 			if (!temp.getVillage().outgoing.isEmpty()) {
 				RoadIterator adj = temp.getVillage().outgoing.firstRoad;
 				
 				while (i <= temp.getVillage().outgoing.length) {
 					//if (!temp.getVillage().outgoing.proposalFindRoad(predecessor.getVillage()) ) {
-					if (adj.endVillage().getName() != temp.predecessor.getName()){
-							insert(adj.endVillage()); 
+					if (temp.predecessor == null) insert(new Node (adj.endVillage(), predecessor.getVillage()) ); 
+					else if (adj.endVillage().getName() != temp.predecessor.getName()){
+							insert(new Node (adj.endVillage(), predecessor.getVillage()) ); 
 					}
 					adj = adj.getNext();
 					i++;

@@ -4,7 +4,7 @@ public class Node { // node for priority queue (minExpPath)
 	private Village village;
 	private Node next;
 	private Node previous;
-	Village predecessor;
+	Village predecessor = null;
 	int pathCost;
 	
 	public void setVillage(Village village) { this.village = village; }
