@@ -4,9 +4,6 @@ package finproject;
 
 import java.io.*;
 
-import finproject.Exceptions.SameVillageException;
-import finproject.Exceptions.UnconnectedGraphException;
-import finproject.Exceptions.VillageFullException;
 import finproject.Exceptions.*;
 
 public class MovingMap {
