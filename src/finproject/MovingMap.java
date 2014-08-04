@@ -31,6 +31,7 @@ public class MovingMap {
 		
 		Gr.find(4).connect(8, Gr.find(2));
 		Gr.find(4).connect(9, Gr.find(1));
+		Gr.find(4).connect(10, Gr.find(3));
 		ProposalGraph proposal = new ProposalGraph(Gr); 
 
 		proposal.findMinSpanTree();
