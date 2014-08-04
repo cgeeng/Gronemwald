@@ -83,27 +83,25 @@ public class ProposalGraph {
 
 	}//end deep copy
 	
-	public void findMinSpanTree() throws GraphEmptyException, UnconnectedGraphException {
+	public void findMinSpanTree() throws GraphEmptyException, UnconnectedGraphException, SameVillageException, RoadAlreadyExistsException, NotFoundException {
 		//Assumes input is CONNECTED graph
 		int i = 0;
-		int loop = 0;
 		printGraph();
 		while ( !pq.isEmpty() ) {
 				
 			PRoad temp = pq.removeMin();
 			System.out.println("pq length now "+pq.length+". min cost "+temp.cost);
-			find( temp.starting.getName() ).connect( temp.cost, find( temp.end.getName() ));
+			Road newRoad = find( temp.starting.getName() ).connect( temp.cost, find( temp.end.getName() ));
 			
 			if (findCycle()) {
-				
-				
+				find( temp.starting.getName() ).deleteInRoad(newRoad);
+			}
+			else {	
 				toBuild[i] = temp;
 				i++;
 			}//end if	
 			printToBuild();
 			pq.print();
-			connected.print();
-			loop++;
 			
 		}//end while
 		printToBuild();
