@@ -1,9 +1,5 @@
 package finproject;
 
-import finproject.Exceptions.GraphEmptyException;
-import finproject.Exceptions.NotFoundException;
-import finproject.Exceptions.RoadAlreadyExistsException;
-import finproject.Exceptions.SameVillageException;
 import finproject.Exceptions.*;
 
 import java.util.Random;
@@ -45,7 +41,10 @@ public class Graph implements Runnable {
 			}
 		}
 		
-		while (! isEmpty()) { // chooses random village within graph
+		while (! isEmpty()) {
+			Random rand2 = new Random(); int nextFunction = rand2.nextInt(4);
+			// 3/4 chance it will add a new road, 1/4 chance it will restructure graph (delete road)
+			if (nextFunction < 2) {	// chooses random village within graph
 				Random rand = new Random();
 				int v = rand.nextInt(length), count=0;
 				Village vill = getFirst();
@@ -58,8 +57,10 @@ public class Graph implements Runnable {
 					if (count != v) {count++; vill2 = vill2.getNext();}
 				}
 				
+				if (! vill.equals(vill2)) {roadProposal(vill, vill2);} // if it happens upon the same village, just waits one cycle
+			} else {restructure();}
+				
 				try {
-					if (! vill.equals(vill2)) {roadProposal(vill, vill2);} // if it happens upon the same village, just waits one cycle
 					Thread.sleep(4000);
 				} catch (InterruptedException e) {
 					System.out.println("The system was interrupted.");
@@ -67,6 +68,10 @@ public class Graph implements Runnable {
 				
 		}
 	} // end of run()
+	
+	public void restructure() {
+		// finds and deletes one road that is not in the minimum spanning tree
+	}
 			
 	public boolean roadExists(Village v1, Village v2) {
 		// checks if road already exists between two villages
