@@ -52,7 +52,7 @@ public class Proposal {
 		if (root1 == root2) return false;
 		
 		//check if rank of root1 is smaller
-		System.out.println("root1 "+root1+" root2"+root2);
+		
 		if ( rank[root1] > rank[root2] ) { 
 			int t = root1;
 			root1 = root2;
@@ -102,6 +102,10 @@ public class Proposal {
 		}//end while
 	}
 	
+	//public Road[] returnProposal(){
+		//creates array of Roads using data in toBuilt array
+	//}
+	
 	public void printRoads() {
 		System.out.println("There are "+q+" roads.");
 		for (int i = 0; i < q; i++) {
@@ -109,7 +113,7 @@ public class Proposal {
 		}
 	}
 	public void printToBuild() {
-		System.out.println("To build "+toBuildLength+1+" roads.");
+		System.out.println("To build "+toBuildLength+" roads.");
 		for (int i = 0; i < toBuildLength; i++) {
 			System.out.println(toBuild[i].u+" to "+ toBuild[i].v+" cost "+toBuild[i].cost);
 		}
