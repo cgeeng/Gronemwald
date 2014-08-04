@@ -26,10 +26,14 @@ public class Road {
 		this.end = end;
 	}
 	// when  adding predecessor edge. have that predecessor edge add thing to following edge
-		public Road(String edge,Village pred, Village follow){ // for topSort
-			this.edgeType = edge;
-			this.topSortPredecessor = pred;
-			this.topSortFollowing = follow;
-		}
+	public Road(String edge,Village pred, Village follow){ // for topSort
+		this.edgeType = edge;
+		this.topSortPredecessor = pred;
+		this.topSortFollowing = follow;
+	}
+		
+	public String printRoad() { // string representation of this road
+		return "\nRoad from village " + start.getName() + " to village " + end.getName() + " at cost " + this.cost;
+	}
 
 }//end Road class

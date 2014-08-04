@@ -17,6 +17,8 @@ import java.util.Random;
 
 import finproject.Exceptions.GraphEmptyException;
 import finproject.Exceptions.NotFoundException;
+import finproject.Exceptions.RoadAlreadyExistsException;
+import finproject.Exceptions.SameVillageException;
 import finproject.Exceptions.*;
 
 public class MapGUI implements ActionListener {
@@ -705,11 +707,19 @@ public class MapGUI implements ActionListener {
 	} // end of addCountry()
 	
 	public void findMin() {
-		int n = JOptionPane.showConfirmDialog(mapFrame, "This function will find the minimum spanning tree of the map \nand delete roads accordingly", 
-				"Finding min span tree", JOptionPane.OK_CANCEL_OPTION);
-		if (n == JOptionPane.CANCEL_OPTION) {return;}
-		else {
-			// find min span tree
+		try {
+			Road [] minSpanTree = graph.createProposal();
+			
+			String strMinSpanTree = "";
+			for (int i=0; i<minSpanTree.length; i++) {
+				strMinSpanTree += minSpanTree[i].printRoad();
+			}
+			
+			JOptionPane.showMessageDialog(mapFrame, "The minimum spanning tree for this map is: " + strMinSpanTree, 
+					"Finding min span tree", JOptionPane.PLAIN_MESSAGE);
+		} catch (NotFoundException | GraphEmptyException
+				| SameVillageException | RoadAlreadyExistsException e) {
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "Exception", JOptionPane.ERROR_MESSAGE);
 		}
 	} // end of findMin()
 	

@@ -1,5 +1,9 @@
 package finproject;
 
+import finproject.Exceptions.GraphEmptyException;
+import finproject.Exceptions.NotFoundException;
+import finproject.Exceptions.RoadAlreadyExistsException;
+import finproject.Exceptions.SameVillageException;
 import finproject.Exceptions.*;
 
 import java.util.Random;
@@ -71,6 +75,19 @@ public class Graph implements Runnable {
 	
 	public void restructure() {
 		// finds and deletes one road that is not in the minimum spanning tree
+		try {
+			Road [] minSpanTree = this.createProposal();
+			Road toDelete;
+			
+			
+			
+			if (toDelete != null) { // will be null if no road is not in minimum spanning tree
+					System.out.println("To cut costs, the government has decided to restructure the road network." +
+					toDelete.printRoad() + " has been deleted.");}
+		} catch (NotFoundException | GraphEmptyException | SameVillageException
+				| RoadAlreadyExistsException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 			
 	public boolean roadExists(Village v1, Village v2) {
