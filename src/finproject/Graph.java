@@ -251,7 +251,7 @@ public class Graph implements Runnable {
 				} // end of while
 			} // end of if
 		} // end of while
-		System.out.println("pathToTake is "+pathToTake);
+		// System.out.println("pathToTake is "+pathToTake);
 		pathToTake.printQueue();
 		return pathToTake;
 		
@@ -270,15 +270,21 @@ public class Graph implements Runnable {
 	}	// end of queueZero method
 
 	
-	public void printGraph() { // string representation of graph, used for testing
+	public String printGraph() { // returns string representation of graph
 		if (! isEmpty()) {
+			String strGraph = "<html>";
 			Village current = this.firstVillage;
 			while (current != null) {
-				System.out.println("Village " + current.getName() + " holds " + current.populationSize + " gnomes.");
-				System.out.println("   It leads to " + current.getAdjList());
+				String gnStr = "";
+				for (int i=0; i<current.populationSize; i++) {
+					gnStr += current.population[i].getID() + " ";
+				}
+				strGraph += "<br>Village " + current.getName() + " currently holds " + current.populationSize + " gnomes ( " +
+						gnStr + ")";
+				strGraph += "<br>   It leads to " + current.getAdjList();
 				current = current.getNext();
-			}
-		} else {System.out.println("This graph is empty.");}
+			} return strGraph + "</html>";
+		} else {System.out.println("This graph is empty."); return "";}
 	} // end of printGraph()
 	
 }//end VillageList class

@@ -116,6 +116,7 @@ public class Village implements Runnable {
 			for (int i=0; i<populationSize; i++) {if (population[i] != null) {nextIndex++;}}
 			population[nextIndex] = g;
 			g.setVillage(this);
+			g.getVisited().insert(new Node(this));
 			this.populationSize++;
 		}
 	} // end of insertGnome()
@@ -136,17 +137,17 @@ public class Village implements Runnable {
 	public String getAdjList() {
 		String roadList = "";
 		
+		if (this.outgoing.isEmpty()) {roadList+="nowhere.";}
 		RoadIterator current = this.outgoing.firstRoad;
 		while (current != null ) {
-			roadList += "Village " + current.endVillage().getName() + ", cost " + current.getCost() + ", ";
+			roadList += "Village " + current.endVillage().getName() + " at cost " + current.getCost() + ", ";
 			current = current.getNext();
 		}
 
 		return roadList;
 	}//end getAdjList()
 	
-	//Class AdjList
-	public class AdjList {
+	class AdjList {
 		RoadIterator firstRoad;
 		RoadIterator lastRoad;
 		int length = 0;

@@ -14,9 +14,11 @@ public class Gnome implements Runnable {
 	private int ID;
 	public Village current;
 	private int sleepTime; // sleep times offset a little
+	private Queue visited = new Queue(); // all villages visited - equivalent of "passport stamped"
 	
 	public int getID() {return this.ID;}
 	public void setVillage(Village v) {this.current = v;}
+	public Queue getVisited() {return this.visited;}
 
 	//Constructors
 	public Gnome (String name) {
@@ -34,6 +36,7 @@ public class Gnome implements Runnable {
 		try {
 			ID = ++totalGnome;
 			starting.insertGnome(this);
+			visited.insert(new Node(starting));
 		} catch (VillageFullException e) {System.out.println(e.getMessage());}
 	}//end constructor establishing Gnome's village
 	
@@ -77,32 +80,8 @@ public class Gnome implements Runnable {
 		// } catch (NoAdjacentVillagesException e) {System.out.println(e.getMessage());
 		} catch (VillageFullException e) {System.out.println(e.getMessage());}
 	}//end travelRandom
-	
-	// unnecessary with GUI 
-	/*
-	public void travelPick() throws NumberFormatException, IOException { // deal with exception later
 
-		try {
-			//Limited to gnomes that are in a village already
-			if (current == null) throw new NotInVillageException();
-			if (current.adjacent.length == 0) throw new NoAdjacentVillagesException(current.name);
-			
-			String message = "Gnome " + ID + " can move from Village " + current.name + " to: ";
-			String destinations = current.getAdjList();
-			System.out.println(message + destinations);
-			
-			System.out.println("From the above neighboring villages listed, which village would you like to move to? Enter the village number.");
-			Village oldVillage = this.current;
-			MovingMap.testVillage[Integer.parseInt(br.readLine())].insertGnome(this);
-			System.out.println("Gnome " + ID + " has moved from Village " + oldVillage.name + " to Village " + current.name);
-			
-		} catch (NotInVillageException e) {System.out.println(e.getMessage()); 
-		} catch (NoAdjacentVillagesException e) { System.out.println(e.getMessage());
-		} catch (VillageFullException e) {System.out.println(e.getMessage());}
-	}//end travelPick()
-	*/
-	
-	// TODO make gnome into thread that traverses the minimum path? (animated)
+	/*
 	public String travelTopSort(){ // need to check for cycles?
 		Queue q = new Queue();
 		Village a;
@@ -135,6 +114,7 @@ public class Gnome implements Runnable {
 		return pathToTake;
 		
 	} // end of travelTopSort method
+	*/
 	
 	public Queue queueZero(Queue someQ){
 		for(int i = 1; i < MovingMap.testVillage.length; i++){
