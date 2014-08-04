@@ -108,8 +108,6 @@ public class TestClass {
 			graph.find(5).connect(2, graph.find(6));
 			graph.find(6).connect(4, graph.find(7));
 			
-			graph.roadProposal(graph.find(4), graph.find(1));
-			graph.find(4).deleteOutRoad(graph.find(4).findRoad(1));
 			
 		} catch (VillageFullException | SameVillageException
 				| RoadAlreadyExistsException | NotFoundException

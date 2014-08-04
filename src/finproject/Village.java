@@ -193,8 +193,7 @@ public class Village {
 			if (isEmpty()) {
 				firstRoad = ri;
 				lastRoad = ri;
-			}
-			else {
+			} else {
 				lastRoad.setNext(ri);
 				ri.setPrev(lastRoad);
 				lastRoad = ri;
