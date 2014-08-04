@@ -8,6 +8,7 @@ import javax.swing.*;
 
 import java.util.Random;
 
+import finproject.Exceptions.VillageFullException;
 import finproject.Exceptions.*;
 
 public class MapGUI implements ActionListener {
@@ -115,9 +116,32 @@ public class MapGUI implements ActionListener {
 		graph.printGraph();
 	} // end of addGraph()
 	
+	public void createPreGraph2() { // used for testing and option for user
+		try {
+		if (graph == null) { // creates new graph with 5 villages of population 5
+			graph = new Graph();
+			for (int i=0; i<5; i++) {graph.insert(new Village(2));} // 5 villages with 2 gnomes each
+		}
+		
+		graph.find(1).connect(2, graph.find(2));
+		graph.find(1).connect(4, graph.find(3));
+		graph.find(2).connect(5, graph.find(4));
+		graph.find(2).connect(1, graph.find(3));
+		graph.find(4).connect(1, graph.find(5));
+		graph.find(5).connect(1, graph.find(4));
+		graph.find(5).connect(3, graph.find(3));
+		} catch (RoadAlreadyExistsException e) {System.out.println(e.getMessage());
+		} catch (GraphEmptyException e) {System.out.println(e.getMessage());
+		} catch (NotFoundException e) {System.out.println(e.getMessage());
+		} catch (SameVillageException e) {System.out.println(e.getMessage());
+		} catch (VillageFullException e) {System.out.println(e.getMessage());} 
+		
+		graph.printGraph();
+	} // end of addGraph()
+	
 	public void drawGraph() {
 		drawVillages();
-		drawRoads();
+		// drawRoads();
 		// update();
 	} // end of drawGraph()
 	
@@ -572,10 +596,31 @@ public class MapGUI implements ActionListener {
 	}
 	
 	public void addCountry() {
-		System.out.println("Adding a country");
-		graph2 = new Graph();
-		
-		// update();
+		try {
+			Object [] options = {"Use premade map", "Create my own map"};
+			
+			String ans = (String) JOptionPane.showInputDialog(mapFrame, "Would you like to use a premade map " + 
+					" or create your own map?", "Building map", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+			if (ans == null) {return;}
+			
+			if (ans.equals(options[0])) {createPreGraph2();}
+			else {
+				String strVill = (String) JOptionPane.showInputDialog(mapFrame, "How many villages would you like to start with?" +
+						" (as an integer).", "Building map", JOptionPane.PLAIN_MESSAGE);
+				if (strVill == null) {return;}
+				
+				int numVill = Integer.parseInt(strVill);
+				graph2 = new Graph();
+				for (int i=0; i<numVill; i++) {graph2.insert(new Village(2));};
+				
+				JOptionPane.showMessageDialog(mapFrame, "A new map has been created with " + numVill + " villages." + 
+							"\nNext, you should add roads to connect the two countries (see options on right).", "Building map", JOptionPane.PLAIN_MESSAGE);
+			}
+		} catch (NumberFormatException e) {
+			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Please try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
+		} catch (VillageFullException e) {
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "VillageFullException", JOptionPane.ERROR_MESSAGE);
+		}
 	} // end of addCountry()
 	
 	public void welcomeButton() {	
