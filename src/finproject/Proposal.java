@@ -4,9 +4,10 @@ import finproject.Exceptions.GraphEmptyException;
 import finproject.Exceptions.NotFoundException;
 import finproject.Exceptions.RoadAlreadyExistsException;
 import finproject.Exceptions.SameVillageException;
+import finproject.Exceptions.VillageNotFoundException;
 
 public class Proposal {
-	private int[] villages = new int[20]; //VILLAGES START AT INDEX 1
+	private int[] villages = new int[30]; //VILLAGES START AT INDEX 1
 	private Edge[] roads = new Edge[50];
 	private Edge[] toBuild;
 	private int[] rank;
@@ -24,14 +25,17 @@ public class Proposal {
 	
 	//methods
 	public void deepCopy(Graph original) throws SameVillageException, RoadAlreadyExistsException, NotFoundException, GraphEmptyException {
-		//Recreate villages first
-		//Then create roads
+		//Recreate villages and roads
+		int[] tempVillage = new int[30];
+		
 		if (original.firstVillage == null) { System.out.println("I don't think your country exists!"); }
 		else {
 			p = original.getLength();
 			
 			Village originalVillage = original.firstVillage;
 			for (int i =1 ; i <= original.getLength(); i++) { 
+				//save village names
+				tempVillage[i] = originalVillage.getName();
 				//iterate through original Village linked list, CREATE EDGES
 				if ( !originalVillage.outgoing.isEmpty() ) { 
 					//loop through through and add road to proposal village
@@ -46,10 +50,12 @@ public class Proposal {
 				}//end if
 				originalVillage = originalVillage.getNext();
 			}//end village loop
+			
+			initializeVillages( tempVillage );
 		}//end else
 	}//end deep copy
 
-	public boolean union (int u, int v) {
+	public boolean union (int u, int v) throws VillageNotFoundException {
 		int root1 = find(u);
 		int root2 = find(v);
 		if (root1 == root2) return false;
@@ -67,7 +73,9 @@ public class Proposal {
 		return true;
 	}//end union
 	
-	public int find (int u) { 
+	public int find (int u) throws VillageNotFoundException { 
+		//If village referenced by road doesn't exist, throw
+		if ( villages[u] == 0 ) throw new VillageNotFoundException(u);
 		//If village is not rooted at itself, find and return root
 		if ( villages[u] != villages[villages[u]]) {
 			villages[u] = find( villages[u]);
@@ -79,7 +87,6 @@ public class Proposal {
 		//Set up arrays
 		toBuild = new Edge[p-1]; 
 		rank = new int[p+1];
-		for( int i = 1; i <= p; i++) villages[i] = i; //INDEX ZERO LEFT EMPTY
 		for( int i = 1; i <= p; i++) rank[i] = 1; //initialize rank array
 		sortEdges(); //sort roads by cost, lowest first
 		
@@ -125,6 +132,15 @@ public class Proposal {
 		}
 	}//end printToBuild
 	
+	public void printVillages() {
+		//to test
+		String temp = "";
+		for (int i = 1; i <= p; i++) {
+			if ( villages[i] != 0 ) temp+= villages[i]+" ";
+		}
+		System.out.println("Villages include: "+ temp);
+	}//end printToBuild
+	
 	public Road[] getProposal() throws NotFoundException, GraphEmptyException {
 		kruskal();
 		Road[] transfer = new Road[toBuildLength];
@@ -134,6 +150,15 @@ public class Proposal {
 		}
 		return transfer;
 	}//end getProposal
+	
+	public void initializeVillages( int[] temp ) {
+		//Initialize villages[] by mapping to village names
+		int i = 1;
+		while ( temp[i] != 0 ){
+			villages[ temp[i] ] = temp[i];
+			i++;
+		}
+	}//end initializeVillages
 	
 	//edge class
 	public class Edge {
