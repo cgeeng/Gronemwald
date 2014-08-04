@@ -90,8 +90,6 @@ public class Graph implements Runnable {
 			System.out.println("\nNew road proposed between village " + v1.getName() + " and village " + v2.getName());
 			System.out.println("The total building cost would be: " + newToll*100);			
 			
-			boolean noOutgoing = (v1.outdegree == 0);
-			boolean noIncoming = (v2.indegree == 0);
 			boolean manyIntermediates = false;
 			
 			int count = 0; // counts number of spaces in travelMinExpPath string, 
@@ -103,8 +101,11 @@ public class Graph implements Runnable {
 				minusStart = minusStart.substring(spaceInd+1);
 			}
 			
-			if (noOutgoing || noIncoming || manyIntermediates) {
-				System.out.println("The government has elected to build the road.\n");
+			System.out.println(manyIntermediates);
+			
+			if (manyIntermediates) {
+				System.out.println("The government has elected to build the road because there is more than one intermediate village " 
+						+ "\n between the two villages in the existing road structure.");
 				v1.connect(1, v2);
 			} else {
 				System.out.println("Due to budget constraints, the government has elected not to build the road.\n");
@@ -113,14 +114,14 @@ public class Graph implements Runnable {
 			System.out.println("The government says, " + e.getMessage() + "\n");
 		} catch (NoIncomingRoadsException e) {
 			try {
-				System.out.println("The government has elected to build the road.\n");
+				System.out.println("The government has elected to build the road because village " + v2.getName() + " has no incoming roads.\n");
 				v1.connect(1, v2);
 			} catch (SameVillageException | RoadAlreadyExistsException e1) { // theoretically not possible
 				System.out.println("The government says, " + e.getMessage() + "\n");
 			}
 		} catch (NoOutgoingRoadsException e) {
 			try {
-				System.out.println("The government has elected to build the road.\n");
+				System.out.println("The government has elected to build the road because village " + v1.getName() + " has no outgoing roads.\n");
 				v1.connect(1, v2);
 			} catch (SameVillageException | RoadAlreadyExistsException e1) { // theoretically not possible
 				System.out.println("The government says, " + e.getMessage());
