@@ -55,7 +55,7 @@ public class MapGUI implements ActionListener {
 			titlePanel.setPreferredSize(new Dimension(800, 50));
 			titlePanel.setBackground(Color.DARK_GRAY);
 			
-			mapPanel = new ImagePanel("/Users/Kate/JavaProjects/Gronemwald/src/resources/gnomenwald_bckd.gif");
+			mapPanel = new ImagePanel("/Users/Kate/JavaProjects/Gronemwald/src/resources/gnomenwald2.gif");
 			mapPanel.setPreferredSize(new Dimension(650, 450));
 			mapPanel.setLayout(new BorderLayout());
 			mapPanel.setBackground(Color.DARK_GRAY);
@@ -63,7 +63,7 @@ public class MapGUI implements ActionListener {
 			optionsPanel = new JPanel();
 			optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
 			optionsPanel.setPreferredSize(new Dimension(200, 450));
-			optionsPanel.setBackground(Color.RED);
+			optionsPanel.setBackground(Color.BLUE);
 			
 			addTitle();
 			drawGraph();
