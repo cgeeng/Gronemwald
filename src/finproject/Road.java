@@ -4,6 +4,9 @@ public class Road {
 	int cost;
 	boolean built = true;
 	Village start, end; // start and end points
+	Village topSortPredecessor;
+	Village topSortFollowing;
+	String edgeType;
 	
 	//Constructor
 	public Road (int cost, Village end) {
@@ -22,4 +25,11 @@ public class Road {
 		this.start = start;
 		this.end = end;
 	}
+	// when  adding predecessor edge. have that predecessor edge add thing to following edge
+		public Road(String edge,Village pred, Village follow){ // for topSort
+			this.edgeType = edge;
+			this.topSortPredecessor = pred;
+			this.topSortFollowing = follow;
+		}
+
 }//end Road class

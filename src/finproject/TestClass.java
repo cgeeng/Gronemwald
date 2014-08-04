@@ -4,7 +4,24 @@ import finproject.Exceptions.*;
 
 public class TestClass {
 	public static void main (String [] args) {
-		testGraphThread();
+		//testGraphThread();
+		Graph graph = new Graph();
+		for(int i = 1; i <= 5; i++){
+			graph.insert(new Village());
+		}
+		graph.find(1).connect(2,graph.find(2));
+		graph.find(1).connect(2,graph.find(4));
+		graph.find(1).connect(2,graph.find(5));
+		graph.find(2).connect(2,graph.find(3));
+		graph.find(2).connect(2,graph.find(4));
+		//graph.find(4).connect(2,graph.find(1));
+		graph.find(4).connect(2,graph.find(3));
+		graph.find(4).connect(2,graph.find(5));
+		//graph.find(6).connect(2, graph.find(7));
+		//graph.find(7).connect(2, graph.find(4));
+		graph.topologicalSort();
+		//graph.findCycle();
+
 	}
 		
 	public static void testGraphThread() {

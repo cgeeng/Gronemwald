@@ -7,7 +7,7 @@ public class Village implements Runnable {
 	static int totalVillage = 0;
 	
 	private int name;
-	AdjList incoming, outgoing;
+	AdjList incoming, outgoing, outgoingTopSort;
 	int populationSize, populationLimit=10; // limit varies, default is 10
 	Gnome [] population = new Gnome[populationLimit]; // limit varies
 	int indegree, outdegree;
@@ -17,6 +17,10 @@ public class Village implements Runnable {
 	Village prior;
 	int visitIn;
 	int priorCost;
+	String color;
+	String edgeType = "";
+	Village predecess;
+	Village following;
 	
 	public int getName() {return this.name;}	
 	public Village getNext() {return this.next;}

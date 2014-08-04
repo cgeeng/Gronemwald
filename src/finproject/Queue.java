@@ -27,6 +27,17 @@ public class Queue {
 		} else {throw new GraphEmptyException();}
 	} // end of method find()
 	
+	public Village find2(int name) {
+		Node current = this.firstNode;
+		while (current != null) {						
+			if (current.getVillage().getName() == name) {
+				return current.getVillage();
+			}
+			current = current.getNext();
+		} 
+		return null;
+	} // end of method find()
+	
 	public void insertLikeStack(Node n){
 		if(isEmpty()){
 			firstNode = n;
@@ -39,14 +50,51 @@ public class Queue {
 		length++;
 	}
 	
+	public Node delete(Village toDelete){ 
+		Node removed = firstNode;
+		while(removed.getVillage() != toDelete){
+			removed = removed.getNext();
+		}
+		if(removed == firstNode & removed == lastNode){
+			firstNode = null;
+			lastNode = null;
+			//firstNode.setNext(null);
+			//firstNode.setPrev(null);
+			//lastNode.setNext(null);
+			//lastNode.setPrev(null);
+		}else if(removed == firstNode){
+			firstNode = firstNode.getNext();
+			firstNode.setPrev(null);
+		}else if(removed == lastNode){
+			lastNode = lastNode.getPrev();
+			lastNode.setNext(null);
+		}else{
+			System.out.println("looking for village toDelete "+toDelete.getName()+" and removed is "+removed.getVillage().getName());
+			Node before = removed.getPrev();
+			//System.out.println("removed.getPrev() is "+removed.getPrev().getVillage().getName());
+			Node after = removed.getNext();
+			System.out.println("removed.getNext() is "+removed.getNext().getVillage().getName());
+			before.setNext(after);
+			after.setPrev(before);
+		}
+		length--;
+		return removed;
+	}
+	
 	public void insert(Node nodeWithVillage){
 		if(isEmpty()){
 			firstNode = nodeWithVillage;
 			lastNode = firstNode;
+			firstNode.setNext(null);
+			firstNode.setPrev(null);
+			lastNode.setNext(null);
+			lastNode.setPrev(null);
 		}
 		else{
+			nodeWithVillage.setPrev(lastNode);
 			lastNode.setNext(nodeWithVillage);
 			lastNode = nodeWithVillage;
+			lastNode.setNext(null);
 		}
 		length++;
 	}

@@ -224,42 +224,156 @@ public class Graph implements Runnable {
 		return thePath;
 	} // end of travelMinExpPath method
 	
-	public Queue travelTopSort() throws NotFoundException, GraphEmptyException{ // need to check for cycles?
-		Queue q = new Queue();
-		Village a;
-		RoadIterator b;
-		queueZero(q,0); // adds villages with incoming roads of 0
-		Queue pathToTake = new Queue();
-		int[][] checkCycle = new int[this.length+1][this.length+1];
-		System.out.println("is it empty? "+q.isEmpty());
-		while(!q.isEmpty()){
-			a = q.remove().getVillage();
-			checkCycle[a.getName()][a.getName()] = a.getName();
-			System.out.println("a has been removed from q. q length is now "+q.length());
-			//System.out.println("hello?");
-			pathToTake.insert(new Node(a)); //+= a.getName() + " ";
-			System.out.println("a.name is "+pathToTake.getFirst().getVillage().getName()+" and adjacent length is "+a.outgoing.length);
-			// for each adjacent village to village a, decrease each indegree and if it equals 0, add to queue
-			if(a.outgoing.length != 0){
-				b = a.outgoing.firstRoad;
-				while(b != null){
-					System.out.println("b's indegree is "+b.endVillage().indegree);
-					b.endVillage().indegree--;
-					System.out.println("b's indegree is nowww "+b.endVillage().indegree);
-					if( b.endVillage().indegree  == 0 ){
-						System.out.println("about to insert...");
-						q.insert(new Node(b.endVillage()));
-						System.out.println("added to the q is village "+b.endVillage().getName() +" with indegree "+b.endVillage().indegree);
+	public Queue DepthFirstSearch(Village v,Queue white, Queue gray, Queue black) throws NotFoundException, GraphEmptyException{ // perform over the entire graph
+		v.color = "gray";
+		System.out.println("the outgoinglength for village "+v.getName()+" is "+v.outgoing.length);
+		if(v.outgoing.length!=0){
+			RoadIterator ri = v.outgoing.firstRoad;
+			while(ri!=null){
+				Village successor = ri.endVillage();
+				successor.edgeType = "tree";
+				successor.predecess = ri.startVillage();
+				ri.startVillage().outgoingTopSort.insert(new Road("tree",null,successor));
+				System.out.println("successor to village "+v.getName()+" is "+successor.getName());
+				if(successor.color.equals("white")){
+					// remove from white q and add to gray q.....white.find(successor.getName());
+					System.out.println("inside if statement. successor name should still be "+successor.getName());
+					System.out.println("going to delete from white q village "+white.find(successor.getName()).getName());
+					Village addToGray = white.delete(white.find(successor.getName())).getVillage();
+					System.out.println("added to gray is "+addToGray.getName());
+					
+					gray.insert(new Node(addToGray));
+					//black.printGraph();
+					DepthFirstSearch(successor,white,gray,black);
+				}else if(successor.color.equals("black")){
+					/*if(!successor.color.equals("black")){
+						System.out.println("successor "+successor.getName()+"'s color is not black yet.");
+						Village addToBlack = gray.delete(gray.find(successor.getName())).getVillage();
+						black.insert(new Node(addToBlack));
+						System.out.println("added to black q is "+black.getLast().getVillage().getName());
+						addToBlack.color = "black";
+					}else{*/
+						System.out.println(successor.getName()+" has already been added to black");
+					//}
+				}else if(successor.color.equals("gray")){
+					successor.edgeType = "back"; // means there's a cycle
+				}
+				ri = ri.getNext();
+			}
+		}
+		if(!v.color.equals("black")){
+			System.out.println("adding to black is village "+v.getName());
+			gray.delete(gray.find(v.getName())).getVillage();
+			black.insertLikeStack(new Node(v));
+			v.color = "black";
+			System.out.println("black.length is "+black.length());
+			System.out.println("last thing in black q is "+black.getLast().getVillage().getName());
+		} else{
+			System.out.println(v.getName()+" is already added to black");
+		}
+		//black.printGraph();
+		return black;
+	}
+	
+	public String topologicalSort() throws NotFoundException, GraphEmptyException{
+		Queue white = new Queue();
+		Village addToWhite = this.firstVillage;
+		int counter = 0;
+		while(addToWhite!=null){ // adding all villages from the graph to the white queue, meaning they haven't been visited yet
+			white.insert(new Node(addToWhite));
+			addToWhite.color = "white";
+			System.out.println("added to white, village "+addToWhite.getName());
+			addToWhite = addToWhite.getNext();
+		}
+		Queue gray = new Queue(); // when they are to be visited
+		Queue black = new Queue(); // when they have been dealt with
+		Village addToGray = white.remove().getVillage();
+		System.out.println("addToGray is "+addToGray.getName());
+		gray.insert(new Node(addToGray));
+		black = DepthFirstSearch(addToGray,white,gray,black);
+		counter += black.length();
+		while(counter!=this.length){
+			System.out.println("                 ");
+			Village check = firstVillage;
+			//Village toTopSortAgain;
+			Queue newWhite = new Queue();
+			Queue newGray = new Queue();
+			while(check!=null){
+				if(black.find2(check.getName())==null){
+					newWhite.insert(new Node(check));
+				}
+				check = check.getNext();
+			}
+			Village newAddToWhite = newWhite.remove().getVillage();
+			newAddToWhite.color = "white";
+			newGray.insert(new Node(newAddToWhite));
+			black = DepthFirstSearch(newAddToWhite,newWhite,newGray,black);
+			counter = black.length();
+			System.out.println("counter is ..."+counter);
+		}
+		System.out.println("counter is "+counter);
+		Node first = black.getFirst();
+		boolean cycles = false;
+		Village createdCycle = null;
+		while(first!=null){
+			//System.out.println("name is "+first.getVillage().getName()+" and prior village is "+first.getVillage().predecess.getName()+" with edgetype "+first.getVillage().edgeType);
+			if(first.getVillage().edgeType.equals("back")){
+				cycles = true;
+				createdCycle = first.getVillage();
+			}
+			first = first.getNext();
+		}
+		// if there are cycles
+		// start with the first thing that topSort gives you and keep traversing until you 
+		String path = "";
+		// start with first thing in list and check if == causeCycle, if not, add string with a " "
+		// ie 1 is the causeCycle
+		if(cycles){
+			Node lookAt = black.getFirst();
+			while(lookAt!=null){
+				System.out.println("hi");
+				if(lookAt.getVillage() == createdCycle){ // if createdCycle
+					while(lookAt.getVillage()!=createdCycle.predecess){
+						path += lookAt.getVillage() + ",";
 					}
-					b = b.getNext();
-				} // end of while
-			} // end of if
-		} // end of while
-		// System.out.println("pathToTake is "+pathToTake);
-		pathToTake.printQueue();
-		return pathToTake;
-		
-	} // end of travelTopSort method
+					lookAt = lookAt.getNext();
+				} else{ // not the thing that caused the cycle
+					path += lookAt.getVillage().getName() + " ";
+				}
+				lookAt = lookAt.getNext();
+			}
+		}else{ // no cycle
+			Node lookAt = black.getFirst();
+			while(lookAt!=null){
+				path += lookAt.getVillage().getName() + " ";
+				lookAt = lookAt.getNext();
+			}
+			// print out as a string in order
+		}
+		System.out.println(path);
+		return path;
+		/*
+		 * started with beginning of topSort
+		 * firstVillage....look at its AdjList topSortIncoming... roadIterator containing edge type and end village
+		 * look at its first roadIterator/incoming with and look at its edge type
+		 */
+		// turns black if no successors
+		/* have a white set of all the villages, an empty gray and empty black set and have a color value
+		 * take the first thing in the white set, remove it and put it in the gray set
+		 * look at first thing in gray set and look at it's first child and check it's status ie white or black (if any, otherwise remove and send to black), checking if anything is null
+		 * if child is white, add to the gray 
+		 * look at thing just added (if added to stack, then the last thing), and 
+		 * stop when you don't children, look at first thing in gray thing and get child, call function with child as input if there is a child
+		 * get first thing in white set and put in gray set
+		 * look at first thing in gray set
+		 * get child if there is one
+		 * call on method with child as input
+		 * child is put into gray set
+		 */
+		// if not all the nodes were gotten.
+	}
+	
+	
 	
 	public Queue queueZero(Queue someQ, int num) throws NotFoundException, GraphEmptyException{
 		Village vill = firstVillage;

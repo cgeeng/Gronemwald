@@ -129,7 +129,7 @@ public class MapGUI implements ActionListener {
 		graph2.find(5).connect(1, graph2.find(4));
 		
 		graph2.printGraph();
-		graph2.travelTopSort();
+		graph2.topologicalSort();
 		} catch (RoadAlreadyExistsException | GraphEmptyException | NotFoundException |
 				SameVillageException | VillageFullException e)
 			{System.out.println(e.getMessage());} 
