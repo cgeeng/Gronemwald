@@ -700,6 +700,10 @@ public class MapGUI implements ActionListener {
 				y = (int) Math.round(mapHeight/2 + 7*r*Math.sin(angle));
 				
 				DrawVillage dv = new DrawVillage(current,0,0);
+				dv.setLayout(new GridBagLayout());
+				JLabel name = new JLabel(Integer.toString(dv.village.getName()));
+				name.setForeground(Color.WHITE);
+				dv.add(name);
 						// current, x, y);
 				
 				addToArray(dv);
