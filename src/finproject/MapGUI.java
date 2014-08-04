@@ -121,13 +121,12 @@ public class MapGUI implements ActionListener {
 		graph.find(2).connect(1, graph.find(5));
 		graph.find(3).connect(4, graph.find(4));
 		graph.find(5).connect(1, graph.find(4));
-		} catch (RoadAlreadyExistsException e) {System.out.println(e.getMessage());
-		} catch (GraphEmptyException e) {System.out.println(e.getMessage());
-		} catch (NotFoundException e) {System.out.println(e.getMessage());
-		} catch (SameVillageException e) {System.out.println(e.getMessage());
-		} catch (VillageFullException e) {System.out.println(e.getMessage());} 
 		
 		graph.printGraph();
+		graph.travelTopSort();
+		} catch (RoadAlreadyExistsException | GraphEmptyException | NotFoundException |
+				SameVillageException | VillageFullException e)
+			{System.out.println(e.getMessage());} 
 	} // end of addGraph()
 	
 	public void drawGraph(Graph graph) {
@@ -483,7 +482,10 @@ public class MapGUI implements ActionListener {
 		graph.find(intStart).connect(intCost, graph.find(intEnd));
 		graph.printGraph();
 		
+		mapPanel.removeAll();
 		drawGraph(graph);
+		mapPanel.repaint();
+		mapFrame.pack();
 		} catch (RoadAlreadyExistsException e) {
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "RoadAlreadyExistsException", JOptionPane.ERROR_MESSAGE);
 		} catch (NumberFormatException e) {
@@ -701,10 +703,9 @@ public class MapGUI implements ActionListener {
 			int mapWidth = 650, mapHeight = 450; // mapPanel.getWidth(), mapHeight = mapPanel.getHeight();
 			Village current = graph.getFirst();
 			while (current != null) {
-				x = (int) Math.round(mapWidth/2 + 3*r*Math.cos(angle));
-				y = (int) Math.round(mapHeight/2 + 3*r*Math.sin(angle));
-				
-				System.out.println("x is: " + x + "  y is: " + y);
+				x = (int) Math.round(mapWidth/2 + 3*r*Math.cos(angle)-100);
+				y = (int) Math.round(mapHeight/2 + 3*r*Math.sin(angle)-50);
+				System.out.println("x is: " + x + " y is: " + y);
 				
 				DrawVillage dv = new DrawVillage(current,x,y);
 				dv.setLayout(new GridBagLayout());
@@ -740,6 +741,7 @@ public class MapGUI implements ActionListener {
 					y1 = dv.y;
 					x2 = findCircle(current.getData().end).x;
 					y2 = findCircle(current.getData().end).y;
+					System.out.println("x1 is: " + x1 + "  y1 is: " + y1);
 					DrawRoad dr = new DrawRoad(current,x1,y1,x2,y2);
 					mapPanel.add(dr);
 					dr.setBounds(x1,y1,x1+x2,y1+y2);
@@ -828,9 +830,9 @@ public class MapGUI implements ActionListener {
 		
 		@Override
 		protected void paintComponent(Graphics g) {
-			super.paintComponent(g);
-			g.setColor(getForeground());
-			g.drawLine(x1, y1, x2, y2);
+			Graphics2D g2 = (Graphics2D) g;
+			g2.setStroke(new BasicStroke(5));
+			g2.draw(new Line2D.Float(x1, y1, x2, y2));
 		}
 	} // end of DrawRoad
 	
