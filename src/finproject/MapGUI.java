@@ -5,6 +5,9 @@ import java.awt.event.*;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
 
+import javax.imageio.ImageIO;
+import java.io.IOException;
+import java.io.File;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
@@ -15,7 +18,8 @@ import finproject.Exceptions.*;
 public class MapGUI implements ActionListener {
 		int state = 0; // holds state of application
 		JFrame mapFrame;
-		JPanel welcomePanel, titlePanel, mapPanel, optionsPanel;
+		ImagePanel welcomePanel, mapPanel;
+		JPanel titlePanel, optionsPanel;
 		JButton addVillage, delVillage, placeGnome, moveGnomeSim, addRoad, welcomeButton, addCountry,
 				moveGnomeExt, delRoad, startThreads;
 		DrawVillage [] villCircles = new DrawVillage[20]; int arrLength=0;// used for building roads
@@ -35,7 +39,7 @@ public class MapGUI implements ActionListener {
 	
 	public void controller () { // handles state changes
 		if (state == GUIConstants.STATE_WELCOME) {
-			welcomePanel = new JPanel();
+			welcomePanel = new ImagePanel("/Users/Kate/JavaProjects/Gronemwald/src/resources/gnomenwald_bckd.gif");
 			welcomePanel.setBackground(Color.GRAY);
 			welcomePanel.setPreferredSize(GUIConstants.frameSize);
 			welcomePanel.setLayout(new BorderLayout());
@@ -49,9 +53,9 @@ public class MapGUI implements ActionListener {
 		else if (state == GUIConstants.STATE_ACTIVE) {
 			titlePanel = new JPanel();
 			titlePanel.setPreferredSize(new Dimension(800, 50));
-			titlePanel.setBackground(Color.BLUE);
+			titlePanel.setBackground(Color.DARK_GRAY);
 			
-			mapPanel = new JPanel(null);
+			mapPanel = new ImagePanel("/Users/Kate/JavaProjects/Gronemwald/src/resources/gnomenwald_bckd.gif");
 			mapPanel.setPreferredSize(new Dimension(650, 450));
 			mapPanel.setLayout(new BorderLayout());
 			mapPanel.setBackground(Color.DARK_GRAY);
@@ -74,11 +78,11 @@ public class MapGUI implements ActionListener {
 	} // end of controller()
 	
 	public void addWelcome() {
-		JLabel welcomeLabel = new JLabel("Welcome to Gnomenwald!", SwingConstants.CENTER);
+		// JLabel welcomeLabel = new JLabel("Welcome to Gnomenwald!", SwingConstants.CENTER);
 		welcomeButton = new JButton("Click to start");
 		welcomeButton.addActionListener(this);
 		
-		welcomePanel.add(welcomeLabel, BorderLayout.CENTER);
+		// welcomePanel.add(welcomeLabel, BorderLayout.CENTER);
 		welcomePanel.add(welcomeButton, BorderLayout.SOUTH);
 	} // end of addWelcome()
 	
@@ -638,14 +642,17 @@ public class MapGUI implements ActionListener {
 				String strVill = (String) JOptionPane.showInputDialog(mapFrame, "How many villages would you like to start with?" +
 						" (as an integer).", "Building map", JOptionPane.PLAIN_MESSAGE);
 				if (strVill == null) {return;}
+				int numVill = Integer.parseInt(strVill);
+				
+				graph2 = new Graph("ZNRGENSTEIN");
+				for (int i=0; i<numVill; i++) {graph2.insert(new Village(5));}
 			}
 			
 			int n = JOptionPane.showConfirmDialog(mapFrame, "A new map has been created." + 
 					"\nShould I add a two-way road between the two countries?", "Building map", JOptionPane.YES_NO_CANCEL_OPTION);
 			if (n == JOptionPane.CANCEL_OPTION) {return;}
 		
-			graph2 = new Graph("ZNRGENSTEIN");
-			for (int i=0; i<graph2.getLength(); i++) {graph2.insert(new Village(2));};
+
 			
 			if (n == JOptionPane.NO_OPTION) {
 				JOptionPane.showMessageDialog(mapFrame, "Okay, we will leave the countries separate.", 
@@ -655,6 +662,7 @@ public class MapGUI implements ActionListener {
 						"Building map", JOptionPane.PLAIN_MESSAGE);
 				if (!graph2.isEmpty() && !graph.isEmpty()) {
 					graph.getLast().connect(Integer.parseInt(toll),graph2.getFirst());
+					graph2.getFirst().connect(Integer.parseInt(toll),graph.getLast());
 				}
 			}
 			mapPanel.removeAll();
@@ -803,6 +811,24 @@ public class MapGUI implements ActionListener {
 			public void run() { createAndShowGUI(); }
 		});
 	} // end of main()
+	
+	public class ImagePanel extends JPanel {
+		private BufferedImage image;
+		
+		public ImagePanel(String path) {
+			try {
+				image = ImageIO.read(new File(path));
+			} catch (IOException e) {
+				System.out.println("An IO error occurred.");
+			}
+		} // end of constructor
+		
+		@Override
+		protected void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			g.drawImage(image, 0, 0, null);
+		}
+	} // end of ImagePanel
 	
 	public class DrawVillage extends JPanel {
 		private Village village;
