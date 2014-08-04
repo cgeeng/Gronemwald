@@ -36,7 +36,6 @@ public class TestClass {
 			graph.find(5).connect(3, graph.find(3));
 			
 			graph.travelMinExpPath(graph.find(1), graph.find(4));
-			
 		} catch (VillageFullException | SameVillageException
 				| RoadAlreadyExistsException | NotFoundException
 				| GraphEmptyException | NoOutgoingRoadsException | 
