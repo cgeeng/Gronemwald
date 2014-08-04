@@ -67,10 +67,10 @@ public class Graph implements Runnable {
 				Road [] minSpanTree = this.getMinSpanTree();
 				Road [] allRoads = this.getAllRoads();
 				Road toDelete = null;
-				boolean finished=false;
+				boolean finished = false;
 				
 				while (!finished) {
-					for (int i = 0; i < allRoads.length; i++) {
+					for (int i=0; i<allRoads.length; i++) {
 						if (!inSpanTree(minSpanTree, allRoads[i])) {toDelete = allRoads[i]; finished = true;}
 					}
 					finished = true;
@@ -95,7 +95,9 @@ public class Graph implements Runnable {
 		
 		while (!finished) {
 			for (int i=0; i<minSpanTree.length; i++) {
-				if (r.start.equals(minSpanTree[i].start) && r.end.equals(minSpanTree[i].end)) {inSpanTree=true; finished=true;}
+				if (r.start.getName() == minSpanTree[i].start.getName() && r.end.getName() == minSpanTree[i].end.getName()) {
+					inSpanTree=true; finished=true;
+				}
 			} finished = true;
 		}
 		return inSpanTree;
@@ -461,7 +463,6 @@ public class Graph implements Runnable {
 	}
 	
 	
-	
 	public Queue queueZero(Queue someQ, int num) throws NotFoundException, GraphEmptyException{
 		Village vill = firstVillage;
 		while(vill != null){
@@ -473,7 +474,6 @@ public class Graph implements Runnable {
 		System.out.println("someQ length is"+ someQ.length());
 		return someQ;
 	}	// end of queueZero method
-
 	
 	public String printGraph() { // returns string representation of graph
 		if (! isEmpty()) {
