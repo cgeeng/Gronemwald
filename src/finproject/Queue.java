@@ -68,11 +68,10 @@ public class Queue {
 			System.out.println("Starting village: " + firstNode.getVillage().getName());
 		
 			Village current = firstNode.getVillage();
-			while (! current.equals(lastNode)) {
+			while (current != null) {
 				System.out.println(" to village " + current.getName());
+				current = current.getNext();
 			}
-			
-			System.out.println("Ending village: " + current.getName());
 		}
 	} // end of printQueue()
 	

@@ -476,12 +476,12 @@ public class MapGUI implements ActionListener {
 		try {
 			Object [] villOptions = villageList();
 			
-			String start = (String) JOptionPane.showInputDialog(mapFrame,
+			String strStart = (String) JOptionPane.showInputDialog(mapFrame,
 			            "From which village would you like to move a gnome?",
 			            "Moving a gnome", JOptionPane.PLAIN_MESSAGE, null, villOptions, villOptions[0]);
-			if (start == null) {return;}
+			if (strStart == null) {return;}
 			
-			Village startVillage = graph.find(Integer.parseInt(start));
+			Village startVillage = graph.find(Integer.parseInt(strStart));
 			if (startVillage.outdegree == 0) {
 				JOptionPane.showMessageDialog(mapFrame, "Village " + startVillage.getName() + " has no outgoing roads." + 
 						"\nYou should build one!", "Moving a gnome", JOptionPane.ERROR_MESSAGE);
@@ -491,7 +491,7 @@ public class MapGUI implements ActionListener {
 			Object [] gnomeOptions = gnomeList(startVillage);
 			
 			String gnomeID = (String) JOptionPane.showInputDialog(mapFrame,
-			        "Choose a gnome from village " + start + " to remove.",
+			        "Choose a gnome from village " + startVillage.getName() + " to remove.",
 			        "Moving a gnome", JOptionPane.PLAIN_MESSAGE, null, gnomeOptions, gnomeOptions[0]);
 			if (gnomeID == null) {return;}
 			
@@ -500,14 +500,18 @@ public class MapGUI implements ActionListener {
 			Object [] lessOptions = new Object [villOptions.length-1];
 			int nextIndex2 = 0;
 			for (int i=0; i<villOptions.length; i++) {
-				if (! villOptions[i].equals(start)) {lessOptions[nextIndex2] = villOptions[i]; nextIndex2++;}}
+				if (! villOptions[i].equals(strStart)) {lessOptions[nextIndex2] = villOptions[i]; nextIndex2++;}}
 			
 			String strEnd = (String) JOptionPane.showInputDialog(mapFrame,
 			            "Please choose the village to which the gnome will travel",
 			            "Moving a gnome", JOptionPane.PLAIN_MESSAGE, null, lessOptions, lessOptions[0]);
 			if (strEnd == null) {return;}
 			
+			Village endVillage = graph.find(Integer.parseInt(strEnd));
+			graph.travelMinExpPath(startVillage, endVillage);
 			
+			startVillage.removeGnome(gnome);
+			endVillage.insertGnome(gnome);
 			
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer.  Please try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
@@ -517,6 +521,14 @@ public class MapGUI implements ActionListener {
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "GraphEmptyException", JOptionPane.ERROR_MESSAGE);
 		} catch (VillageEmptyException e) {
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "VillageEmptyException", JOptionPane.ERROR_MESSAGE);
+		} catch (SameVillageException e) {
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "SameVillageException", JOptionPane.ERROR_MESSAGE);
+		} catch (NoIncomingRoadsException e) {
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "NoIncomingRoadsException", JOptionPane.ERROR_MESSAGE);
+		} catch (NoOutgoingRoadsException e) {
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "NoOutgoingRoadsException", JOptionPane.ERROR_MESSAGE);
+		} catch (VillageFullException e) {
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "VillageFullException", JOptionPane.ERROR_MESSAGE);
 		}
 	} // end of moveGnomeExt()
 	

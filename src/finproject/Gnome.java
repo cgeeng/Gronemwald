@@ -157,5 +157,5 @@ public class Gnome implements Runnable {
 		public NoAdjacentVillagesException(int name) {
 			super("Village " + name + "  has no roads leading out! Maybe you should build one.");
 		}//end constructor
-	}//end NotInVillageException
+	}//end NoAdjacentVillagesException
 }

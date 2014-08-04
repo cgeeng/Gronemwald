@@ -159,10 +159,10 @@ public class Graph implements Runnable {
 		
 	}*/
 	
-	public void travelMinExpPath(Village starting, Node end) throws NoIncomingRoadsException, NoOutgoingRoadsException, SameVillageException {
-		if (starting.getName() == end.getVillage().getName()) {throw new SameVillageException();}
+	public void travelMinExpPath(Village starting, Village end) throws NoIncomingRoadsException, NoOutgoingRoadsException, SameVillageException {
+		if (starting.getName() == end.getName()) {throw new SameVillageException();}
 		if (starting.outgoing.length == 0) {throw new NoOutgoingRoadsException();}
-		if (end.getVillage().incoming.length == 0) {throw new NoIncomingRoadsException();}
+		if (end.incoming.length == 0) {throw new NoIncomingRoadsException();}
 
 		boolean done = false;
 		PriorityQ pq = new PriorityQ();
@@ -183,20 +183,18 @@ public class Graph implements Runnable {
 					frontVertex.priorCost = frontEntry.pathCost;
 				}
 				
-				if (frontVertex == end.getVillage()) {
+				if (frontVertex.equals(end)) {
 					done = true;
 				} else {
-					//System.out.println(frontEntry.getVillage().prior==null);
 					RoadIterator nextNeighbor = frontVertex.outgoing.firstRoad;
-					if(nextNeighbor!=null){
-						while(nextNeighbor!=null){
+					if (nextNeighbor != null) {
+						while (nextNeighbor != null) {
 						//	System.out.println(frontEntry.getVillage().prior==null);
 							//System.out.println("looking at nextNeighbor"+nextNeighbor.endVillage().getName()+" and "+(frontVertex.prior).prior.getName());
 							int weightOfEdgeToNeighbor = nextNeighbor.getCost();
 							if(!nextNeighbor.endVillage().visited){
 								int nextCost = weightOfEdgeToNeighbor + frontEntry.pathCost;
 								pq.insert(new Node(nextNeighbor.endVillage(),nextCost,frontEntry.getVillage()));
-								System.out.println("inserted");
 							}
 							nextNeighbor=nextNeighbor.getNext();
 						}
@@ -206,9 +204,9 @@ public class Graph implements Runnable {
 		}
 		
 		Queue path = new Queue();
-		if(end.getVillage().prior!=null) // for if they don't connect even though they both have ins and outs
-			path.insertLikeStack(end);
-		Village toAdd = end.getVillage().prior;
+		if(end.prior!=null) // for if they don't connect even though they both have ins and outs
+			path.insertLikeStack(new Node(end));
+		Village toAdd = end.prior;
 		while (toAdd != null) {
 			path.insertLikeStack(new Node(toAdd));
 			toAdd = toAdd.prior;
