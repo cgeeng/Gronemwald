@@ -438,9 +438,9 @@ public class Graph implements Runnable {
 		 * started with beginning of topSort
 		 * firstVillage....look at its AdjList topSortIncoming... roadIterator containing edge type and end village
 		 * look at its first roadIterator/incoming with and look at its edge type
-		 */
-		// turns black if no successors
-		/* have a white set of all the villages, an empty gray and empty black set and have a color value
+		 *
+		 * turns black if no successors
+		 * have a white set of all the villages, an empty gray and empty black set and have a color value
 		 * take the first thing in the white set, remove it and put it in the gray set
 		 * look at first thing in gray set and look at it's first child and check it's status ie white or black (if any, otherwise remove and send to black), checking if anything is null
 		 * if child is white, add to the gray 
