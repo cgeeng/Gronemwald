@@ -8,9 +8,6 @@ import javax.swing.*;
 
 import java.util.Random;
 
-import finproject.Exceptions.GraphEmptyException;
-import finproject.Exceptions.NotFoundException;
-import finproject.Exceptions.VillageEmptyException;
 import finproject.Exceptions.*;
 
 public class MapGUI implements ActionListener {
@@ -54,7 +51,7 @@ public class MapGUI implements ActionListener {
 			mapPanel = new JPanel();
 			mapPanel.setPreferredSize(new Dimension(650, 450));
 			mapPanel.setBackground(Color.RED);
-			mapPanel.setLayout(null);
+			mapPanel.setLayout(new GridBagLayout());
 			
 			optionsPanel = new JPanel();
 			optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
@@ -120,8 +117,8 @@ public class MapGUI implements ActionListener {
 	
 	public void drawGraph() {
 		drawVillages();
-		// drawRoads();
-		update();
+		drawRoads();
+		// update();
 	} // end of drawGraph()
 	
 	public void addOptions() {
@@ -509,6 +506,9 @@ public class MapGUI implements ActionListener {
 			            "Please choose the village to which the gnome will travel",
 			            "Moving a gnome", JOptionPane.PLAIN_MESSAGE, null, lessOptions, lessOptions[0]);
 			if (strEnd == null) {return;}
+			
+			
+			
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer.  Please try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
 		} catch (NotFoundException e) {
@@ -622,13 +622,19 @@ public class MapGUI implements ActionListener {
 	}
 	
 	public void drawVillages() { // draws all villages currently in graph
-		Village current = graph.getFirst();
-		DrawVillage dv = new DrawVillage(current,0,0);
-		addToArray(dv);
-		mapPanel.add(dv);
-		dv.setBounds(dv.x-dv.r, dv.y-dv.r, dv.r*2, dv.r*2);
 		
 		/*
+		Village current = graph.getFirst();
+		DrawVillage dv = new DrawVillage(null,0,0);
+		// cut off around 30,30
+		
+		addToArray(dv);
+		mapPanel.add(dv);
+		// dv.setBounds(dv.x, dv.y, dv.r*2, dv.r*2);
+		*/
+		
+		
+		
 		if (! graph.isEmpty()) {
 			int r = GUIConstants.radius, x, y;
 			double angle = 0, step = (2*Math.PI)/graph.getLength();
@@ -638,24 +644,17 @@ public class MapGUI implements ActionListener {
 				x = (int) Math.round(mapWidth/2 + 7*r*Math.cos(angle));
 				y = (int) Math.round(mapHeight/2 + 7*r*Math.sin(angle));
 				
-				DrawVillage dv = new DrawVillage(current, x, y);
+				DrawVillage dv = new DrawVillage(current,0,0);
+						// current, x, y);
 				
 				addToArray(dv);
 				mapPanel.add(dv);
-				dv.setBounds(dv.x-dv.r, dv.y-dv.r, dv.r*2, dv.r*2);
+				// dv.setBounds(dv.x, dv.y, dv.r*2, dv.r*2);
 				
 				angle += step;
 				current = current.getNext();
 			}
-			
-//			DrawVillage newVillage
-			
-//			for(DrawVillage dv : villCircles) {
-//				x = (int) Math.round(mapWidth/2 + 7*r*Math.cos(angle));
-//				y = (int) Math.round(mapHeight/2 + 7*r*Math.sin(angle));
-//				
-//			}
-		}*/
+		} 
 	} // end of drawVillages()
 	
 	public void addToArray(DrawVillage dv) {
@@ -739,7 +738,7 @@ public class MapGUI implements ActionListener {
 		protected void paintComponent(Graphics g) {
 			Graphics2D g2= (Graphics2D) g;
 			Ellipse2D.Double circle= new Ellipse2D.Double(this.x, this.y, this.r, this.r);
-			g2.setColor(Color.BLACK);
+			g2.setColor(Color.WHITE);
 			g2.fill(circle);
 		}
 		
@@ -754,7 +753,7 @@ public class MapGUI implements ActionListener {
 		}
 		
 		public DrawRoad(RoadIterator ri, int x1, int y1, int x2, int y2) {
-			setForeground(Color.GRAY);
+			setForeground(Color.DARK_GRAY);
 			this.ri = ri;
 			this.x1 = x1;
 			this.y1 = y1;
