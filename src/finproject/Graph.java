@@ -47,7 +47,7 @@ public class Graph implements Runnable {
 		
 		while (! isEmpty()) {
 			Random rand2 = new Random(); int nextFunction = rand2.nextInt(4);
-			// 3/4 chance it will add a new road, 1/4 chance it will restructure graph (delete road)
+			// 3/4 chance the government will add a new road, 1/4 chance it will restructure graph (delete road not in min span tree)
 			if (nextFunction < 2) {	// chooses random village within graph
 				Random rand = new Random();
 				int v = rand.nextInt(length), count=0;
@@ -73,7 +73,7 @@ public class Graph implements Runnable {
 		}
 	} // end of run()
 	
-	public void restructure() {
+	public synchronized void restructure() {
 		// finds and deletes one road that is not in the minimum spanning tree
 		try {
 			if (! isEmpty()) {
@@ -99,7 +99,7 @@ public class Graph implements Runnable {
 		}
 	} // end of restructure()
 	
-	public Road [] getAllRoads() { // represents all roads in graph as an array
+	public synchronized Road [] getAllRoads() { // represents all roads in graph as an array
 		Road [] allRoadsLong = new Road [100];
 		int numRoads = 0;
 		if (! isEmpty()) {
@@ -125,7 +125,7 @@ public class Graph implements Runnable {
 		return allRoads;
 	} // end of getAllRoads()
 			
-	public boolean roadExists(Village v1, Village v2) {
+	public synchronized boolean roadExists(Village v1, Village v2) {
 		// checks if road already exists between two villages
 		boolean roadExists = false, finished=false;
 		if (!v1.outgoing.isEmpty()) {

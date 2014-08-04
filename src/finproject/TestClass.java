@@ -13,7 +13,7 @@ public class TestClass {
 		// testTopologicalSort();
 		
 		//createProposal returns array of Roads. 
-		Graph.createProposal();
+		//Graph.createProposal();
 		
 		testRoadProposal();
 

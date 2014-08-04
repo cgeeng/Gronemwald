@@ -60,6 +60,7 @@ public class MapGUI implements ActionListener {
 			titlePanel = new JPanel();
 			titlePanel.setPreferredSize(new Dimension(800, 50));
 			titlePanel.setBackground(Color.DARK_GRAY);
+			titlePanel.setLayout(new BorderLayout());
 			
 			mapPanel = new ImagePanel("/Users/Kate/JavaProjects/Gronemwald/src/resources/gnomenwald2.gif");
 			mapPanel.setPreferredSize(new Dimension(650, 500));
@@ -86,6 +87,7 @@ public class MapGUI implements ActionListener {
 	public void addWelcome() {
 		// JLabel welcomeLabel = new JLabel("Welcome to Gnomenwald!", SwingConstants.CENTER);
 		welcomeButton = new JButton("Click to start");
+		welcomeButton.setPreferredSize(new Dimension(800,100));
 		welcomeButton.addActionListener(this);
 		
 		// welcomePanel.add(welcomeLabel, BorderLayout.CENTER);
@@ -93,9 +95,9 @@ public class MapGUI implements ActionListener {
 	} // end of addWelcome()
 	
 	public void addTitle() {
-		JLabel title = new JLabel("Gnomenwald", SwingConstants.CENTER);
+		JLabel title = new JLabel("GNOMENWALD", SwingConstants.CENTER);
 		title.setForeground(Color.WHITE);
-		titlePanel.add(title);
+		titlePanel.add(title, BorderLayout.CENTER);
 	} // end of addTitle()
 	
 	public void createPreGraph() { // used for testing and option for user
@@ -715,7 +717,7 @@ public class MapGUI implements ActionListener {
 				strMinSpanTree += minSpanTree[i].printRoad();
 			}
 			
-			JOptionPane.showMessageDialog(mapFrame, "The minimum spanning tree for this map is: " + strMinSpanTree, 
+			JOptionPane.showMessageDialog(mapFrame, "The minimum spanning tree for this map is: " + strMinSpanTree + "\n", 
 					"Finding min span tree", JOptionPane.PLAIN_MESSAGE);
 		} catch (NotFoundException | GraphEmptyException
 				| SameVillageException | RoadAlreadyExistsException e) {
