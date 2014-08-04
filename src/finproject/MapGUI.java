@@ -242,18 +242,6 @@ public class MapGUI implements ActionListener {
 	public synchronized void addVillage() {
 		try {
 			Object [] options = villageList();
-			
-			Object [] countryOptions = {graph.getName(), graph2.getName()};
-			Graph country = graph; // default is graph
-			
-			if (graph2 != null) {
-			String countryName = (String) JOptionPane.showInputDialog(mapFrame,
-			        "Which country would you like this village to be built in?",
-			        "Adding a village", JOptionPane.PLAIN_MESSAGE, null, countryOptions, countryOptions[0]);
-			if (countryName == null) {return;}
-			if (countryName.equals(graph2.getName())) {country = graph2;}
-			}
-			
 			Village newVill = new Village();
 			
 			String strVill = (String) JOptionPane.showInputDialog(mapFrame,
@@ -263,9 +251,9 @@ public class MapGUI implements ActionListener {
 			        "Adding a village", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 			if (strVill == null) {return;}
 			
-			country.insert(newVill); // default to zero gnomes
+			graph.insert(newVill); // default to zero gnomes
 			
-			Village startVill = country.find(Integer.parseInt(strVill));
+			Village startVill = graph.find(Integer.parseInt(strVill));
 			
 			String cost = (String) JOptionPane.showInputDialog(mapFrame,
 					"This road will lead from village " + startVill.getName() + " to village " + newVill.getName()
@@ -627,20 +615,31 @@ public class MapGUI implements ActionListener {
 			        "Choose the starting village of the road you would like to delete.",
 			        "Deleting a road", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 			if (start == null) {return;}
+			
+			Village startVill = graph.find(Integer.parseInt(start));
 
-			// takes away choice of starting village
-			Object [] lessOptions = new Object [options.length-1];
-			int nextIndex2 = 0;
-			for (int i=0; i<options.length; i++) {
-				if (! options[i].equals(start)) {lessOptions[nextIndex2] = options[i]; nextIndex2++;}}
-
+			// limits options to outgoing roads of starting village
+			if (startVill.outgoing.isEmpty()) {
+				JOptionPane.showMessageDialog(mapFrame, "Village " + startVill.getName() + " has no outgoing roads."  + 
+						"\nYou should build one!", "Deleting a road", JOptionPane.PLAIN_MESSAGE);
+				return;
+			}
+				
+			Object [] lessOptions = new Object [startVill.outgoing.length];
+			int nextInd = 0;
+			RoadIterator current = startVill.outgoing.getFirst();
+			while (current != null) {
+				lessOptions[nextInd] = Integer.toString(current.getData().end.getName());
+				nextInd++;
+				current = current.getNext();
+			}	
+				
 			String end = (String) JOptionPane.showInputDialog(mapFrame,
 			    	"Village " + start + " was chosen as the starting village."
 			    		+ "\nNow please choose the end village of the road.",
 			    	"Deleting a road", JOptionPane.PLAIN_MESSAGE, null, lessOptions, lessOptions[0]);
 			if (end == null) {return;}
 			
-			Village startVill = graph.find(Integer.parseInt(start));
 			Village endVill = graph.find(Integer.parseInt(end));
 			
 			Road toDelete = startVill.outgoing.findRoad(endVill);
