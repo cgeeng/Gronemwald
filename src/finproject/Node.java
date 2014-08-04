@@ -7,6 +7,7 @@ public class Node { // node for priority queue (minExpPath)
 	Village predecessor;
 	int pathCost;
 	
+	public void setVillage(Village village) { this.village = village; }
 	public Village getVillage() {return this.village;}
 	public void setNext(Node n) {this.next = n;}
 	public Node getNext() {return this.next;}
@@ -15,6 +16,10 @@ public class Node { // node for priority queue (minExpPath)
 	
 	public Node(Village v){ // constructor
 		 this.village = v;
+	}
+	public Node(Village vill, Village predecessor){ // constructor for minExpPath
+		this.predecessor = predecessor;
+		this.village = vill;
 	}
 	
 	public Node(Village vill, int cost, Village predecessor){ // constructor for minExpPath

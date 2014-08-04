@@ -2,8 +2,8 @@ package finproject;
 
 public class SomeStack {
 	int length = 0;
-	Village firstVillage; 
-	Village lastVillage;
+	Node firstVillage; 
+	Node lastVillage;
 	
 	
 	//constructor
@@ -14,38 +14,41 @@ public class SomeStack {
 	
 	public boolean isEmpty() {return length == 0;}
 	public int getLength() {return length;}
-	public Village getFirst() {return this.firstVillage;}
-	public Village getLast() {return this.lastVillage;}
+	public Node getFirst() {return this.firstVillage;}
+	public Node getLast() {return this.lastVillage;}
 	
 	public void insert ( Village newVillage ) {
+		Node newNode = new Node(newVillage);
 		if (isEmpty()) {
-			firstVillage = newVillage;
-			lastVillage = newVillage;
+			firstVillage = newNode;
+			lastVillage = newNode;
 		}
 		else {
-			lastVillage.setNext(newVillage);
-			newVillage.setPrev(lastVillage);
-			lastVillage = newVillage;
+			lastVillage.setNext(newNode);
+			newNode.setPrev(lastVillage);
+			lastVillage = newNode;
 		}
-		System.out.println("added to stack village "+newVillage.getName());
+		System.out.println("added to stack village "+newNode.getVillage().getName());
 		length++;
 	}
 	
-	public Village delete() {
+	public Node delete(Node predecessor) {
 		
 		if (!isEmpty()) {
-			Village temp = lastVillage;
+			Node temp = lastVillage;
 			lastVillage = lastVillage.getPrev();
 			length--;
 			int i = 1;
-			System.out.println("popped "+temp.getName());
+			System.out.println("popped "+temp.getVillage().getName());
 			
-			if (!temp.outgoing.isEmpty()) {
-				RoadIterator adj = temp.outgoing.firstRoad;
+			if (!temp.getVillage().outgoing.isEmpty()) {
+				RoadIterator adj = temp.getVillage().outgoing.firstRoad;
 				
-				while (i <= temp.outgoing.length) {
-					
-					insert(adj.endVillage());
+				while (i <= temp.getVillage().outgoing.length) {
+					//if (!temp.getVillage().outgoing.proposalFindRoad(predecessor.getVillage()) ) {
+					if (adj.endVillage().getName() != temp.predecessor.getName()){
+							insert(adj.endVillage()); 
+					}
 					adj = adj.getNext();
 					i++;
 				}
@@ -58,22 +61,22 @@ public class SomeStack {
 	}
 
 	
-	public Village find(int name) {
+	public Node find(int name) {
 
 		if (!isEmpty()) {
-			Village current = this.firstVillage;
+			Node current = this.firstVillage;
 			for (int i = 1; i <= length; i++) {					
-				if (current.getName() == name) {return current;}
+				if (current.getVillage().getName() == name) {return current;}
 				current = current.getNext();
 			} 
 		}
 		return null;
 	}//end find
 	public void print() {
-		Village temp = firstVillage;
+		Node temp = firstVillage;
 		System.out.println("Stack length"+length);
 		for (int i = 1; i <= length; i++) { //Loops forever with while loop checking null
-			System.out.println("In Stack: Village "+temp.getName());
+			System.out.println("In Stack: Village "+temp.getVillage().getName());
 			temp = temp.getNext();
 		}
 	}

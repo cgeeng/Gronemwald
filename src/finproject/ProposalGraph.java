@@ -12,8 +12,8 @@ public class ProposalGraph {
 	
 	public PriorityQueue pq = new PriorityQueue();
 	public int length = 0;
-	Village firstVillage;
-	Village lastVillage;
+	Node firstVillage;
+	Node lastVillage;
 	
 	//constructor
 	
@@ -57,11 +57,11 @@ public class ProposalGraph {
 			}//end village loop
 			//loop to get ROADS
 			originalVillage = original.firstVillage;
-			Village proposalVillage = firstVillage;
+			Node proposalVillage = firstVillage;
 			for (int i = 1; i <= original.getLength(); i++) { 
 				//double check if villages are mapped correctly in case
 				//if (originalVillage.getName() != proposalVillage.name) throws new ProposalVillageDoesNotMatchException;
-				if ( originalVillage == proposalVillage ) { System.out.println("It's the same village address! Deep copy goofed."); }
+				
 				if ( !originalVillage.outgoing.isEmpty() ) { 
 					//loop through through and add road to proposal village
 					RoadIterator oRoad = originalVillage.outgoing.firstRoad;
@@ -70,7 +70,7 @@ public class ProposalGraph {
 						//proposalVillage.connect( oRoad.getCost() , find(oRoad.getData().end.getName()));
 						//For now don't actually connect villages, just add road to queue
 						//proposalVillage.connect(oRoad.getCost(), find(oRoad.endVillage().getName()) );
-						proposeRoad( proposalVillage, oRoad.getCost(), find(oRoad.endVillage().getName()) ) ;
+						proposeRoad( proposalVillage.getVillage(), oRoad.getCost(), find(oRoad.endVillage().getName()).getVillage() ) ;
 						oRoad = oRoad.getNext();
 										
 					}//end road loop
@@ -90,18 +90,20 @@ public class ProposalGraph {
 		while ( !pq.isEmpty() ) {
 
 			PRoad temp = pq.removeMin();
+			
 			System.out.println("pq length now "+pq.length+". min cost "+temp.cost);
-			Village tempStart = find( temp.starting.getName() );
-			System.out.println(tempStart);
+			Node tempStart = find( temp.starting.getName() );
 			
-			Road newRoad = tempStart.connect( temp.cost, find( temp.end.getName() ));
-			
-			
-			System.out.println("creating road from PQ road village "+tempStart.getName()+
+			System.out.println("creating road from PQ road village "+tempStart.getVillage().getName()+
 					""+temp.end.getName() );
+
+			Road newRoad = tempStart.getVillage().proposalConnect( temp.cost, find( temp.end.getName() ).getVillage());
+			
+			
+
 			
 			if (findCycle(tempStart)) {
-				find( temp.starting.getName() ).deleteInRoad(newRoad);
+				find( temp.starting.getName() ).getVillage().proposalDelete(newRoad);
 
 			}
 			else {	
@@ -110,10 +112,9 @@ public class ProposalGraph {
 			}//end if	
 			System.out.println("One find cycle passed");
 			//printToBuild();
-			//pq.print();
-			System.out.println("CHRISTINE LOOK HERE");
-			printGraph();
-		}//end while
+			pq.print();
+			
+			}//end while
 		printToBuild();
 		System.out.println("finding min tree done.");
 		//toBuild should now contain all vertices
@@ -132,55 +133,74 @@ public class ProposalGraph {
 		return newRoad;
 	}
 	
-	public boolean findCycle (Village start) {
+	public boolean findCycle (Node start) {
 		SomeStack traverse = new SomeStack();
 		ConnectedGraph connected = new ConnectedGraph();
-		Village current = start;
+		Node current = start;
 		
-		System.out.println("in find cycle current village first road's end is "+current.outgoing.getFirst().endVillage().getName());
-		//Insert first village into stack
-		traverse.insert(current);
 
+		//Insert first village into stack
+		traverse.insert(current.getVillage());
+		Node previous = new Node (current.getVillage());
 		int i = 1;
 		while (!traverse.isEmpty()) {			
 			//Delete top of stack
 			//This should insert whatever was adjacent to the top
-			Village temp = traverse.delete();
-			if ( connected.find(temp.getName()) != null ) return true;
-			else connected.insert(temp);
-			
+			//but doesn't reinsert the predecessor			
+			Node temp = traverse.delete(previous);
+			System.out.println("rpevious village"+previous.getVillage().getName());
+			//if in connected graph and if not one road cycle
+			if ( connected.find(temp.getVillage().getName())) {
+				System.out.println("found cycle");
+				return true;
+			}
+			else connected.insert(temp.getVillage());
+			previous.setVillage( temp.getVillage() );
 			System.out.println("loop finished "+i);
 			i++;
-			connected.print();
-			traverse.print();
+			//connected.print();
+			//traverse.print();
 		} 
 		return false;
 	}
 	
+	public boolean oneRoadCycle(Village previous, Village stackPop) {
+		//Checks if the cycle found is because two villages connected via one road
+		RoadIterator what = previous.outgoing.firstRoad;
+		for (int j = 1; j <= previous.outgoing.length; j++) {
+			System.out.println("village "+previous.getName()+" ahs roads to"+what.endVillage().getName());
+			System.out.println("j is "+j);
+			what=what.getNext();
+		}
+
+		
+		return previous.outgoing.proposalFindRoad(stackPop);
+	}
 
 	//generic methods
-	public Village getFirst() {return this.firstVillage;}
-	public Village getLast() {return this.lastVillage;}
+	public Node getFirst() {return this.firstVillage;}
+	public Node getLast() {return this.lastVillage;}
 	
 	public void insert ( Village newVillage ) {
+		Node newNode = new Node(newVillage);
 		if (isEmpty()) {
-			firstVillage = newVillage;
-			lastVillage = newVillage;
+			firstVillage = newNode;
+			lastVillage = newNode;
 		}
 		else {
-			lastVillage.setNext(newVillage);
-			newVillage.setPrev(lastVillage);
-			lastVillage = newVillage;
+			lastVillage.setNext(newNode);
+			newNode.setPrev(lastVillage);
+			lastVillage = newNode;
 		}
 		length++;
 	}
 	
-	public Village find(int name) throws GraphEmptyException {
+	public Node find(int name) throws GraphEmptyException {
 		// exceptions caught by MapGUI so pop-up error message can be generated
 		if (! isEmpty()) {
-			Village current = this.firstVillage;
+			Node current = this.firstVillage;
 			for (int i = 1; i <= length; i++) {					
-				if (current.getName() == name) {return current;}
+				if (current.getVillage().getName() == name) {return current;}
 				current = current.getNext();
 			} 
 		}
@@ -194,12 +214,12 @@ public class ProposalGraph {
 	public void printGraph() { // string representation of graph, used for testing
 		System.out.println("Proposal graph representation! Length "+length);
 		if (! isEmpty()) {
-			Village currentPG = this.firstVillage;
+			Node current = this.firstVillage;
 			int i = 1;
 			while (i <= length) {
-				System.out.println("(Proposal) Village " + currentPG.getName() + ". PGraph length is " + length);
+				System.out.println("(Proposal) Village " + current.getVillage().getName() + ". PGraph length is " + length);
 				//System.out.println("   It leads to " + current.getAdjList());
-				currentPG = currentPG.getNext();
+				current = current.getNext();
 				i++;
 			}
 		} else {System.out.println("This graph is empty.");}
@@ -245,16 +265,16 @@ public class ProposalGraph {
 			length++;
 		}
 		
-		public Village find(int name) {
+		public boolean find(int name) {
 
 			if (!isEmpty()) {
 				Village current = this.firstVillage;
 				for (int i = 1; i <= length; i++) {					
-					if (current.getName() == name) {return current;}
+					if (current.getName() == name) {return true;}
 					current = current.getNext();
 				} 
 			}
-			return null;
+			return false;
 		}//end find
 		public void print() {
 			Village temp = firstVillage;

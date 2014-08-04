@@ -22,14 +22,14 @@ public class MovingMap {
 		Gr.insert( new Village());
 		Gr.insert( new Village());
 		Gr.insert( new Village());
-		Gr.insert( new Village());
+		//Gr.insert( new Village());
 		//Gr.insert( new Village());
 		
 		Gr.find(1).connect(2, Gr.find(3));
 		Gr.find(1).connect(3, Gr.find(2));
 		Gr.find(2).connect(7, Gr.find(3));
-		Gr.find(4).connect(1, Gr.find(2));
-		Gr.find(4).connect(5, Gr.find(1));
+		//Gr.find(4).connect(1, Gr.find(2));
+		//Gr.find(4).connect(5, Gr.find(1));
 		Gr.proposal = new ProposalGraph(Gr); 
 
 		Gr.proposal.findMinSpanTree();
@@ -73,18 +73,18 @@ public class MovingMap {
 	public static void printProposalMap( ProposalGraph map) throws NotFoundException, GraphEmptyException {
 		int i = 1;
 		pw.println("Proposal!");
-		Village current = map.firstVillage;
+		Node current = map.firstVillage;
 		while (i <= map.getLength() ) {
 			
 			String roadList = "";
-			RoadIterator currentRoad = current.outgoing.firstRoad;
+			RoadIterator currentRoad = current.getVillage().outgoing.firstRoad;
 			while (currentRoad != null ) { //get adjacent roads
 
 				roadList += "Road to " + currentRoad.endVillage().getName() + " cost " + currentRoad.getCost() + ", ";
 				currentRoad = currentRoad.getNext();
 				
 			} //AdjList loop
-			pw.println("Village " + current.getName() + ":" + roadList);	
+			pw.println("Village " + current.getVillage().getName() + ":" + roadList);	
 			current = current.getNext();
 
 			i++;

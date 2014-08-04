@@ -3,23 +3,29 @@ package finproject;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
+import java.awt.image.BufferedImage;
 
+import javax.imageio.ImageIO;
+import java.io.IOException;
+import java.io.File;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 import java.util.Random;
 
-import finproject.Exceptions.VillageFullException;
 import finproject.Exceptions.*;
 
 public class MapGUI implements ActionListener {
 		int state = 0; // holds state of application
 		JFrame mapFrame;
-		JPanel welcomePanel, titlePanel, mapPanel, optionsPanel;
+		ImagePanel welcomePanel, mapPanel;
+		JPanel titlePanel, optionsPanel;
 		JButton addVillage, delVillage, placeGnome, moveGnomeSim, addRoad, welcomeButton, addCountry,
 				moveGnomeExt, delRoad, startThreads;
 		DrawVillage [] villCircles = new DrawVillage[20]; int arrLength=0;// used for building roads
 		Graph graph; Thread g;
 		Graph graph2; Thread g2;
+		int numGraphs=0;
 	
 	public MapGUI() { // builds the main window/frame
 		mapFrame = new JFrame("Gnomenwald");
@@ -31,9 +37,9 @@ public class MapGUI implements ActionListener {
 		controller();
 	} // end of constructor
 	
-	public void controller () { // does the heavy lifting, handles state changes
+	public void controller () { // handles state changes
 		if (state == GUIConstants.STATE_WELCOME) {
-			welcomePanel = new JPanel();
+			welcomePanel = new ImagePanel("/Users/Kate/JavaProjects/Gronemwald/src/resources/gnomenwald_bckd.gif");
 			welcomePanel.setBackground(Color.GRAY);
 			welcomePanel.setPreferredSize(GUIConstants.frameSize);
 			welcomePanel.setLayout(new BorderLayout());
@@ -49,18 +55,18 @@ public class MapGUI implements ActionListener {
 			titlePanel.setPreferredSize(new Dimension(800, 50));
 			titlePanel.setBackground(Color.DARK_GRAY);
 			
-			mapPanel = new JPanel(null);
+			mapPanel = new ImagePanel("/Users/Kate/JavaProjects/Gronemwald/src/resources/gnomenwald2.gif");
 			mapPanel.setPreferredSize(new Dimension(650, 450));
-			// mapPanel.setBackground(Color.RED);
-			// mapPanel.setLayout(new GridBagLayout());
+			mapPanel.setLayout(new BorderLayout());
+			mapPanel.setBackground(Color.DARK_GRAY);
 			
 			optionsPanel = new JPanel();
 			optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
 			optionsPanel.setPreferredSize(new Dimension(200, 450));
-			optionsPanel.setBackground(Color.DARK_GRAY);
+			optionsPanel.setBackground(Color.BLUE);
 			
 			addTitle();
-			drawGraph(graph);
+			drawGraph();
 			addOptions();
 			
 			mapFrame.getContentPane().add(titlePanel, BorderLayout.NORTH);
@@ -72,11 +78,11 @@ public class MapGUI implements ActionListener {
 	} // end of controller()
 	
 	public void addWelcome() {
-		JLabel welcomeLabel = new JLabel("Welcome to Gnomenwald!", SwingConstants.CENTER);
+		// JLabel welcomeLabel = new JLabel("Welcome to Gnomenwald!", SwingConstants.CENTER);
 		welcomeButton = new JButton("Click to start");
 		welcomeButton.addActionListener(this);
 		
-		welcomePanel.add(welcomeLabel, BorderLayout.CENTER);
+		// welcomePanel.add(welcomeLabel, BorderLayout.CENTER);
 		welcomePanel.add(welcomeButton, BorderLayout.SOUTH);
 	} // end of addWelcome()
 	
@@ -89,7 +95,7 @@ public class MapGUI implements ActionListener {
 	public void createPreGraph() { // used for testing and option for user
 		try {
 		if (graph == null) { // creates new graph with 5 villages of population 5
-			graph = new Graph();
+			graph = new Graph("GNOMENWALD");
 			for (int i=0; i<5; i++) {graph.insert(new Village(5));} // 5 villages with 5 gnomes each
 		}
 		
@@ -100,38 +106,46 @@ public class MapGUI implements ActionListener {
 		graph.find(4).connect(1, graph.find(5));
 		graph.find(5).connect(1, graph.find(4));
 		graph.find(5).connect(3, graph.find(3));
-		} catch (RoadAlreadyExistsException e) {System.out.println(e.getMessage());
-		} catch (GraphEmptyException e) {System.out.println(e.getMessage());
-		} catch (NotFoundException e) {System.out.println(e.getMessage());
-		} catch (SameVillageException e) {System.out.println(e.getMessage());
-		} catch (VillageFullException e) {System.out.println(e.getMessage());} 
 		
 		graph.printGraph();
+		graph.travelTopSort();
+		} catch (RoadAlreadyExistsException | GraphEmptyException |
+				NotFoundException | SameVillageException | VillageFullException e) 
+		{System.out.println(e.getMessage());
+		} 
 	} // end of addGraph()
 	
 	public void createPreGraph2() { // used for testing and option for user
 		try {
-		if (graph == null) { // creates new graph with 5 villages of population 5
-			graph = new Graph();
-			for (int i=0; i<5; i++) {graph.insert(new Village(5));} // 5 villages with 5 gnomes each
+		if (graph2 == null) { // creates new graph with 5 villages of population 5
+			graph2 = new Graph("ZNRGENSTEIN");
+			for (int i=0; i<5; i++) {graph2.insert(new Village(5));} // 5 villages with 5 gnomes each
 		}
 		
-		graph.find(1).connect(3, graph.find(2));
-		graph.find(2).connect(2, graph.find(3));
-		graph.find(2).connect(1, graph.find(5));
-		graph.find(3).connect(4, graph.find(4));
-		graph.find(5).connect(1, graph.find(4));
+		graph2.find(1).connect(3, graph2.find(2));
+		graph2.find(2).connect(2, graph2.find(3));
+		graph2.find(2).connect(1, graph2.find(5));
+		graph2.find(3).connect(4, graph2.find(4));
+		graph2.find(5).connect(1, graph2.find(4));
 		
-		graph.printGraph();
-		graph.travelTopSort();
+		graph2.printGraph();
+		graph2.travelTopSort();
 		} catch (RoadAlreadyExistsException | GraphEmptyException | NotFoundException |
 				SameVillageException | VillageFullException e)
 			{System.out.println(e.getMessage());} 
 	} // end of addGraph()
 	
-	public void drawGraph(Graph graph) {
-		drawVillages(graph);
-		drawRoads(graph);
+	public synchronized void drawGraph() {
+		String graphText = "<html>" + graph.printGraph();
+		if (graph2 != null) {graphText += "<br>" + graph2.printGraph();}
+		graphText += "</html>";
+		
+		JLabel graphLabel = new JLabel(graphText);
+		graphLabel.setForeground(Color.WHITE);
+		graphLabel.setBorder(new EmptyBorder(20,20,20,20));
+		mapPanel.add(graphLabel, BorderLayout.CENTER);
+//		drawVillages(graph);
+//		drawRoads(graph);
 	} // end of drawGraph()
 	
 	public void addOptions() {
@@ -200,13 +214,14 @@ public class MapGUI implements ActionListener {
 	public void startThreads() { // starts threads for simulation (villages and gnomes)
 		g = new Thread(graph);
 		g.start();
-		drawGraph(graph);
-	}
+		while (g.isAlive()) {
+			drawGraph();
+		}
+
+	} // end of startThreads()
 	
 	public synchronized void addVillage() {
 		try {
-		boolean isAlive=false;
-		if (g!=null) {wait(); isAlive=true;}
 			Object [] options = villageList();
 			
 			Village newVill = new Village();
@@ -234,10 +249,9 @@ public class MapGUI implements ActionListener {
 					"Adding a village", JOptionPane.PLAIN_MESSAGE);
 			
 			mapPanel.removeAll(); 
-			drawGraph(graph); 
+			drawGraph(); 
 			mapPanel.repaint(); 
 			mapFrame.pack();
-			if (isAlive) {notifyAll();}
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Please try again.", "NumberFormatException", JOptionPane.PLAIN_MESSAGE);
 		} catch (NotFoundException e) {
@@ -250,8 +264,6 @@ public class MapGUI implements ActionListener {
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "RoadAlreadyExistsException", JOptionPane.PLAIN_MESSAGE);
 		} catch (VillageFullException e) { // theoretically not possible
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "VillageFullException", JOptionPane.PLAIN_MESSAGE);
-		} catch (InterruptedException e) {
-			System.out.println("The system was interrupted.");
 		}
 	} // end of addVillage()
 	
@@ -316,7 +328,7 @@ public class MapGUI implements ActionListener {
 			graph.printGraph();
 			
 			mapPanel.removeAll(); 
-			drawGraph(graph); 
+			drawGraph(); 
 			mapPanel.repaint(); 
 			mapFrame.pack();
 		} catch (NumberFormatException e) {
@@ -352,6 +364,10 @@ public class MapGUI implements ActionListener {
 	            		"A new gnome has been placed in village " + village.getName(),
 	            		"Placing a gnome", JOptionPane.PLAIN_MESSAGE);
 			
+			mapPanel.removeAll(); 
+			drawGraph(); 
+			// mapPanel.repaint(); 
+			mapFrame.pack();
 			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
 			} catch (GraphEmptyException e) {
@@ -428,6 +444,10 @@ public class MapGUI implements ActionListener {
 	            			startVillage.getName() + " to village " + endVillage.getName(),
 	            		"Moving a gnome", JOptionPane.PLAIN_MESSAGE);
 			
+			mapPanel.removeAll(); 
+			drawGraph(); 
+			mapPanel.repaint(); 
+			mapFrame.pack();
 			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
 			} catch (GraphEmptyException e) {
@@ -483,7 +503,7 @@ public class MapGUI implements ActionListener {
 		graph.printGraph();
 		
 		mapPanel.removeAll();
-		drawGraph(graph);
+		drawGraph();
 		mapPanel.repaint();
 		mapFrame.pack();
 		} catch (RoadAlreadyExistsException e) {
@@ -536,11 +556,18 @@ public class MapGUI implements ActionListener {
 			if (strEnd == null) {return;}
 			
 			Village endVillage = graph.find(Integer.parseInt(strEnd));
+			System.out.println("Based on topological sort, this gnome must have visited village " +
+					" " + " before visiting village " );
+			
 			graph.travelMinExpPath(startVillage, endVillage);
 			
 			startVillage.removeGnome(gnome);
 			endVillage.insertGnome(gnome);
 			
+			mapPanel.removeAll(); 
+			drawGraph(); 
+			mapPanel.repaint(); 
+			mapFrame.pack();	
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer.  Please try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
 		} catch (NotFoundException e) {
@@ -589,7 +616,10 @@ public class MapGUI implements ActionListener {
 			endVill.deleteInRoad(toDelete);
 			
 			JOptionPane.showMessageDialog(mapFrame, "Road from village " + start + " to village " + end + " has been deleted.");
-			drawGraph(graph);
+			mapPanel.removeAll(); 
+			drawGraph(); 
+			mapPanel.repaint(); 
+			mapFrame.pack();
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Please try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
 		} catch (NotFoundException e) {
@@ -612,20 +642,41 @@ public class MapGUI implements ActionListener {
 				String strVill = (String) JOptionPane.showInputDialog(mapFrame, "How many villages would you like to start with?" +
 						" (as an integer).", "Building map", JOptionPane.PLAIN_MESSAGE);
 				if (strVill == null) {return;}
-				
 				int numVill = Integer.parseInt(strVill);
-				graph2 = new Graph();
-				for (int i=0; i<numVill; i++) {graph2.insert(new Village(2));};
 				
-				JOptionPane.showMessageDialog(mapFrame, "A new map has been created with " + numVill + " villages." + 
-							"\nNext, you should add roads to connect the two countries (see options on right).", "Building map", JOptionPane.PLAIN_MESSAGE);
+				graph2 = new Graph("ZNRGENSTEIN");
+				for (int i=0; i<numVill; i++) {graph2.insert(new Village(5));}
 			}
 			
-			drawGraph(graph2);
+			int n = JOptionPane.showConfirmDialog(mapFrame, "A new map has been created." + 
+					"\nShould I add a two-way road between the two countries?", "Building map", JOptionPane.YES_NO_CANCEL_OPTION);
+			if (n == JOptionPane.CANCEL_OPTION) {return;}
+		
+
+			
+			if (n == JOptionPane.NO_OPTION) {
+				JOptionPane.showMessageDialog(mapFrame, "Okay, we will leave the countries separate.", 
+					"	Adding a country", JOptionPane.PLAIN_MESSAGE);
+			} else {
+				String toll = JOptionPane.showInputDialog(mapFrame, "Please enter the toll for the new road.", 
+						"Building map", JOptionPane.PLAIN_MESSAGE);
+				if (!graph2.isEmpty() && !graph.isEmpty()) {
+					graph.getLast().connect(Integer.parseInt(toll),graph2.getFirst());
+					graph2.getFirst().connect(Integer.parseInt(toll),graph.getLast());
+				}
+			}
+			mapPanel.removeAll();
+			drawGraph(); 
+			mapPanel.repaint();
+			mapFrame.pack();
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Please try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
 		} catch (VillageFullException e) {
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "VillageFullException", JOptionPane.ERROR_MESSAGE);
+		} catch (RoadAlreadyExistsException e) {
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "RoadAlreadyExistsException", JOptionPane.ERROR_MESSAGE);
+		} catch (SameVillageException e) {
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "SameVillageException", JOptionPane.ERROR_MESSAGE);
 		}
 	} // end of addCountry()
 	
@@ -644,7 +695,7 @@ public class MapGUI implements ActionListener {
 				if (strVill == null) {return;}
 				
 				int numVill = Integer.parseInt(strVill);
-				graph = new Graph();
+				graph = new Graph("GNOMENWALD");
 				for (int i=0; i<numVill; i++) {graph.insert(new Village());};
 				
 				JOptionPane.showMessageDialog(mapFrame, "A new map has been created with " + numVill + " villages." + 
@@ -685,18 +736,6 @@ public class MapGUI implements ActionListener {
 	}
 	
 	public void drawVillages(Graph graph) { // draws all villages currently in graph
-		
-		/*
-		Village current = graph.getFirst();
-		DrawVillage dv = new DrawVillage(null,0,0);
-		// cut off around 30,30
-		
-		addToArray(dv);
-		mapPanel.add(dv);
-		// dv.setBounds(dv.x, dv.y, dv.r*2, dv.r*2);
-		*/
-		
-		
 		if (! graph.isEmpty()) {
 			int r = GUIConstants.radius, x, y;
 			double angle = 0, step = (2*Math.PI)/graph.getLength();
@@ -737,11 +776,10 @@ public class MapGUI implements ActionListener {
 				DrawVillage dv = villCircles[i];
 				RoadIterator current = dv.village.outgoing.getFirst();
 				while (current != null) {
-					x1 = dv.x;
-					y1 = dv.y;
-					x2 = findCircle(current.getData().end).x;
-					y2 = findCircle(current.getData().end).y;
-					System.out.println("x1 is: " + x1 + "  y1 is: " + y1);
+					x1 = dv.x-100;
+					y1 = dv.y-50;
+					x2 = findCircle(current.getData().end).x-100;
+					y2 = findCircle(current.getData().end).y-50;
 					DrawRoad dr = new DrawRoad(current,x1,y1,x2,y2);
 					mapPanel.add(dr);
 					dr.setBounds(x1,y1,x1+x2,y1+y2);
@@ -774,6 +812,24 @@ public class MapGUI implements ActionListener {
 		});
 	} // end of main()
 	
+	public class ImagePanel extends JPanel {
+		private BufferedImage image;
+		
+		public ImagePanel(String path) {
+			try {
+				image = ImageIO.read(new File(path));
+			} catch (IOException e) {
+				System.out.println("An IO error occurred.");
+			}
+		} // end of constructor
+		
+		@Override
+		protected void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			g.drawImage(image, 0, 0, null);
+		}
+	} // end of ImagePanel
+	
 	public class DrawVillage extends JPanel {
 		private Village village;
 		private Dimension preferredSize = new Dimension(GUIConstants.radius*2, GUIConstants.radius*2);
@@ -793,10 +849,10 @@ public class MapGUI implements ActionListener {
 			this.y = y;
 		}
 		
-		public void setLocation(int x, int y) {
-			this.x= x;
-			this.y= y;
-		}
+//		public void setLocation(int x, int y) {
+//			this.x= x;
+//			this.y= y;
+//		}
 		
 		@Override
 		public Dimension getPreferredSize() {return preferredSize;}

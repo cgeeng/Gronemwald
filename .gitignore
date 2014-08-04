@@ -36,3 +36,7 @@ Icon
 .Trashes
 
 bin/finproject/Graph.class
+
+bin/finproject/Village.class
+
+bin/finproject/Village$AdjList.class

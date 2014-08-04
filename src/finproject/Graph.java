@@ -1,7 +1,5 @@
 package finproject;
 
-import finproject.Exceptions.RoadAlreadyExistsException;
-import finproject.Exceptions.SameVillageException;
 import finproject.Exceptions.*;
 
 import java.util.Random;
@@ -10,12 +8,18 @@ public class Graph implements Runnable {
 	private int length = 0;
 	Village firstVillage;
 	Village lastVillage;
-	ProposalGraph proposal;
+	String name;
 	
 	//constructor
 	public Graph() {
 		firstVillage = null;
 		lastVillage = null;
+	} 
+	
+	public Graph(String name) {
+		firstVillage = null;
+		lastVillage = null;
+		this.name = name;
 	} 
 	
 	public boolean isEmpty() {return length == 0;}
@@ -251,7 +255,7 @@ public class Graph implements Runnable {
 				} // end of while
 			} // end of if
 		} // end of while
-		System.out.println("pathToTake is "+pathToTake);
+		// System.out.println("pathToTake is "+pathToTake);
 		pathToTake.printQueue();
 		return pathToTake;
 		
@@ -270,15 +274,21 @@ public class Graph implements Runnable {
 	}	// end of queueZero method
 
 	
-	public void printGraph() { // string representation of graph, used for testing
+	public String printGraph() { // returns string representation of graph
 		if (! isEmpty()) {
+			String strGraph = "<br>" + this.name + "<br>";
 			Village current = this.firstVillage;
 			while (current != null) {
-				System.out.println("Village " + current.getName() + " holds " + current.populationSize + " gnomes.");
-				System.out.println("   It leads to " + current.getAdjList());
+				String gnStr = "";
+				for (int i=0; i<current.populationSize; i++) {
+					gnStr += current.population[i].getID() + " ";
+				}
+				strGraph += "<br>VILLAGE " + current.getName() + " currently holds " + current.populationSize + " gnomes ( " +
+						gnStr + ")";
+				strGraph += "<br>   It leads to " + current.getAdjList();
 				current = current.getNext();
-			}
-		} else {System.out.println("This graph is empty.");}
+			} return strGraph;
+		} else {System.out.println("This graph is empty."); return "";}
 	} // end of printGraph()
 	
 }//end VillageList class

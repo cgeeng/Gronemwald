@@ -85,15 +85,24 @@ public class Village implements Runnable {
 		if (this.equals(newNeighbor)) {throw new SameVillageException();}			
 
 		Road newRoad = new Road(this, newNeighbor, cost);
-					
+		
 		this.outgoing.insert(newRoad);	
-		newNeighbor.incoming.insert(newRoad);
+		newNeighbor.outgoing.insert(new Road(newNeighbor,this,cost));
 		
 		this.outdegree++;
-		newNeighbor.indegree++;
-		
+		newNeighbor.outdegree++;
+		System.out.println(this.outgoing.getLast().endVillage().getName()+" road to "+newNeighbor.outgoing.getLast().endVillage().getName());
+
 		return newRoad;
 	}//end connect
+	
+	public synchronized void proposalDelete(Road r) throws NotFoundException {
+		outgoing.delete(r);
+		this.outdegree--;
+		r.start.outgoing.delete(r);
+		r.start.outdegree++;
+	}
+	
 	
 	public synchronized void deleteOutRoad(Road r) throws NotFoundException {
 		outgoing.delete(r);
@@ -131,6 +140,7 @@ public class Village implements Runnable {
 			for (int i=0; i<populationSize; i++) {if (population[i] != null) {nextIndex++;}}
 			population[nextIndex] = g;
 			g.setVillage(this);
+			g.getVisited().insert(new Node(this));
 			this.populationSize++;
 		}
 	} // end of insertGnome()
@@ -151,17 +161,17 @@ public class Village implements Runnable {
 	public String getAdjList() {
 		String roadList = "";
 		
+		if (this.outgoing.isEmpty()) {roadList+="nowhere.";}
 		RoadIterator current = this.outgoing.firstRoad;
 		while (current != null ) {
-			roadList += "Village " + current.endVillage().getName() + ", cost " + current.getCost() + ", ";
+			roadList += "Village " + current.endVillage().getName() + " at cost " + current.getCost() + ", ";
 			current = current.getNext();
 		}
 
 		return roadList;
 	}//end getAdjList()
 	
-	//Class AdjList
-	public class AdjList {
+	class AdjList {
 		RoadIterator firstRoad;
 		RoadIterator lastRoad;
 		int length = 0;
@@ -177,12 +187,15 @@ public class Village implements Runnable {
 		public RoadIterator getLast() {return this.lastRoad;}
 		
 		public synchronized void insert(Road r){
+			
+
 			RoadIterator ri = new RoadIterator(r);
 			if (isEmpty()) {
 				firstRoad = ri;
 				lastRoad = ri;
 			}
 			else {
+				
 				lastRoad.setNext(ri);
 				ri.setPrev(lastRoad);
 				lastRoad = ri;
@@ -227,7 +240,19 @@ public class Village implements Runnable {
 				}
 			} throw new NotFoundException();
 		} // end of findRoad()
-	} // end of AdjList
+
 	
+	public boolean proposalFindRoad(Village v) {
+		// finds road leads to or from given village
+		if (! isEmpty()) {
+			RoadIterator current = getFirst();
+			while(current != null) {
+				if (v.equals(current.getData().start) || v.equals(current.getData().end)) {return true;}
+				current = current.getNext();
+			}
+		} return false;
+	} // end of findRoad()
+
+	} // end of AdjList
 	
 }//end Village class
