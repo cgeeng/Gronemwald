@@ -3,6 +3,7 @@ package finproject;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
+import java.awt.image.BufferedImage;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -130,9 +131,11 @@ public class MapGUI implements ActionListener {
 			{System.out.println(e.getMessage());} 
 	} // end of addGraph()
 	
-	public void drawGraph() {
-		String graphText = graph.printGraph();
-		if (graph2 != null) {graphText += graph2.printGraph();}
+	public synchronized void drawGraph() {
+		String graphText = "<html>" + graph.printGraph();
+		if (graph2 != null) {graphText += "<br>" + graph2.printGraph();}
+		graphText += "</html>";
+		
 		JLabel graphLabel = new JLabel(graphText);
 		graphLabel.setForeground(Color.WHITE);
 		graphLabel.setBorder(new EmptyBorder(20,20,20,20));
@@ -208,9 +211,7 @@ public class MapGUI implements ActionListener {
 		g = new Thread(graph);
 		g.start();
 		while (g.isAlive()) {
-			mapPanel.removeAll();
 			drawGraph();
-			mapFrame.pack();
 		}
 
 	} // end of startThreads()
@@ -324,7 +325,7 @@ public class MapGUI implements ActionListener {
 			
 			mapPanel.removeAll(); 
 			drawGraph(); 
-			// mapPanel.repaint(); 
+			mapPanel.repaint(); 
 			mapFrame.pack();
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
@@ -637,15 +638,25 @@ public class MapGUI implements ActionListener {
 				String strVill = (String) JOptionPane.showInputDialog(mapFrame, "How many villages would you like to start with?" +
 						" (as an integer).", "Building map", JOptionPane.PLAIN_MESSAGE);
 				if (strVill == null) {return;}
-				
-				int numVill = Integer.parseInt(strVill);
-				graph2 = new Graph("ZNRGENSTEIN");
-				for (int i=0; i<numVill; i++) {graph2.insert(new Village(2));};
-				
-				JOptionPane.showMessageDialog(mapFrame, "A new map has been created with " + numVill + " villages." + 
-							"\nNext, you should add roads to connect the two countries (see options on right).", "Building map", JOptionPane.PLAIN_MESSAGE);
 			}
 			
+			int n = JOptionPane.showConfirmDialog(mapFrame, "A new map has been created." + 
+					"\nShould I add a two-way road between the two countries?", "Building map", JOptionPane.YES_NO_CANCEL_OPTION);
+			if (n == JOptionPane.CANCEL_OPTION) {return;}
+		
+			graph2 = new Graph("ZNRGENSTEIN");
+			for (int i=0; i<graph2.getLength(); i++) {graph2.insert(new Village(2));};
+			
+			if (n == JOptionPane.NO_OPTION) {
+				JOptionPane.showMessageDialog(mapFrame, "Okay, we will leave the countries separate.", 
+					"	Adding a country", JOptionPane.PLAIN_MESSAGE);
+			} else {
+				String toll = JOptionPane.showInputDialog(mapFrame, "Please enter the toll for the new road.", 
+						"Building map", JOptionPane.PLAIN_MESSAGE);
+				if (!graph2.isEmpty() && !graph.isEmpty()) {
+					graph.getLast().connect(Integer.parseInt(toll),graph2.getFirst());
+				}
+			}
 			mapPanel.removeAll();
 			drawGraph(); 
 			mapPanel.repaint();
@@ -654,6 +665,10 @@ public class MapGUI implements ActionListener {
 			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Please try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
 		} catch (VillageFullException e) {
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "VillageFullException", JOptionPane.ERROR_MESSAGE);
+		} catch (RoadAlreadyExistsException e) {
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "RoadAlreadyExistsException", JOptionPane.ERROR_MESSAGE);
+		} catch (SameVillageException e) {
+			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "SameVillageException", JOptionPane.ERROR_MESSAGE);
 		}
 	} // end of addCountry()
 	
@@ -713,18 +728,6 @@ public class MapGUI implements ActionListener {
 	}
 	
 	public void drawVillages(Graph graph) { // draws all villages currently in graph
-		
-		/*
-		Village current = graph.getFirst();
-		DrawVillage dv = new DrawVillage(null,0,0);
-		// cut off around 30,30
-		
-		addToArray(dv);
-		mapPanel.add(dv);
-		// dv.setBounds(dv.x, dv.y, dv.r*2, dv.r*2);
-		*/
-		
-		
 		if (! graph.isEmpty()) {
 			int r = GUIConstants.radius, x, y;
 			double angle = 0, step = (2*Math.PI)/graph.getLength();

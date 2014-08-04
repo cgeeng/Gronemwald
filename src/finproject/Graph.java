@@ -276,18 +276,18 @@ public class Graph implements Runnable {
 	
 	public String printGraph() { // returns string representation of graph
 		if (! isEmpty()) {
-			String strGraph = "<html>" + this.name + "<br>";
+			String strGraph = "<br>" + this.name + "<br>";
 			Village current = this.firstVillage;
 			while (current != null) {
 				String gnStr = "";
 				for (int i=0; i<current.populationSize; i++) {
 					gnStr += current.population[i].getID() + " ";
 				}
-				strGraph += "<br>Village " + current.getName() + " currently holds " + current.populationSize + " gnomes ( " +
+				strGraph += "<br>VILLAGE " + current.getName() + " currently holds " + current.populationSize + " gnomes ( " +
 						gnStr + ")";
 				strGraph += "<br>   It leads to " + current.getAdjList();
 				current = current.getNext();
-			} return strGraph + "</html>";
+			} return strGraph;
 		} else {System.out.println("This graph is empty."); return "";}
 	} // end of printGraph()
 	
