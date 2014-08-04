@@ -68,11 +68,17 @@ public class TestClass {
 			graph.find(2).connect(5, graph.find(4));
 			graph.find(2).connect(1, graph.find(3));
 			graph.find(4).connect(1, graph.find(5));
-			graph.find(5).connect(1, graph.find(4));
 			graph.find(5).connect(2, graph.find(3));
 			graph.find(5).connect(4, graph.find(6));
 			graph.find(6).connect(3, graph.find(7));
 			
+			
+			// should be no, because there is already an existing road
+			graph.roadProposal(graph.find(1), graph.find(2));
+			// should be no, because it is the same village
+			graph.roadProposal(graph.find(4), graph.find(4));
+			// should be no, because there is only one intermediate village
+			graph.roadProposal(graph.find(5), graph.find(7));
 			
 			// should be yes, because 3 has no outgoing roads
 			graph.roadProposal(graph.find(3), graph.find(4));
@@ -80,12 +86,7 @@ public class TestClass {
 			graph.roadProposal(graph.find(5), graph.find(1));
 			// should be yes, because there is more than one intermediate village
 			graph.roadProposal(graph.find(4), graph.find(7));
-			
-			// should be no, because there is already an existing road
-			graph.roadProposal(graph.find(1), graph.find(2));
-			// should be no, because there is only one intermediate village
-			graph.roadProposal(graph.find(5), graph.find(7));
-			
+
 			} catch (RoadAlreadyExistsException | GraphEmptyException |
 					NotFoundException | SameVillageException | VillageFullException e) {
 				System.out.println(e.getMessage());

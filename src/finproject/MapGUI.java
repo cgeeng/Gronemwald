@@ -100,7 +100,7 @@ public class MapGUI implements ActionListener {
 		try {
 		if (graph == null) { // creates new graph with 5 villages of population 5
 			graph = new Graph("GNOMENWALD");
-			for (int i=0; i<5; i++) {graph.insert(new Village(5));} // 5 villages with 5 gnomes each
+			for (int i=0; i<7; i++) {graph.insert(new Village(5));} // 7 villages with 5 gnomes each
 		}
 		
 		graph.find(1).connect(2, graph.find(2));
@@ -110,6 +110,8 @@ public class MapGUI implements ActionListener {
 		graph.find(4).connect(1, graph.find(5));
 		graph.find(5).connect(1, graph.find(4));
 		graph.find(5).connect(3, graph.find(3));
+		graph.find(5).connect(2, graph.find(6));
+		graph.find(6).connect(4, graph.find(7));
 		
 		graph.printGraph();
 		} catch (RoadAlreadyExistsException | GraphEmptyException |

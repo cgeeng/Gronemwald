@@ -52,16 +52,14 @@ public class Graph implements Runnable {
 				for (int i=0; i<length; i++) {
 					if (count != v) {count++; vill = vill.getNext();}
 				}
-				System.out.println("start village " + vill.getName());
 				
 				Village vill2 = getFirst();
 				for (int i=0; i<length; i++) {
 					if (count != v) {count++; vill2 = vill2.getNext();}
 				}
-				System.out.println("end village is " + vill2.getName());
 				
 				try {
-					roadProposal(vill, vill2);
+					if (! vill.equals(vill2)) {roadProposal(vill, vill2);} // if it happens upon the same village, just waits one cycle
 					Thread.sleep(4000);
 				} catch (InterruptedException e) {
 					System.out.println("The system was interrupted.");
