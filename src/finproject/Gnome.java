@@ -42,18 +42,21 @@ public class Gnome implements Runnable {
 	}//end constructor establishing Gnome's village
 	
 	public void run() { // run method for gnomes
-		// stops after 10 changes
+		// stops after 5 changes
 		int runCount = 0;
-		try {
-			while(runCount<10) {
-			Thread.sleep(sleepTime);
+		
+		Random rand = new Random();
+		int go = rand.nextInt(2); // only decides to move half the time
+		while (runCount<5 && go == 0) { 
 			travelRandom();
 			runCount++;
+			try {
+				Thread.sleep(sleepTime);
+			} catch(InterruptedException e) {
+				System.out.println("The program was interrupted.");
 			}
-		} catch (InterruptedException e) {
-			System.out.println("The program was interrupted.");
 		}
-	}
+	} // end of run()
 	
 	//methods
 	
@@ -81,7 +84,6 @@ public class Gnome implements Runnable {
 			destination.insertGnome(this);			
 			System.out.println("Gnome " + ID + " has moved from village " + oldVillage.getName() + " to village " + current.getName());
 		} catch (NotInVillageException e) {System.out.println(e.getMessage()); 
-		// } catch (NoAdjacentVillagesException e) {System.out.println(e.getMessage());
 		} catch (VillageFullException e) {System.out.println(e.getMessage());}
 	}//end travelRandom
 

@@ -154,7 +154,7 @@ public class Village {
 	
 	public void printGnomes() { // string representation of gnomes in village, used for testing
 		String gnomes = "";
-		for (int i=0; i<populationSize; i++) {gnomes += population[i].getID() + "  ";}
+		for (int i=0; i<populationSize; i++) {gnomes += "g" + population[i].getID() + "  ";}
 		System.out.println("Village " + this.name + " has gnomes: " + gnomes);
 	} // end of printGnomes()
 	
@@ -203,7 +203,7 @@ public class Village {
 		} // end of insert()
 		
 		public synchronized void delete(Road r) throws NotFoundException {
-			if (length <= 1) {
+			if (length < 2) {
 				this.firstRoad = null;
 				this.lastRoad = null;}
 			else {

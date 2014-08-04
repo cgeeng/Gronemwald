@@ -15,7 +15,8 @@ public class TestClass {
 		//createProposal returns array of Roads. 
 		//Graph.createProposal();
 		
-		testRoadProposal();
+		// testRoadProposal();
+		testRoadProposal2();
 
 	}
 		
@@ -69,8 +70,8 @@ public class TestClass {
 			graph.find(2).connect(1, graph.find(3));
 			graph.find(4).connect(1, graph.find(5));
 			graph.find(5).connect(2, graph.find(3));
-			graph.find(5).connect(4, graph.find(6));
-			graph.find(6).connect(3, graph.find(7));
+			graph.find(5).connect(2, graph.find(6));
+			graph.find(6).connect(4, graph.find(7));
 			
 			
 			// should be no, because there is already an existing road
@@ -92,6 +93,30 @@ public class TestClass {
 				System.out.println(e.getMessage());
 			} 
 	} // end of testRoadProposal()
+	
+	public static void testRoadProposal2() {
+		try {
+			Graph graph = new Graph("GNOMENWALD");
+			for (int i=0; i<7; i++) {graph.insert(new Village(5));} // 7 villages with 5 gnomes each
+			
+			graph.find(1).connect(2, graph.find(2));
+			graph.find(1).connect(4, graph.find(3));
+			graph.find(2).connect(5, graph.find(4));
+			graph.find(2).connect(1, graph.find(3));
+			graph.find(4).connect(1, graph.find(5));
+			graph.find(5).connect(2, graph.find(3));
+			graph.find(5).connect(2, graph.find(6));
+			graph.find(6).connect(4, graph.find(7));
+			
+			graph.roadProposal(graph.find(4), graph.find(1));
+			graph.find(4).deleteOutRoad(graph.find(4).findRoad(1));
+			
+		} catch (VillageFullException | SameVillageException
+				| RoadAlreadyExistsException | NotFoundException
+				| GraphEmptyException e) {
+			System.out.println(e.getMessage());
+		}
+	}
 	
 	
 } // end of TestClass

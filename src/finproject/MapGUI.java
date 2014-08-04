@@ -26,7 +26,7 @@ public class MapGUI implements ActionListener {
 				moveGnomeExt, delRoad, startThreads, findMin, topSort;
 		DrawVillage [] villCircles = new DrawVillage[20]; int arrLength=0;// used for building roads
 		Graph graph; Thread g;
-		// Graph graph2; Thread g2;
+		Graph graph2; Thread g2;
 		int start; // name of first village in second country
 	
 	public MapGUI() { // builds the main window/frame
@@ -121,21 +121,21 @@ public class MapGUI implements ActionListener {
 	
 	public void createPreGraph2() { // used for testing and option for user
 		try {
-//		if (graph2 == null) { // creates new graph with 5 villages of population 5
-//			graph2 = new Graph("ZNRGENSTEIN");
-//			for (int i=0; i<5; i++) {graph2.insert(new Village(5));} // 5 villages with 5 gnomes each
-//		}
+		if (graph2 == null) { // creates new graph with 5 villages of population 5
+			graph2 = new Graph("ZNRGENSTEIN");
+			for (int i=0; i<5; i++) {graph2.insert(new Village(5));} // 5 villages with 5 gnomes each
+		}
 		
-		start = graph.getLast().getName() + 1;
-		for (int i=0; i<5; i++) {graph.insert(new Village(5));}
+//		start = graph.getLast().getName() + 1;
+//		for (int i=0; i<5; i++) {graph.insert(new Village(5));}
 		
-		graph.find(start).connect(3, graph.find(start+1));
-		graph.find(start+1).connect(2, graph.find(start+2));
-		graph.find(start+1).connect(1, graph.find(start+4));
-		graph.find(start+2).connect(4, graph.find(start+3));
-		graph.find(start+4).connect(1, graph.find(start+3));
+		graph2.find(start).connect(3, graph2.find(start+1));
+		graph2.find(start+1).connect(2, graph2.find(start+2));
+		graph2.find(start+1).connect(1, graph2.find(start+4));
+		graph2.find(start+2).connect(4, graph2.find(start+3));
+		graph2.find(start+4).connect(1, graph2.find(start+3));
 		
-		graph.printGraph();
+		graph2.printGraph();
 		} catch (RoadAlreadyExistsException | GraphEmptyException | NotFoundException |
 				SameVillageException | VillageFullException e)
 			{System.out.println(e.getMessage());} 

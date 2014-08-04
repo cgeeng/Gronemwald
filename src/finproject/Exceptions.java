@@ -59,7 +59,7 @@ public class Exceptions {
 	
 	public static class VillageFullException extends Exception {
 		public VillageFullException() {
-			super("This village has already reached its limit of 10 gnomes!");
+			super("This village has already reached its population limit!");
 		}
 	} // end of VillageFullException
 	

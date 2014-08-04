@@ -29,7 +29,7 @@ public class Graph implements Runnable {
 	public Village getFirst() {return this.firstVillage;}
 	public Village getLast() {return this.lastVillage;}
 	
-	public void run() { // run method for Graph
+	public void run() { // run method for Graph		
 		// stops after 5 changes
 		int runCount = 0;
 		while (! isEmpty() && runCount<5) {
@@ -51,13 +51,11 @@ public class Graph implements Runnable {
 				if (! vill.equals(vill2)) {roadProposal(vill, vill2);} // if it happens upon the same village, just waits one cycle
 			} else {restructure();}
 			runCount++;
-			
 			try {
 				Thread.sleep(4000);
 			} catch (InterruptedException e) {
 				System.out.println("The system was interrupted.");
 			}
-				
 		}
 	} // end of run()
 	
@@ -72,11 +70,7 @@ public class Graph implements Runnable {
 				
 				while (!finished) {
 					for (int i = 0; i < allRoads.length; i++) {
-						boolean inSpanTree = false;
-						for (int n = 0; n < minSpanTree.length; n++) {
-							if (allRoads[i].equals(minSpanTree[n])) {inSpanTree = true; finished = true;}
-						}
-						if (!inSpanTree) {toDelete = allRoads[i];}
+						if (!inSpanTree(minSpanTree, allRoads[i])) {toDelete = allRoads[i]; finished = true;}
 					}
 					finished = true;
 				}
@@ -93,6 +87,18 @@ public class Graph implements Runnable {
 			System.out.println(e.getMessage());
 		}
 	} // end of restructure()
+	
+	public boolean inSpanTree(Road [] minSpanTree, Road r) { // checks if a road is in the minimum spanning tree
+		boolean inSpanTree = false;
+		boolean finished = false;
+		
+		while (!finished) {
+			for (int i=0; i<minSpanTree.length; i++) {
+				if (r.start.equals(minSpanTree[i].start) && r.end.equals(minSpanTree[i].end)) {inSpanTree=true; finished=true;}
+			} finished = true;
+		}
+		return inSpanTree;
+	} // end of inSpanTree()
 	
 	public synchronized Road [] getAllRoads() { // represents all roads in graph as an array
 		Road [] allRoadsLong = new Road [100];
@@ -302,7 +308,7 @@ public class Graph implements Runnable {
 		return thePath;
 	} // end of travelMinExpPath method
 	
-	public Queue DepthFirstSearch(Village v,Queue white, Queue gray, Queue black) throws NotFoundException, GraphEmptyException{ // perform over the entire graph
+	public Queue DepthFirstSearch(Village v,Queue white, Queue gray, Queue black) throws NotFoundException, GraphEmptyException { // perform over the entire graph
 		v.color = "gray";
 		System.out.println("the outgoinglength for village "+v.getName()+" is "+v.outgoing.length);
 		if(v.outgoing.length!=0){
