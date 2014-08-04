@@ -90,22 +90,24 @@ public class Graph implements Runnable {
 			System.out.println("\nNew road proposed between village " + v1.getName() + " and village " + v2.getName());
 			System.out.println("The total building cost would be: " + newToll*100);			
 			
+			if (roadExists(v1, v2)) {throw new RoadAlreadyExistsException();}
+			if (v1.equals(v2)) {throw new SameVillageException();}
+			
 			boolean manyIntermediates = false;
 			
 			int count = 0; // counts number of spaces in travelMinExpPath string, 
 						   // where 2 is a direct path, 3 is one intermediate village
 			String minusStart = travelMinExpPath(v1, v2);
-			int startLength = minusStart.length();
-			for (int i=0; i<startLength; i++) {
+			while(minusStart.length()>0) {
 				int spaceInd = minusStart.indexOf(" ");
 				minusStart = minusStart.substring(spaceInd+1);
+				count++;
 			}
-			
-			System.out.println(manyIntermediates);
+			if (count > 3) {manyIntermediates=true;}
 			
 			if (manyIntermediates) {
-				System.out.println("The government has elected to build the road because there is more than one intermediate village " 
-						+ "\n between the two villages in the existing road structure.");
+				System.out.println("The government has elected to build the road because there is" +
+						"\nmore than one intermediate village between the two villages in the existing road structure.");
 				v1.connect(1, v2);
 			} else {
 				System.out.println("Due to budget constraints, the government has elected not to build the road.\n");
@@ -229,8 +231,7 @@ public class Graph implements Runnable {
 			thePath += path.getLast().getVillage().getName()+" ";
 			toAdd = toAdd.prior;
 		}
-		System.out.println("Found the shortest path!");
-		System.out.println("Path (from end to start) is: " + thePath);
+		System.out.println("Shortest path (from end to start) is: " + thePath);
 		return thePath;
 	} // end of travelMinExpPath method
 	

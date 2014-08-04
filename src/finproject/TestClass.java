@@ -66,8 +66,10 @@ public class TestClass {
 			graph.find(2).connect(1, graph.find(3));
 			graph.find(4).connect(1, graph.find(5));
 			graph.find(5).connect(1, graph.find(4));
+			graph.find(5).connect(2, graph.find(3));
 			graph.find(5).connect(4, graph.find(6));
 			graph.find(6).connect(3, graph.find(7));
+			
 			
 			// should be yes, because 3 has no outgoing roads
 			graph.roadProposal(graph.find(3), graph.find(4));
