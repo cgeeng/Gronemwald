@@ -126,9 +126,6 @@ public class MapGUI implements ActionListener {
 			for (int i=0; i<5; i++) {graph2.insert(new Village(5));} // 5 villages with 5 gnomes each
 		}
 		
-//		start = graph.getLast().getName() + 1;
-//		for (int i=0; i<5; i++) {graph.insert(new Village(5));}
-		
 		graph2.find(start).connect(3, graph2.find(start+1));
 		graph2.find(start+1).connect(2, graph2.find(start+2));
 		graph2.find(start+1).connect(1, graph2.find(start+4));
@@ -243,7 +240,17 @@ public class MapGUI implements ActionListener {
 	
 	public synchronized void addVillage() {
 		try {
-			Object [] options = villageList();
+			
+			Graph country = graph;
+			if (graph2 != null) {
+				Object [] countryOptions = {graph.getName(), graph2.getName()};
+				String ans = (String) JOptionPane.showInputDialog(mapFrame, "To which country would you like to add a village?",
+						"Adding a country", JOptionPane.PLAIN_MESSAGE, null, countryOptions, countryOptions[0]);
+				if (ans.equals(countryOptions[0])) {country = graph;}
+				else {country = graph2;}
+			}
+			
+			Object [] options = villageList(country);
 			Village newVill = new Village();
 			
 			String strVill = (String) JOptionPane.showInputDialog(mapFrame,
@@ -253,9 +260,9 @@ public class MapGUI implements ActionListener {
 			        "Adding a village", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 			if (strVill == null) {return;}
 			
-			graph.insert(newVill); // default to zero gnomes
+			country.insert(newVill); // default to zero gnomes
 			
-			Village startVill = graph.find(Integer.parseInt(strVill));
+			Village startVill = country.find(Integer.parseInt(strVill));
 			
 			String cost = (String) JOptionPane.showInputDialog(mapFrame,
 					"This road will lead from village " + startVill.getName() + " to village " + newVill.getName()
@@ -290,13 +297,22 @@ public class MapGUI implements ActionListener {
 	
 	public void delVillage() {
 		try {
-			Object [] options = villageList();
+			Graph country = graph;
+			if (graph2 != null) {
+				Object [] countryOptions = {graph.getName(), graph2.getName()};
+				String ans = (String) JOptionPane.showInputDialog(mapFrame, "From which country would you like to delete a village?",
+						"Deleting a village", JOptionPane.PLAIN_MESSAGE, null, countryOptions, countryOptions[0]);
+				if (ans.equals(countryOptions[0])) {country = graph;}
+				else {country = graph2;}
+			}
+			
+			Object [] options = villageList(country);
 			String strVillage = (String) JOptionPane.showInputDialog(mapFrame,
 			        "Which village would you like to delete?",
 			        "Deleting a village", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 			if (strVillage == null) {return;}
 			
-			Village village = graph.find(Integer.parseInt(strVillage));
+			Village village = country.find(Integer.parseInt(strVillage));
 			
 			String [] delOptions = {"Delete all associated roads", "Reroute existing roads manually"};
 			// last option could lead to WARNING message - "could lead to existing roads being deleted"
@@ -345,8 +361,8 @@ public class MapGUI implements ActionListener {
 					} // end while inCurrent!=null
 			}}
 			
-			graph.delete(village.getName());
-			graph.printGraph();
+			country.delete(village.getName());
+			country.printGraph();
 			
 			mapPanel.removeAll(); 
 			drawGraph(); 
@@ -367,16 +383,24 @@ public class MapGUI implements ActionListener {
 	
 	public void placeGnome() {
 		try {
-			if (graph.isEmpty()) {throw new GraphEmptyException();}
+			Graph country = graph;
+			if (graph2 != null) {
+				Object [] countryOptions = {graph.getName(), graph2.getName()};
+				String ans = (String) JOptionPane.showInputDialog(mapFrame, "To which country would you like to add a gnome?",
+						"Adding a gnome", JOptionPane.PLAIN_MESSAGE, null, countryOptions, countryOptions[0]);
+				if (ans.equals(countryOptions[0])) {country = graph;}
+				else {country = graph2;}
+			}
+			if (country.isEmpty()) {throw new GraphEmptyException();}
 
-			Object [] options = villageList();
+			Object [] options = villageList(country);
 			
 			String strVillage = (String) JOptionPane.showInputDialog(mapFrame,
 			            "Which village would you like to place the new gnome in?",
 			            "Placing a new gnome", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 			if (strVillage == null) {return;}
 			
-			Village village = graph.find(Integer.parseInt(strVillage));
+			Village village = country.find(Integer.parseInt(strVillage));
 			village.printGnomes();
 			village.insertGnome(new Gnome());
 			village.printGnomes();
@@ -387,7 +411,6 @@ public class MapGUI implements ActionListener {
 			
 			mapPanel.removeAll(); 
 			drawGraph(); 
-			// mapPanel.repaint(); 
 			mapFrame.pack();
 			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
@@ -402,16 +425,24 @@ public class MapGUI implements ActionListener {
 	
 	public void moveGnomeSim() {
 		try {
-			if (graph.isEmpty()) {throw new GraphEmptyException();}
+			Graph country = graph;
+			if (graph2 != null) {
+				Object [] countryOptions = {graph.getName(), graph2.getName()};
+				String ans = (String) JOptionPane.showInputDialog(mapFrame, "From which country would you like to move a gnome?",
+						"Moving a gnome", JOptionPane.PLAIN_MESSAGE, null, countryOptions, countryOptions[0]);
+				if (ans.equals(countryOptions[0])) {country = graph;}
+				else {country = graph2;}
+			}
+			if (country.isEmpty()) {throw new GraphEmptyException();}
 
-			Object [] villOptions = villageList();
+			Object [] villOptions = villageList(country);
 			
 			String start = (String) JOptionPane.showInputDialog(mapFrame,
 			            "From which village would you like to move a gnome?",
 			            "Moving a gnome", JOptionPane.PLAIN_MESSAGE, null, villOptions, villOptions[0]);
 			if (start == null) {return;}
 			
-			Village startVillage = graph.find(Integer.parseInt(start));
+			Village startVillage = country.find(Integer.parseInt(start));
 			if (startVillage.outdegree == 0) {
 				JOptionPane.showMessageDialog(mapFrame, "Village " + startVillage.getName() + " has no outgoing roads." + 
 						"\nYou should build one!", "Moving a gnome", JOptionPane.ERROR_MESSAGE);
@@ -455,7 +486,7 @@ public class MapGUI implements ActionListener {
 				strEnd = (String) adjVill[rand.nextInt(adjVill.length)];
 			}
 
-			Village endVillage = graph.find(Integer.parseInt(strEnd));
+			Village endVillage = country.find(Integer.parseInt(strEnd));
 			
 			startVillage.removeGnome(gnome);
 			endVillage.insertGnome(gnome);
@@ -484,9 +515,17 @@ public class MapGUI implements ActionListener {
 	
 	public void addRoad() { 
 		try {
-		if (graph.isEmpty()) {throw new GraphEmptyException();}
+			Graph country = graph;
+			if (graph2 != null) {
+				Object [] countryOptions = {graph.getName(), graph2.getName()};
+				String ans = (String) JOptionPane.showInputDialog(mapFrame, "To which country would you like to add a road?",
+						"Adding a road", JOptionPane.PLAIN_MESSAGE, null, countryOptions, countryOptions[0]);
+				if (ans.equals(countryOptions[0])) {country = graph;}
+				else {country = graph2;}
+			}
+		if (country.isEmpty()) {throw new GraphEmptyException();}
 		
-		Object [] options = villageList();
+		Object [] options = villageList(country);
 		
 		String start = (String) JOptionPane.showInputDialog(mapFrame,
 		            "Please choose the village you would like \nthe road to start at:",
@@ -520,8 +559,8 @@ public class MapGUI implements ActionListener {
 		int intEnd = Integer.parseInt(end);
 		int intCost = Integer.parseInt(cost);
 			
-		graph.find(intStart).connect(intCost, graph.find(intEnd));
-		graph.printGraph();
+		country.find(intStart).connect(intCost, country.find(intEnd));
+		country.printGraph();
 		
 		mapPanel.removeAll();
 		drawGraph();
@@ -543,14 +582,23 @@ public class MapGUI implements ActionListener {
 	public void moveGnomeExt() {
 		// moves gnome to non-adjacent village using shortest path
 		try {
-			Object [] villOptions = villageList();
+			Graph country = graph;
+			if (graph2 != null) {
+				Object [] countryOptions = {graph.getName(), graph2.getName()};
+				String ans = (String) JOptionPane.showInputDialog(mapFrame, "From which country would you like to move a gnome?",
+						"Moving a gnome", JOptionPane.PLAIN_MESSAGE, null, countryOptions, countryOptions[0]);
+				if (ans.equals(countryOptions[0])) {country = graph;}
+				else {country = graph2;}
+			}
+			
+			Object [] villOptions = villageList(country);
 			
 			String strStart = (String) JOptionPane.showInputDialog(mapFrame,
 			            "From which village would you like to move a gnome?",
 			            "Moving a gnome", JOptionPane.PLAIN_MESSAGE, null, villOptions, villOptions[0]);
 			if (strStart == null) {return;}
 			
-			Village startVillage = graph.find(Integer.parseInt(strStart));
+			Village startVillage = country.find(Integer.parseInt(strStart));
 			if (startVillage.outdegree == 0) {
 				JOptionPane.showMessageDialog(mapFrame, "Village " + startVillage.getName() + " has no outgoing roads." + 
 						"\nYou should build one!", "Moving a gnome", JOptionPane.ERROR_MESSAGE);
@@ -576,9 +624,9 @@ public class MapGUI implements ActionListener {
 			            "Moving a gnome", JOptionPane.PLAIN_MESSAGE, null, lessOptions, lessOptions[0]);
 			if (strEnd == null) {return;}
 			
-			Village endVillage = graph.find(Integer.parseInt(strEnd));
+			Village endVillage = country.find(Integer.parseInt(strEnd));
 			
-			String path = graph.travelMinExpPath(startVillage, endVillage);
+			String path = country.travelMinExpPath(startVillage, endVillage);
 			
 			startVillage.removeGnome(gnome);
 			endVillage.insertGnome(gnome);
@@ -611,14 +659,23 @@ public class MapGUI implements ActionListener {
 	
 	public void delRoad() { // deletes a road
 		try {
-			Object [] options = villageList();
+			Graph country = graph;
+			if (graph2 != null) {
+				Object [] countryOptions = {graph.getName(), graph2.getName()};
+				String ans = (String) JOptionPane.showInputDialog(mapFrame, "From which country would you like to delete a road?",
+						"Deleting a road", JOptionPane.PLAIN_MESSAGE, null, countryOptions, countryOptions[0]);
+				if (ans.equals(countryOptions[0])) {country = graph;}
+				else {country = graph2;}
+			}
+			
+			Object [] options = villageList(country);
 			
 			String start = (String) JOptionPane.showInputDialog(mapFrame,
 			        "Choose the starting village of the road you would like to delete.",
 			        "Deleting a road", JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 			if (start == null) {return;}
 			
-			Village startVill = graph.find(Integer.parseInt(start));
+			Village startVill = country.find(Integer.parseInt(start));
 
 			// limits options to outgoing roads of starting village
 			if (startVill.outgoing.isEmpty()) {
@@ -642,7 +699,7 @@ public class MapGUI implements ActionListener {
 			    	"Deleting a road", JOptionPane.PLAIN_MESSAGE, null, lessOptions, lessOptions[0]);
 			if (end == null) {return;}
 			
-			Village endVill = graph.find(Integer.parseInt(end));
+			Village endVill = country.find(Integer.parseInt(end));
 			
 			Road toDelete = startVill.outgoing.findRoad(endVill);
 			startVill.deleteOutRoad(toDelete);
@@ -682,7 +739,7 @@ public class MapGUI implements ActionListener {
 			}
 			
 			int n = JOptionPane.showConfirmDialog(mapFrame, "A new map has been created." + 
-					"\nShould I add a road between the two countries?", "Building map", JOptionPane.YES_NO_CANCEL_OPTION);
+					"\nShould I add a two-way road between the two countries?", "Building map", JOptionPane.YES_NO_CANCEL_OPTION);
 			if (n == JOptionPane.CANCEL_OPTION) {return;}
 			
 			if (n == JOptionPane.NO_OPTION) {
@@ -693,6 +750,7 @@ public class MapGUI implements ActionListener {
 						"Building map", JOptionPane.PLAIN_MESSAGE);
 				if (!graph2.isEmpty() && !graph.isEmpty()) {
 					graph.getLast().connect(Integer.parseInt(toll),graph2.getFirst());
+					graph2.getFirst().connect(Integer.parseInt(toll),graph.getLast());
 				}
 			}
 			mapPanel.removeAll();
@@ -712,7 +770,16 @@ public class MapGUI implements ActionListener {
 	
 	public void findMin() {
 		try {
-			Road [] minSpanTree = graph.getMinSpanTree();
+			Graph country = graph;
+			if (graph2 != null) {
+				Object [] countryOptions = {graph.getName(), graph2.getName()};
+				String ans = (String) JOptionPane.showInputDialog(mapFrame, "To which country would you like to add a village?",
+						"Adding a country", JOptionPane.PLAIN_MESSAGE, null, countryOptions, countryOptions[0]);
+				if (ans.equals(countryOptions[0])) {country = graph;}
+				else {country = graph2;}
+			}
+			
+			Road [] minSpanTree = country.getMinSpanTree();
 			
 			String strMinSpanTree = "";
 			for (int i=0; i<minSpanTree.length; i++) {
@@ -728,9 +795,18 @@ public class MapGUI implements ActionListener {
 	} // end of findMin()
 	
 	public void topSort() {
+		Graph country = graph;
+		if (graph2 != null) {
+			Object [] countryOptions = {graph.getName(), graph2.getName()};
+			String ans = (String) JOptionPane.showInputDialog(mapFrame, "To which country would you like to add a village?",
+					"Adding a country", JOptionPane.PLAIN_MESSAGE, null, countryOptions, countryOptions[0]);
+			if (ans.equals(countryOptions[0])) {country = graph;}
+			else {country = graph2;}
+		}
+		
 		try {
 			JOptionPane.showMessageDialog(mapFrame, "The topological sort for this map is: " +
-					"\n" + graph.topologicalSort(), "Topological sort", JOptionPane.PLAIN_MESSAGE);
+					"\n" + country.topologicalSort(), "Topological sort", JOptionPane.PLAIN_MESSAGE);
 
 		} catch (NotFoundException | GraphEmptyException e) {
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "Exception", JOptionPane.PLAIN_MESSAGE);
@@ -769,31 +845,16 @@ public class MapGUI implements ActionListener {
 		}
 	} // end of welcomeButton()
 	
-	public Object [] villageList() { // returns the villages in the graph as an array of their names
+	public Object [] villageList(Graph country) { // returns the villages in the graph as an array of their names
 									 // used for main options buttons
-		Object [] options = new Object [graph.getLength()];
-		Village current = graph.getFirst(); int nextIndex = 0;
-		for (int i=0; i<graph.getLength(); i++) {
+		Object [] options = new Object [country.getLength()];
+		Village current = country.getFirst(); int nextIndex = 0;
+		for (int i=0; i<country.getLength(); i++) {
 			while (current != null) {
 				options[nextIndex] = Integer.toString(current.getName());
 				current = current.getNext();
 				nextIndex++;
 			}
-		}
-		if (graph2 != null) {
-			Object [] options2 = new Object [graph.getLength() + graph2.getLength()];
-			for (int i=0; i<graph.getLength(); i++) {
-				options2[i] = options[i];
-			}
-			Village current2 = graph2.getFirst(); int nextIndex2 = 0;
-			for (int n=0; n<graph2.getLength(); n++) {
-				while (current != null) {
-					options2[nextIndex2] = Integer.toString(current2.getName());
-					current2 = current2.getNext();
-					nextIndex2++;
-				}
-			}
-			return options2;
 		}
 		return options;
 	} // end of villageList()
