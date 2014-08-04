@@ -92,7 +92,7 @@ public class ProposalGraph {
 			PRoad temp = pq.removeMin();
 			System.out.println("pq length now "+pq.length+". min cost "+temp.cost);
 			Village tempStart = find( temp.starting.getName() );
-			Road newRoad = tempStart.connect( temp.cost, find( temp.end.getName() ));
+			Road newRoad = tempStart.proposalConnect( temp.cost, find( temp.end.getName() ));
 			
 			
 			System.out.println("creating road from PQ road village "+tempStart.getName()+
