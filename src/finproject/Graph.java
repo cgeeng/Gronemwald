@@ -30,7 +30,7 @@ public class Graph implements Runnable {
 	public Village getLast() {return this.lastVillage;}
 	
 	public void run() { // run method for Graph
-		if (! isEmpty()) {
+		if (! isEmpty()) { // starts all gnome threads
 			Village current = firstVillage;
 			while (current!=null) {
 				for(int i=0; i<current.populationSize; i++) {
@@ -41,10 +41,7 @@ public class Graph implements Runnable {
 			}
 		}
 		
-		
-		/*
-		int villCount=0;
-		while (! isEmpty() && villCount < 3) { // chooses random village within graph
+		while (! isEmpty()) { // chooses random village within graph
 				Random rand = new Random();
 				int v = rand.nextInt(length), count=0;
 				Village vill = getFirst();
@@ -62,13 +59,12 @@ public class Graph implements Runnable {
 				try {
 					System.out.println("New road proposed between village " + vill.getName() + " and village " + vill2.getName());
 					roadProposal(vill, vill2);
-					villCount++;
-					Thread.sleep(2000);
+					Thread.sleep(4000);
 				} catch (InterruptedException e) {
 					System.out.println("The system was interrupted.");
 				}
 				
-		}*/
+		}
 	} // end of run()
 			
 	public boolean roadExists(Village v1, Village v2) {
@@ -235,7 +231,7 @@ public class Graph implements Runnable {
 				Village successor = ri.endVillage();
 				successor.edgeType = "tree";
 				successor.predecess = ri.startVillage();
-				ri.startVillage().outgoingTopSort.insert(new Road("tree",null,successor));
+				// ri.startVillage().outgoingTopSort.insert(new Road("tree",null,successor));
 				System.out.println("successor to village "+v.getName()+" is "+successor.getName());
 				if(successor.color.equals("white")){
 					// remove from white q and add to gray q.....white.find(successor.getName());
