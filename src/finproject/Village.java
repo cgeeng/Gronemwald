@@ -211,8 +211,8 @@ public class Village {
 					ri.getNext().setPrev(null);
 					firstRoad = ri.getNext();}
 				else if (ri.equals(lastRoad)) {
-					lastRoad = ri.getPrev(); 
-					lastRoad.setNext(null);}
+					ri.getPrev().setNext(null); 
+					lastRoad = ri.getPrev();}
 				else {
 					ri.getPrev().setNext(ri.getNext());
 					ri.getNext().setPrev(ri.getPrev());
@@ -220,7 +220,7 @@ public class Village {
 			this.length--;
 		} // end of delete()
 		
-		public RoadIterator find(Road r) throws NotFoundException {
+		public synchronized RoadIterator find(Road r) throws NotFoundException {
 			RoadIterator current = this.firstRoad;
 			while (current != null) {					
 				if (current.getData().equals(r)) {return current;}
@@ -228,7 +228,7 @@ public class Village {
 			} throw new NotFoundException();
 		} // end of find()
 		
-		public Road findRoad(Village v) throws NotFoundException {
+		public synchronized Road findRoad(Village v) throws NotFoundException {
 			// finds road leads to or from given village
 			if (! isEmpty()) {
 				RoadIterator current = getFirst();

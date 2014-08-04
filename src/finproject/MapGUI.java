@@ -185,10 +185,10 @@ public class MapGUI implements ActionListener {
 		addOptionsButton(addRoad);      optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
 		addOptionsButton(delRoad);      optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
 		addOptionsButton(findMin);      optionsPanel.add(Box.createRigidArea(new Dimension(0,15)));
-		// country group
-		addOptionsButton(addCountry);   optionsPanel.add(Box.createRigidArea(new Dimension(0,15)));
 		// thread group
-		addOptionsButton(startThreads);
+		addOptionsButton(startThreads); optionsPanel.add(Box.createRigidArea(new Dimension(0,15)));
+		// country group
+		addOptionsButton(addCountry);
 	} // end of addOptions()
 	
 	public void addOptionsButton(JButton button) {
@@ -551,7 +551,7 @@ public class MapGUI implements ActionListener {
 	} // end of addRoad()
 	
 	public void moveGnomeExt() {
-		// moves gnome using shortest path and top sort
+		// moves gnome to non-adjacent village using shortest path
 		try {
 			Object [] villOptions = villageList();
 			
@@ -588,10 +588,13 @@ public class MapGUI implements ActionListener {
 			
 			Village endVillage = graph.find(Integer.parseInt(strEnd));
 			
-			graph.travelMinExpPath(startVillage, endVillage);
+			String path = graph.travelMinExpPath(startVillage, endVillage);
 			
 			startVillage.removeGnome(gnome);
 			endVillage.insertGnome(gnome);
+			
+			JOptionPane.showMessageDialog(mapFrame, "Shortest path (from end to start) was: " + path,
+					"Moving a gnome", JOptionPane.PLAIN_MESSAGE);
 			
 			mapPanel.removeAll(); 
 			drawGraph(); 

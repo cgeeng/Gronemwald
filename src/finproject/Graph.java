@@ -10,6 +10,7 @@ public class Graph implements Runnable {
 	Village lastVillage;
 	private String name;
 	
+	
 	public String getName() {return this.name;}
 	
 	//constructor
@@ -40,15 +41,15 @@ public class Graph implements Runnable {
 				int v = rand.nextInt(length), count=0;
 				Village vill = getFirst();
 				for (int i=0; i<length; i++) {
-					if (count != v) {count++; vill = vill.getNext();}
+					if (count != v) {vill = vill.getNext(); count++; }
 				}
 				
 				Village vill2 = getFirst();
 				for (int i=0; i<length; i++) {
-					if (count != v) {count++; vill2 = vill2.getNext();}
+					if (count != v) {vill2 = vill2.getNext(); count++;}
 				}
 				
-				if (! vill.equals(vill2)) {roadProposal(vill, vill2);} // if it happens upon the same village, just waits one cycle
+				if (!vill.equals(vill2)) {roadProposal(vill, vill2);} // if it happens upon the same village, just waits one cycle
 			} else {restructure();}
 			runCount++;
 			try {
@@ -495,5 +496,24 @@ public class Graph implements Runnable {
 		Proposal toBuild = new Proposal(this);
 		return toBuild.getProposal();
 	}
+	
+	public class Country {
+		private String name;
+		private Node start, end;
+		
+		public Country() {this(null);}
+		public Country(Village v) {
+			this.start = new Node(v);
+		}
+		
+		public Country(Village v, Village v2) {
+			this.start = new Node(v);
+			this.end = new Node(v2);
+		}
+		
+		public String getName() {return this.name;}
+		public Village getStart() {return this.start.getVillage();}
+		public Village getEnd() {return this.end.getVillage();}
+	} // end of class country
 	
 }//end VillageList class
