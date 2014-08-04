@@ -246,7 +246,8 @@ public class MapGUI implements ActionListener {
 				Object [] countryOptions = {graph.getName(), graph2.getName()};
 				String ans = (String) JOptionPane.showInputDialog(mapFrame, "To which country would you like to add a village?",
 						"Adding a country", JOptionPane.PLAIN_MESSAGE, null, countryOptions, countryOptions[0]);
-				if (ans.equals(countryOptions[0])) {country = graph;}
+				if (ans == null) {return;}
+				else if (ans.equals(countryOptions[0])) {country = graph;}
 				else {country = graph2;}
 			}
 			
@@ -302,7 +303,8 @@ public class MapGUI implements ActionListener {
 				Object [] countryOptions = {graph.getName(), graph2.getName()};
 				String ans = (String) JOptionPane.showInputDialog(mapFrame, "From which country would you like to delete a village?",
 						"Deleting a village", JOptionPane.PLAIN_MESSAGE, null, countryOptions, countryOptions[0]);
-				if (ans.equals(countryOptions[0])) {country = graph;}
+				if (ans == null) {return;}
+				else if (ans.equals(countryOptions[0])) {country = graph;}
 				else {country = graph2;}
 			}
 			
@@ -388,7 +390,8 @@ public class MapGUI implements ActionListener {
 				Object [] countryOptions = {graph.getName(), graph2.getName()};
 				String ans = (String) JOptionPane.showInputDialog(mapFrame, "To which country would you like to add a gnome?",
 						"Adding a gnome", JOptionPane.PLAIN_MESSAGE, null, countryOptions, countryOptions[0]);
-				if (ans.equals(countryOptions[0])) {country = graph;}
+				if (ans == null) {return;}
+				else if (ans.equals(countryOptions[0])) {country = graph;}
 				else {country = graph2;}
 			}
 			if (country.isEmpty()) {throw new GraphEmptyException();}
@@ -430,7 +433,8 @@ public class MapGUI implements ActionListener {
 				Object [] countryOptions = {graph.getName(), graph2.getName()};
 				String ans = (String) JOptionPane.showInputDialog(mapFrame, "From which country would you like to move a gnome?",
 						"Moving a gnome", JOptionPane.PLAIN_MESSAGE, null, countryOptions, countryOptions[0]);
-				if (ans.equals(countryOptions[0])) {country = graph;}
+				if (ans == null) {return;}
+				else if (ans.equals(countryOptions[0])) {country = graph;}
 				else {country = graph2;}
 			}
 			if (country.isEmpty()) {throw new GraphEmptyException();}
@@ -520,7 +524,8 @@ public class MapGUI implements ActionListener {
 				Object [] countryOptions = {graph.getName(), graph2.getName()};
 				String ans = (String) JOptionPane.showInputDialog(mapFrame, "To which country would you like to add a road?",
 						"Adding a road", JOptionPane.PLAIN_MESSAGE, null, countryOptions, countryOptions[0]);
-				if (ans.equals(countryOptions[0])) {country = graph;}
+				if (ans == null) {return;}
+				else if (ans.equals(countryOptions[0])) {country = graph;}
 				else {country = graph2;}
 			}
 		if (country.isEmpty()) {throw new GraphEmptyException();}
@@ -587,7 +592,8 @@ public class MapGUI implements ActionListener {
 				Object [] countryOptions = {graph.getName(), graph2.getName()};
 				String ans = (String) JOptionPane.showInputDialog(mapFrame, "From which country would you like to move a gnome?",
 						"Moving a gnome", JOptionPane.PLAIN_MESSAGE, null, countryOptions, countryOptions[0]);
-				if (ans.equals(countryOptions[0])) {country = graph;}
+				if (ans == null) {return;}
+				else if (ans.equals(countryOptions[0])) {country = graph;}
 				else {country = graph2;}
 			}
 			
@@ -664,7 +670,8 @@ public class MapGUI implements ActionListener {
 				Object [] countryOptions = {graph.getName(), graph2.getName()};
 				String ans = (String) JOptionPane.showInputDialog(mapFrame, "From which country would you like to delete a road?",
 						"Deleting a road", JOptionPane.PLAIN_MESSAGE, null, countryOptions, countryOptions[0]);
-				if (ans.equals(countryOptions[0])) {country = graph;}
+				if (ans == null) {return;}
+				else if (ans.equals(countryOptions[0])) {country = graph;}
 				else {country = graph2;}
 			}
 			
@@ -774,8 +781,9 @@ public class MapGUI implements ActionListener {
 			if (graph2 != null) {
 				Object [] countryOptions = {graph.getName(), graph2.getName()};
 				String ans = (String) JOptionPane.showInputDialog(mapFrame, "To which country would you like to add a village?",
-						"Adding a country", JOptionPane.PLAIN_MESSAGE, null, countryOptions, countryOptions[0]);
-				if (ans.equals(countryOptions[0])) {country = graph;}
+						"Finding min span tree", JOptionPane.PLAIN_MESSAGE, null, countryOptions, countryOptions[0]);
+				if (ans == null) {return;}
+				else if (ans.equals(countryOptions[0])) {country = graph;}
 				else {country = graph2;}
 			}
 			
@@ -799,8 +807,9 @@ public class MapGUI implements ActionListener {
 		if (graph2 != null) {
 			Object [] countryOptions = {graph.getName(), graph2.getName()};
 			String ans = (String) JOptionPane.showInputDialog(mapFrame, "To which country would you like to add a village?",
-					"Adding a country", JOptionPane.PLAIN_MESSAGE, null, countryOptions, countryOptions[0]);
-			if (ans.equals(countryOptions[0])) {country = graph;}
+					"Topological sort", JOptionPane.PLAIN_MESSAGE, null, countryOptions, countryOptions[0]);
+			if (ans == null) {return;}
+			else if (ans.equals(countryOptions[0])) {country = graph;}
 			else {country = graph2;}
 		}
 		
