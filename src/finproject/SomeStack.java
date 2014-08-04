@@ -27,6 +27,7 @@ public class SomeStack {
 			newVillage.setPrev(lastVillage);
 			lastVillage = newVillage;
 		}
+		System.out.println("added to stack village "+newVillage.getName());
 		length++;
 	}
 	
@@ -37,15 +38,24 @@ public class SomeStack {
 			lastVillage = lastVillage.getPrev();
 			length--;
 			int i = 1;
-			Village adj = temp.outgoing.firstRoad.endVillage();
-			while (i <= temp.outgoing.length) {
-				insert(adj);
-				adj = temp.getNext();
+			
+			System.out.println("in stack road to village "+temp.outgoing.firstRoad.endVillage());
+			if (!temp.outgoing.isEmpty()) {
+				Village adj = temp.outgoing.firstRoad.endVillage();
+
+				while (i <= temp.outgoing.length) {
+					
+					insert(adj);
+					adj = temp.getNext();
+				}
 			}
+			System.out.println("end adding popped' adj.");
+			System.out.println("popped "+temp.getName());
 			return temp;
 		}
 		else return null;
 	}
+
 	
 	public Village find(int name) {
 
@@ -58,13 +68,13 @@ public class SomeStack {
 		}
 		return null;
 	}//end find
-	public boolean hasVisited (Village village) {
-		System.out.println("hi");
-		if (find(village.getName()) == null) {
-			System.out.println("Village "+village.getName()+"has not been visited.");
-			return false;
+	public void print() {
+		Village temp = firstVillage;
+		System.out.println("Stack length"+length);
+		for (int i = 1; i <= length; i++) { //Loops forever with while loop checking null
+			System.out.println("In Stack: Village "+temp.getName());
+			temp = temp.getNext();
 		}
-		System.out.println("Village "+village.getName()+"has been visited.");
-		return true;
 	}
+	
 }

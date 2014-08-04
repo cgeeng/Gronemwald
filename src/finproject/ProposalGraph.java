@@ -88,10 +88,11 @@ public class ProposalGraph {
 		int i = 0;
 		printGraph();
 		while ( !pq.isEmpty() ) {
-				
+			
 			PRoad temp = pq.removeMin();
 			System.out.println("pq length now "+pq.length+". min cost "+temp.cost);
 			Road newRoad = find( temp.starting.getName() ).connect( temp.cost, find( temp.end.getName() ));
+			System.out.println("creating road from PQ road to village "+find( temp.starting.getName() ).outgoing.firstRoad.endVillage().getName());
 			
 			if (findCycle()) {
 				find( temp.starting.getName() ).deleteInRoad(newRoad);
@@ -100,9 +101,10 @@ public class ProposalGraph {
 				toBuild[i] = temp;
 				i++;
 			}//end if	
+			System.out.println("HIIIIIIIIIIIIIII");
 			printToBuild();
 			pq.print();
-			
+
 		}//end while
 		printToBuild();
 		System.out.println("finding min tree done.");
@@ -126,13 +128,23 @@ public class ProposalGraph {
 		SomeStack traverse = new SomeStack();
 		ConnectedGraph connected = new ConnectedGraph();
 		Village current = firstVillage;
-		while (connected.length != traverse.length) {
-			traverse.insert(firstVillage);
+		
+		//Insert first village into stack
+		traverse.insert(current);
+
+		int i = 1;
+		while (!traverse.isEmpty()) {			
+			//Delete top of stack
+			//This should insert whatever was adjacent to the top
 			Village temp = traverse.delete();
-			if ( traverse.find(temp.getName()) != null ) return true;
-			else traverse.insert(temp);
-			current = current.getNext();
-		}
+			if ( connected.find(temp.getName()) != null ) return true;
+			else connected.insert(temp);
+			
+			System.out.println("loop finished "+i);
+			i++;
+			connected.print();
+			traverse.print();
+		} while (connected.length != traverse.length);
 		return false;
 	}
 	
