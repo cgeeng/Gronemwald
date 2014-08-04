@@ -36,7 +36,7 @@ public class Graph implements Runnable {
 		while (! isEmpty() && runCount<5) {
 			Random rand2 = new Random(); int nextFunction = rand2.nextInt(4);
 			// 3/4 chance the government will add a new road, 1/4 chance it will restructure graph (delete road not in min span tree)
-			if (nextFunction < 2) {	// chooses random village within graph
+			if (nextFunction < 2) {	// chooses random villages within graph
 				Random rand = new Random();
 				int v = rand.nextInt(length), count=0;
 				Village vill = getFirst();

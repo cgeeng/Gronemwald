@@ -107,15 +107,11 @@ public class Village {
 	public synchronized void deleteOutRoad(Road r) throws NotFoundException {
 		outgoing.delete(r);
 		this.outdegree--;
-		r.end.incoming.delete(r);
-		r.end.indegree--;
 	}
 	
 	public synchronized void deleteInRoad(Road r) throws NotFoundException {
 		incoming.delete(r);
 		this.indegree--;
-		r.start.outgoing.delete(r);
-		r.start.outdegree--;
 	}
 	
 	public synchronized Gnome removeGnome(Gnome g) throws VillageEmptyException {
@@ -236,9 +232,8 @@ public class Village {
 					if (v.equals(current.getData().start) || v.equals(current.getData().end)) {return current.getData();}
 					current = current.getNext();
 				}
-			} throw new NotFoundException();
+			} return null; // throw new NotFoundException();
 		} // end of findRoad()
-
 	
 	public boolean proposalFindRoad(Village v) {
 		// finds road leads to or from given village
