@@ -215,6 +215,7 @@ public class Graph implements Runnable {
 			thePath += path.getLast().getVillage().getName()+" ";
 			toAdd = toAdd.prior;
 		}
+		System.out.println("Found the shortest path!");
 		System.out.println("Path (from end to start) is: " + thePath);
 		return thePath;
 	} // end of travelMinExpPath method
