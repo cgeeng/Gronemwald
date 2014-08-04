@@ -1,6 +1,8 @@
 package finproject;
 
+import finproject.Exceptions.VillageEmptyException;
 import finproject.Exceptions.*;
+
 import java.util.Random;
 
 public class Village {
@@ -130,14 +132,19 @@ public class Village {
 	} // end of removeGnome()
 	
 	public synchronized void insertGnome(Gnome g) throws VillageFullException {
-		if (isFull()) {throw new VillageFullException();}
-		else {
-			int nextIndex=0; // next open index
-			for (int i=0; i<populationSize; i++) {if (population[i] != null) {nextIndex++;}}
-			population[nextIndex] = g;
-			g.setVillage(this);
-			g.getVisited().insert(new Node(this));
-			this.populationSize++;
+		try {
+			if (isFull()) {throw new VillageFullException();}
+			else {
+				int nextIndex=0; // next open index
+				for (int i=0; i<populationSize; i++) {if (population[i] != null) {nextIndex++;}}
+					population[nextIndex] = g;
+					if (g.current != null) {g.current.removeGnome(g);};
+					g.setVillage(this);
+					g.getVisited().insert(new Node(this));
+				this.populationSize++;
+			}
+		} catch (VillageEmptyException e) { // theoretically not possible
+			System.out.println(e.getMessage());
 		}
 	} // end of insertGnome()
 	

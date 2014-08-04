@@ -234,8 +234,10 @@ public class MapGUI implements ActionListener {
 			g2 = new Thread(graph2); 
 			graph2.startGnomeThreads(); 
 			g2.start();}
-		while (g.isAlive()) {
+		while (g.isAlive()) { 
+			mapPanel.removeAll();
 			drawGraph();
+			mapFrame.pack();
 		}
 	} // end of startThreads()
 	
