@@ -55,18 +55,17 @@ public class MapGUI implements ActionListener {
 		else if (state == GUIConstants.STATE_ACTIVE) {
 			titlePanel = new JPanel();
 			titlePanel.setPreferredSize(new Dimension(800, 50));
-			titlePanel.setBackground(Color.DARK_GRAY);
+			titlePanel.setBackground(Color.GRAY);
 			titlePanel.setLayout(new BorderLayout());
 			
 			mapPanel = new ImagePanel("/Users/Kate/JavaProjects/Gronemwald/src/resources/gnomenwald2.gif");
-			mapPanel.setPreferredSize(new Dimension(650, 500));
+			mapPanel.setPreferredSize(new Dimension(600, 500));
 			mapPanel.setLayout(new BorderLayout());
-			mapPanel.setBackground(Color.DARK_GRAY);
 			
 			optionsPanel = new JPanel();
 			optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
-			optionsPanel.setPreferredSize(new Dimension(200, 500));
-			optionsPanel.setBackground(Color.BLUE);
+			optionsPanel.setPreferredSize(new Dimension(250, 500));
+			optionsPanel.setBackground(Color.DARK_GRAY);
 			
 			addTitle();
 			drawGraph();
@@ -718,7 +717,7 @@ public class MapGUI implements ActionListener {
 				strMinSpanTree += minSpanTree[i].printRoad();
 			}
 			
-			JOptionPane.showMessageDialog(mapFrame, "The minimum spanning tree for this map is: " + strMinSpanTree + "\n", 
+			JOptionPane.showMessageDialog(mapFrame, "The minimum spanning tree for this map is: " + strMinSpanTree, 
 					"Finding min span tree", JOptionPane.PLAIN_MESSAGE);
 		} catch (NotFoundException | GraphEmptyException
 				| SameVillageException | RoadAlreadyExistsException e) {
@@ -728,12 +727,9 @@ public class MapGUI implements ActionListener {
 	
 	public void topSort() {
 		try {
-			int n = JOptionPane.showConfirmDialog(mapFrame, "This function will print the topological sort of the map", 
-					"Topological sort", JOptionPane.OK_CANCEL_OPTION);
-			if (n == JOptionPane.CANCEL_OPTION) {return;}
-			else {
-				graph.topologicalSort();
-			}
+			JOptionPane.showMessageDialog(mapFrame, "The topological sort for this map is: " +
+					"\n" + graph.topologicalSort(), "Topological sort", JOptionPane.PLAIN_MESSAGE);
+
 		} catch (NotFoundException | GraphEmptyException e) {
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "Exception", JOptionPane.PLAIN_MESSAGE);
 		}

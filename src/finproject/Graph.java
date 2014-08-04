@@ -72,17 +72,24 @@ public class Graph implements Runnable {
 				Road [] minSpanTree = this.getMinSpanTree();
 				Road [] allRoads = this.getAllRoads();
 				Road toDelete = null;
+				boolean finished=false;
 				
-				for (int i=0; i<allRoads.length; i++) {
-					boolean inSpanTree = false;
-					for (int n=0; n<minSpanTree.length; n++) {
-						if (allRoads[i].equals(minSpanTree[i])) {inSpanTree = true;}
+				while (!finished) {
+					for (int i = 0; i < allRoads.length; i++) {
+						boolean inSpanTree = false;
+						for (int n = 0; n < minSpanTree.length; n++) {
+							if (allRoads[i].equals(minSpanTree[n])) {inSpanTree = true; finished = true;}
+						}
+						if (!inSpanTree) {toDelete = allRoads[i];}
 					}
-					if (!inSpanTree) {toDelete = allRoads[i];}
+					finished = true;
 				}
 				
-				if (toDelete != null) { // will be null if no road is not in minimum spanning tree
-						System.out.println("To cut costs, the government has decided to restructure the road network." +
+				if (toDelete != null) {  // toDelete will be null if no road is not in the minimum spanning tree
+						toDelete.start.deleteOutRoad(toDelete);
+						toDelete.end.deleteInRoad(toDelete);
+						
+						System.out.println("\nTo cut costs, the government has decided to restructure the road network." +
 						toDelete.printRoad() + " has been deleted.");}
 			}
 		} catch (NotFoundException | GraphEmptyException | SameVillageException
@@ -404,7 +411,7 @@ public class Graph implements Runnable {
 		if(cycles){
 			Node lookAt = black.getFirst();
 			while(lookAt!=null){
-				System.out.println("hi. createdCycle is "+createdCycle.getName());
+				System.out.println("createdCycle is "+createdCycle.getName());
 				if(lookAt.getVillage() == createdCycle){ // if createdCycle
 					while(lookAt.getVillage()!=createdCycle.predecess){
 						path += lookAt.getVillage().getName() + ",";

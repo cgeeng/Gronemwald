@@ -168,7 +168,9 @@ public class Village implements Runnable {
 		if (this.outgoing.isEmpty()) {roadList+="nowhere.";}
 		RoadIterator current = this.outgoing.firstRoad;
 		while (current != null ) {
-			roadList += "Village " + current.endVillage().getName() + " at cost " + current.getCost() + ", ";
+			roadList += "Village " + current.endVillage().getName() + " (cost " + current.getCost();
+			if (current.equals(this.outgoing.lastRoad)) {roadList += ")";}
+			else {roadList += "), ";}
 			current = current.getNext();
 		}
 
