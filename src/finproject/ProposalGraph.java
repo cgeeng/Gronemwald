@@ -91,17 +91,21 @@ public class ProposalGraph {
 			
 			PRoad temp = pq.removeMin();
 			System.out.println("pq length now "+pq.length+". min cost "+temp.cost);
-			Road newRoad = find( temp.starting.getName() ).connect( temp.cost, find( temp.end.getName() ));
-			System.out.println("creating road from PQ road to village "+find( temp.starting.getName() ).outgoing.firstRoad.endVillage().getName());
+			Village tempStart = find( temp.starting.getName() );
+			Road newRoad = tempStart.connect( temp.cost, find( temp.end.getName() ));
 			
-			if (findCycle()) {
+			
+			System.out.println("creating road from PQ road village "+tempStart.getName()+
+					""+temp.end.getName() );
+			
+			if (findCycle(tempStart)) {
 				find( temp.starting.getName() ).deleteInRoad(newRoad);
 			}
 			else {	
 				toBuild[i] = temp;
 				i++;
 			}//end if	
-			System.out.println("HIIIIIIIIIIIIIII");
+			System.out.println("One find cycle passed");
 			printToBuild();
 			pq.print();
 
@@ -124,11 +128,12 @@ public class ProposalGraph {
 		return newRoad;
 	}
 	
-	public boolean findCycle () {
+	public boolean findCycle (Village start) {
 		SomeStack traverse = new SomeStack();
 		ConnectedGraph connected = new ConnectedGraph();
-		Village current = firstVillage;
+		Village current = start;
 		
+		System.out.println("in find cycle current village first road's end is "+current.outgoing.getFirst().endVillage().getName());
 		//Insert first village into stack
 		traverse.insert(current);
 
@@ -144,7 +149,7 @@ public class ProposalGraph {
 			i++;
 			connected.print();
 			traverse.print();
-		} while (connected.length != traverse.length);
+		} 
 		return false;
 	}
 	

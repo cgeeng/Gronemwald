@@ -38,19 +38,20 @@ public class SomeStack {
 			lastVillage = lastVillage.getPrev();
 			length--;
 			int i = 1;
+			System.out.println("popped "+temp.getName());
 			
-			System.out.println("in stack road to village "+temp.outgoing.firstRoad.endVillage());
 			if (!temp.outgoing.isEmpty()) {
-				Village adj = temp.outgoing.firstRoad.endVillage();
+				RoadIterator adj = temp.outgoing.firstRoad;
 
 				while (i <= temp.outgoing.length) {
 					
-					insert(adj);
-					adj = temp.getNext();
+					insert(adj.endVillage());
+					adj = adj.getNext();
+					i++;
 				}
 			}
 			System.out.println("end adding popped' adj.");
-			System.out.println("popped "+temp.getName());
+
 			return temp;
 		}
 		else return null;
