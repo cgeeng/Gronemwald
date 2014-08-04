@@ -9,7 +9,7 @@ import finproject.Exceptions.UnconnectedGraphException;
 public class ProposalGraph {
 	
 	public PRoad[] toBuild = new PRoad[20]; //contains acceptable roads to be built after minimum spanning tree found
-	public ConnectedGraph connected = new ConnectedGraph();
+	
 	public PriorityQueue pq = new PriorityQueue();
 	public int length = 0;
 	Village firstVillage;
@@ -69,7 +69,7 @@ public class ProposalGraph {
 					for (int j = 1; j <= originalVillage.outgoing.length; j++ ) {
 						//proposalVillage.connect( oRoad.getCost() , find(oRoad.getData().end.getName()));
 						//For now don't actually connect villages, just add road to queue
-						proposalVillage.connect(oRoad.getCost(), find(oRoad.endVillage().getName()) );
+						//proposalVillage.connect(oRoad.getCost(), find(oRoad.endVillage().getName()) );
 						proposeRoad( proposalVillage, oRoad.getCost(), find(oRoad.endVillage().getName()) ) ;
 						oRoad = oRoad.getNext();
 										
@@ -88,28 +88,14 @@ public class ProposalGraph {
 		int i = 0;
 		int loop = 0;
 		printGraph();
-		while ( connected.length != length ) {
-			if (pq.isEmpty()) { throw new UnconnectedGraphException(); }			
+		while ( !pq.isEmpty() ) {
+				
 			PRoad temp = pq.removeMin();
 			System.out.println("pq length now "+pq.length+". min cost "+temp.cost);
+			find( temp.starting.getName() ).connect( temp.cost, find( temp.end.getName() ));
 			
-			
-			if (!findCycle(temp)) {
-				if (connected.isEmpty()) { //base case
-					connected.insert(temp.starting);
-					connected.insert(temp.end);
-				}
+			if (findCycle()) {
 				
-				else if (hasVisited(temp.starting)) {
-					connected.insert(temp.end);
-				}
-				else if (hasVisited(temp.end)) {
-					connected.insert(temp.starting);
-				}
-				else {
-					connected.insert(temp.starting);
-					connected.insert(temp.end);
-				}
 				
 				toBuild[i] = temp;
 				i++;
@@ -138,23 +124,21 @@ public class ProposalGraph {
 		return newRoad;
 	}
 	
-	public boolean findCycle (PRoad road) {
-		SomeStack hasTraversed = new SomeStack();
+	public boolean findCycle () {
+		SomeStack traverse = new SomeStack();
+		ConnectedGraph connected = new ConnectedGraph();
 		Village current = firstVillage;
-		if ( hasVisited( road.starting )  && hasVisited ( road.end ) ) return true;
+		while (connected.length != traverse.length) {
+			traverse.insert(firstVillage);
+			Village temp = traverse.delete();
+			if ( traverse.find(temp.getName()) != null ) return true;
+			else traverse.insert(temp);
+			current = current.getNext();
+		}
 		return false;
 	}
 	
-	public boolean hasVisited (Village village) {
-		System.out.println("hi");
-		if (connected.find(village.getName()) == null) {
-			System.out.println("Village "+village.getName()+"has not been visited.");
-			return false;
-		}
-		System.out.println("Village "+village.getName()+"has been visited.");
-		return true;
-	}
-	
+
 	//generic methods
 	public Village getFirst() {return this.firstVillage;}
 	public Village getLast() {return this.lastVillage;}
@@ -259,6 +243,9 @@ public class ProposalGraph {
 				temp = temp.getNext();
 			}
 		}
+		
+
+		
 	}//end proposalgraph
 	
 

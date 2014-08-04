@@ -36,6 +36,12 @@ public class SomeStack {
 			Village temp = lastVillage;
 			lastVillage = lastVillage.getPrev();
 			length--;
+			int i = 1;
+			Village adj = temp.outgoing.firstRoad.endVillage();
+			while (i <= temp.outgoing.length) {
+				insert(adj);
+				adj = temp.getNext();
+			}
 			return temp;
 		}
 		else return null;
@@ -52,4 +58,13 @@ public class SomeStack {
 		}
 		return null;
 	}//end find
+	public boolean hasVisited (Village village) {
+		System.out.println("hi");
+		if (find(village.getName()) == null) {
+			System.out.println("Village "+village.getName()+"has not been visited.");
+			return false;
+		}
+		System.out.println("Village "+village.getName()+"has been visited.");
+		return true;
+	}
 }
