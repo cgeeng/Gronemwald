@@ -6,7 +6,7 @@ import finproject.Exceptions.RoadAlreadyExistsException;
 import finproject.Exceptions.SameVillageException;
 
 public class Proposal {
-	private int[] villages = new int[20]; //VILLAGES START AT INDEX 1
+	private int[] villages = new int[30]; //VILLAGES START AT INDEX 1
 	private Edge[] roads = new Edge[50];
 	private Edge[] toBuild;
 	private int[] rank;
@@ -24,14 +24,17 @@ public class Proposal {
 	
 	//methods
 	public void deepCopy(Graph original) throws SameVillageException, RoadAlreadyExistsException, NotFoundException, GraphEmptyException {
-		//Recreate villages first
-		//Then create roads
+		//Recreate villages and roads
+		int[] tempVillage = new int[30];
+		
 		if (original.firstVillage == null) { System.out.println("I don't think your country exists!"); }
 		else {
 			p = original.getLength();
 			
 			Village originalVillage = original.firstVillage;
 			for (int i =1 ; i <= original.getLength(); i++) { 
+				//save village names
+				tempVillage[i] = originalVillage.getName();
 				//iterate through original Village linked list, CREATE EDGES
 				if ( !originalVillage.outgoing.isEmpty() ) { 
 					//loop through through and add road to proposal village
@@ -46,6 +49,8 @@ public class Proposal {
 				}//end if
 				originalVillage = originalVillage.getNext();
 			}//end village loop
+			
+			initializeVillages( tempVillage );
 		}//end else
 	}//end deep copy
 
@@ -125,6 +130,15 @@ public class Proposal {
 		}
 	}//end printToBuild
 	
+	public void printVillages() {
+		//to test
+		String temp = "";
+		for (int i = 0; i < p; i++) {
+			if ( villages[i] != 0 ) temp+= villages[i]+" ";
+		}
+		System.out.println("Villages include: "+ temp);
+	}//end printToBuild
+	
 	public Road[] getProposal() throws NotFoundException, GraphEmptyException {
 		kruskal();
 		Road[] transfer = new Road[toBuildLength];
@@ -134,6 +148,16 @@ public class Proposal {
 		}
 		return transfer;
 	}//end getProposal
+	
+	public void initializeVillages( int[] temp ) {
+		//Initialize villages[] by mapping to village names
+		int i = 0;
+		while ( temp[i] != 0 ){
+			villages[ temp[i] ] = temp[i];
+			i++;
+		}
+		printVillages();
+	}
 	
 	//edge class
 	public class Edge {
