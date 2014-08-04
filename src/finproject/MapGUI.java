@@ -34,8 +34,8 @@ public class MapGUI implements ActionListener {
 	public void controller () { // does the heavy lifting, handles state changes
 		if (state == GUIConstants.STATE_WELCOME) {
 			welcomePanel = new JPanel();
-			welcomePanel.setPreferredSize(GUIConstants.frameSize);
 			welcomePanel.setBackground(Color.GRAY);
+			welcomePanel.setPreferredSize(GUIConstants.frameSize);
 			welcomePanel.setLayout(new BorderLayout());
 		
 			addWelcome();
@@ -49,18 +49,18 @@ public class MapGUI implements ActionListener {
 			titlePanel.setPreferredSize(new Dimension(800, 50));
 			titlePanel.setBackground(Color.DARK_GRAY);
 			
-			mapPanel = new JPanel();
+			mapPanel = new JPanel(null);
 			mapPanel.setPreferredSize(new Dimension(650, 450));
-			mapPanel.setBackground(Color.RED);
-			mapPanel.setLayout(new GridBagLayout());
+			// mapPanel.setBackground(Color.RED);
+			// mapPanel.setLayout(new GridBagLayout());
 			
 			optionsPanel = new JPanel();
 			optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
 			optionsPanel.setPreferredSize(new Dimension(200, 450));
-			optionsPanel.setBackground(Color.BLUE);
+			optionsPanel.setBackground(Color.DARK_GRAY);
 			
 			addTitle();
-			drawGraph();
+			drawGraph(graph);
 			addOptions();
 			
 			mapFrame.getContentPane().add(titlePanel, BorderLayout.NORTH);
@@ -70,12 +70,6 @@ public class MapGUI implements ActionListener {
 			mapFrame.setVisible(true);
 		}
 	} // end of controller()
-	
-	public void update() {
-		mapPanel.repaint();
-		mapFrame.validate();
-		mapFrame.pack();
-	}
 	
 	public void addWelcome() {
 		JLabel welcomeLabel = new JLabel("Welcome to Gnomenwald!", SwingConstants.CENTER);
@@ -96,7 +90,7 @@ public class MapGUI implements ActionListener {
 		try {
 		if (graph == null) { // creates new graph with 5 villages of population 5
 			graph = new Graph();
-			for (int i=0; i<5; i++) {graph.insert(new Village(2));} // 5 villages with 2 gnomes each
+			for (int i=0; i<5; i++) {graph.insert(new Village(5));} // 5 villages with 5 gnomes each
 		}
 		
 		graph.find(1).connect(2, graph.find(2));
@@ -119,7 +113,7 @@ public class MapGUI implements ActionListener {
 		try {
 		if (graph == null) { // creates new graph with 5 villages of population 5
 			graph = new Graph();
-			for (int i=0; i<5; i++) {graph.insert(new Village(2));} // 5 villages with 2 gnomes each
+			for (int i=0; i<5; i++) {graph.insert(new Village(5));} // 5 villages with 5 gnomes each
 		}
 		
 		graph.find(1).connect(3, graph.find(2));
@@ -136,10 +130,9 @@ public class MapGUI implements ActionListener {
 		graph.printGraph();
 	} // end of addGraph()
 	
-	public void drawGraph() {
-		drawVillages();
-		// drawRoads();
-		// update();
+	public void drawGraph(Graph graph) {
+		drawVillages(graph);
+		drawRoads(graph);
 	} // end of drawGraph()
 	
 	public void addOptions() {
@@ -208,7 +201,7 @@ public class MapGUI implements ActionListener {
 	public void startThreads() { // starts threads for simulation (villages and gnomes)
 		g = new Thread(graph);
 		g.start();
-		drawGraph();
+		drawGraph(graph);
 	}
 	
 	public synchronized void addVillage() {
@@ -241,7 +234,10 @@ public class MapGUI implements ActionListener {
 						" to village " + newRoad.end.getName() + " at cost " + newRoad.cost,
 					"Adding a village", JOptionPane.PLAIN_MESSAGE);
 			
-			drawGraph(); update();
+			mapPanel.removeAll(); 
+			drawGraph(graph); 
+			mapPanel.repaint(); 
+			mapFrame.pack();
 			if (isAlive) {notifyAll();}
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Please try again.", "NumberFormatException", JOptionPane.PLAIN_MESSAGE);
@@ -320,7 +316,10 @@ public class MapGUI implements ActionListener {
 			graph.delete(village.getName());
 			graph.printGraph();
 			
-			drawGraph();
+			mapPanel.removeAll(); 
+			drawGraph(graph); 
+			mapPanel.repaint(); 
+			mapFrame.pack();
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
 		} catch (NotFoundException e) {
@@ -471,6 +470,12 @@ public class MapGUI implements ActionListener {
             		+ "\nPlease enter a toll for the new road.",
             		"Building a road", JOptionPane.PLAIN_MESSAGE);
 		
+		int n = JOptionPane.showConfirmDialog(mapFrame,
+        		"This road will cost $" + Integer.parseInt(cost)*100 + " to build." + 
+        				"\nPress OK to confirm.",
+        		"Building a road", JOptionPane.OK_CANCEL_OPTION);
+		if (n == JOptionPane.CANCEL_OPTION) {return;}
+		
 		int intStart = Integer.parseInt(start);
 		int intEnd = Integer.parseInt(end);
 		int intCost = Integer.parseInt(cost);
@@ -478,7 +483,7 @@ public class MapGUI implements ActionListener {
 		graph.find(intStart).connect(intCost, graph.find(intEnd));
 		graph.printGraph();
 		
-		drawGraph();
+		drawGraph(graph);
 		} catch (RoadAlreadyExistsException e) {
 			JOptionPane.showMessageDialog(mapFrame, e.getMessage(), "RoadAlreadyExistsException", JOptionPane.ERROR_MESSAGE);
 		} catch (NumberFormatException e) {
@@ -582,7 +587,7 @@ public class MapGUI implements ActionListener {
 			endVill.deleteInRoad(toDelete);
 			
 			JOptionPane.showMessageDialog(mapFrame, "Road from village " + start + " to village " + end + " has been deleted.");
-			drawGraph();
+			drawGraph(graph);
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Please try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
 		} catch (NotFoundException e) {
@@ -613,6 +618,8 @@ public class MapGUI implements ActionListener {
 				JOptionPane.showMessageDialog(mapFrame, "A new map has been created with " + numVill + " villages." + 
 							"\nNext, you should add roads to connect the two countries (see options on right).", "Building map", JOptionPane.PLAIN_MESSAGE);
 			}
+			
+			drawGraph(graph2);
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(mapFrame, "You did not enter an integer. Please try again.", "NumberFormatException", JOptionPane.ERROR_MESSAGE);
 		} catch (VillageFullException e) {
@@ -675,7 +682,7 @@ public class MapGUI implements ActionListener {
 		return options;
 	}
 	
-	public void drawVillages() { // draws all villages currently in graph
+	public void drawVillages(Graph graph) { // draws all villages currently in graph
 		
 		/*
 		Village current = graph.getFirst();
@@ -688,31 +695,31 @@ public class MapGUI implements ActionListener {
 		*/
 		
 		
-		
 		if (! graph.isEmpty()) {
 			int r = GUIConstants.radius, x, y;
 			double angle = 0, step = (2*Math.PI)/graph.getLength();
 			int mapWidth = 650, mapHeight = 450; // mapPanel.getWidth(), mapHeight = mapPanel.getHeight();
 			Village current = graph.getFirst();
 			while (current != null) {
-				x = (int) Math.round(mapWidth/2 + 7*r*Math.cos(angle));
-				y = (int) Math.round(mapHeight/2 + 7*r*Math.sin(angle));
+				x = (int) Math.round(mapWidth/2 + 3*r*Math.cos(angle));
+				y = (int) Math.round(mapHeight/2 + 3*r*Math.sin(angle));
 				
-				DrawVillage dv = new DrawVillage(current,0,0);
+				System.out.println("x is: " + x + "  y is: " + y);
+				
+				DrawVillage dv = new DrawVillage(current,x,y);
 				dv.setLayout(new GridBagLayout());
 				JLabel name = new JLabel(Integer.toString(dv.village.getName()));
-				name.setForeground(Color.WHITE);
+				name.setForeground(Color.RED);
 				dv.add(name);
-						// current, x, y);
 				
 				addToArray(dv);
 				mapPanel.add(dv);
-				// dv.setBounds(dv.x, dv.y, dv.r*2, dv.r*2);
+				dv.setBounds(dv.x, dv.y, dv.r*2, dv.r*2);
 				
 				angle += step;
 				current = current.getNext();
 			}
-		} 
+		}
 	} // end of drawVillages()
 	
 	public void addToArray(DrawVillage dv) {
@@ -722,7 +729,7 @@ public class MapGUI implements ActionListener {
 		}
 	} // end of addToArray()
 	
-	public void drawRoads() { // draws all roads currently in graph
+	public void drawRoads(Graph graph) { // draws all roads currently in graph
 		if (! graph.isEmpty()) {
 			int x1, y1, x2, y2;
 			for (int i=0; i<arrLength; i++) {
@@ -735,7 +742,7 @@ public class MapGUI implements ActionListener {
 					y2 = findCircle(current.getData().end).y;
 					DrawRoad dr = new DrawRoad(current,x1,y1,x2,y2);
 					mapPanel.add(dr);
-					// dr.setBounds(x1,y1,x1+x2,y1+y2);
+					dr.setBounds(x1,y1,x1+x2,y1+y2);
 					current = current.getNext();
 				}
 			}
@@ -776,7 +783,7 @@ public class MapGUI implements ActionListener {
 		
 		public DrawVillage(Village v, int x, int y) {
 			setPreferredSize(new Dimension(GUIConstants.radius*2, GUIConstants.radius*2));
-			setBackground(Color.RED);
+			setBackground(Color.BLACK);
 			setOpaque(true);
 			
 			this.village = v;
@@ -796,7 +803,7 @@ public class MapGUI implements ActionListener {
 		protected void paintComponent(Graphics g) {
 			Graphics2D g2= (Graphics2D) g;
 			Ellipse2D.Double circle= new Ellipse2D.Double(this.x, this.y, this.r, this.r);
-			g2.setColor(Color.WHITE);
+			g2.setColor(Color.BLACK);
 			g2.fill(circle);
 		}
 		
